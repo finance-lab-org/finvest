@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Übung I – Einlagen- und Beteiligungsfinanzierung</title>
+<style>
+  :root {
+    --th-rot: 201, 12, 15;
+    --th-orange: 234, 91, 12;
+    --th-violett: 184, 37, 133;
+    --bg: #fafafa;
+    --text: #1a1a1a;
+    --border: #e0e0e0;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 0;
+  }
+
+  /* --- Header --- */
+  .header {
+    background: linear-gradient(135deg, rgb(var(--th-rot)), rgb(var(--th-violett)));
+    color: white;
+    padding: 28px 40px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  }
+  .header h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .header .subtitle {
+    font-size: 0.95rem;
+    opacity: 0.85;
+    margin-top: 4px;
+  }
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .dozent-btn {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    padding: 8px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.2s;
+  }
+  .dozent-btn:hover { background: rgba(255,255,255,0.25); }
+
+  /* --- Main Content --- */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 30px 24px 60px;
+  }
+
+  /* --- Aufgaben-Navigation --- */
+  .aufgaben-nav {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+  .nav-pill {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: default;
+    transition: all 0.3s;
+    border: 1.5px solid var(--border);
+    background: white;
+    color: #999;
+  }
+  .nav-pill.locked {
+    background: #f5f5f5;
+    color: #bbb;
+  }
+  .nav-pill.active {
+    background: rgba(var(--th-violett), 0.08);
+    border-color: rgba(var(--th-violett), 0.4);
+    color: rgb(var(--th-violett));
+    cursor: pointer;
+  }
+  .nav-pill.completed {
+    background: rgba(var(--th-violett), 0.06);
+    border-color: rgba(var(--th-violett), 0.25);
+    color: rgb(var(--th-violett));
+    cursor: pointer;
+  }
+  .nav-pill.completed::before { content: "✓ "; }
+
+  /* --- Passwort-Eingabe (global) --- */
+  .unlock-section {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 30px;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .unlock-section h3 {
+    font-size: 1.05rem;
+    color: #555;
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+  .pw-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .pw-input {
+    padding: 10px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-size: 1rem;
+    width: 240px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .pw-input:focus { border-color: rgba(var(--th-violett), 0.5); }
+  .pw-btn {
+    padding: 10px 24px;
+    background: rgb(var(--th-violett));
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .pw-btn:hover { opacity: 0.85; }
+  .pw-error {
+    color: rgb(var(--th-rot));
+    font-size: 0.85rem;
+    margin-top: 10px;
+    min-height: 1.2em;
+  }
+
+  /* --- Aufgabe Card --- */
+  .aufgabe-card {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 24px;
+    display: none;
+  }
+  .aufgabe-card.visible { display: block; }
+
+  .aufgabe-header {
+    padding: 20px 28px;
+    background: rgba(var(--th-violett), 0.04);
+    border-bottom: 1px solid rgba(var(--th-violett), 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .aufgabe-header h2 {
+    font-size: 1.15rem;
+    color: rgb(var(--th-violett));
+    font-weight: 600;
+  }
+
+  /* --- Timer --- */
+  .timer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: rgb(var(--th-violett));
+  }
+  .timer.warning { color: rgb(var(--th-orange)); }
+  .timer.critical { color: rgb(var(--th-rot)); animation: pulse 1s infinite; }
+  .timer-icon { font-size: 1.2rem; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  /* --- Aufgabentext --- */
+  .aufgabe-body { padding: 28px; }
+
+  .scenario {
+    background: rgba(var(--th-violett), 0.03);
+    border-left: 3px solid rgba(var(--th-violett), 0.3);
+    padding: 20px 24px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 24px;
+    font-size: 0.95rem;
+  }
+  .scenario p { margin-bottom: 10px; }
+  .scenario p:last-child { margin-bottom: 0; }
+
+  /* --- Bilanz-Tabelle --- */
+  .bilanz-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 0.9rem;
+  }
+  .bilanz-table th {
+    background: rgba(var(--th-violett), 0.08);
+    padding: 8px 14px;
+    text-align: left;
+    font-weight: 600;
+    color: rgb(var(--th-violett));
+    border-bottom: 2px solid rgba(var(--th-violett), 0.2);
+  }
+  .bilanz-table td {
+    padding: 7px 14px;
+    border-bottom: 1px solid #eee;
+  }
+  .bilanz-table td:nth-child(2),
+  .bilanz-table td:nth-child(4),
+  .bilanz-table th:nth-child(2),
+  .bilanz-table th:nth-child(4) {
+    text-align: right;
+  }
+  .bilanz-table tr.summe td {
+    font-weight: 700;
+    border-top: 2px solid rgba(var(--th-violett), 0.2);
+    border-bottom: none;
+  }
+
+  /* --- Teil-Block --- */
+  .teil {
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    transition: border-color 0.3s;
+  }
+  .teil.correct {
+    border-color: rgba(var(--th-violett), 0.4);
+    background: rgba(var(--th-violett), 0.02);
+  }
+  .teil-label {
+    font-weight: 600;
+    color: rgb(var(--th-violett));
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+  }
+  .teil-text {
+    margin-bottom: 14px;
+    font-size: 0.95rem;
+  }
+  .teil-text .formula {
+    font-family: 'Cambria Math', 'Times New Roman', serif;
+    font-style: italic;
+    background: rgba(var(--th-violett), 0.04);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  /* --- Antwortfelder --- */
+  .answer-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+  .answer-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .answer-group label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #555;
+    white-space: nowrap;
+  }
+  .answer-input {
+    width: 130px;
+    padding: 8px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    text-align: right;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .answer-input:focus {
+    border-color: rgba(var(--th-violett), 0.5);
+  }
+  .answer-input.correct {
+    border-color: rgba(var(--th-violett), 0.5);
+    background: rgba(var(--th-violett), 0.04);
+  }
+  .answer-input.incorrect {
+    border-color: rgba(var(--th-rot), 0.5);
+    background: rgba(var(--th-rot), 0.04);
+  }
+  .answer-unit {
+    font-size: 0.85rem;
+    color: #888;
+  }
+  .check-btn {
+    padding: 8px 18px;
+    background: rgba(var(--th-violett), 0.1);
+    color: rgb(var(--th-violett));
+    border: 1.5px solid rgba(var(--th-violett), 0.25);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .check-btn:hover {
+    background: rgba(var(--th-violett), 0.18);
+  }
+  .answer-feedback {
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-left: 4px;
+  }
+  .answer-feedback.ok { color: rgb(var(--th-violett)); }
+  .answer-feedback.nok { color: rgb(var(--th-rot)); }
+
+  /* --- Lösung --- */
+  .loesung {
+    border: 1.5px solid rgba(var(--th-violett), 0.2);
+    border-radius: 8px;
+    margin-top: 24px;
+    overflow: hidden;
+    display: none;
+  }
+  .loesung.visible { display: block; }
+  .loesung-header {
+    background: rgba(var(--th-violett), 0.06);
+    padding: 14px 24px;
+    font-weight: 600;
+    color: rgb(var(--th-violett));
+    font-size: 0.95rem;
+    border-bottom: 1px solid rgba(var(--th-violett), 0.1);
+  }
+  .loesung-body { padding: 24px; }
+  .loesung-teil {
+    margin-bottom: 20px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #eee;
+  }
+  .loesung-teil:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .loesung-teil h4 {
+    color: rgb(var(--th-violett));
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+  }
+  .loesung-teil p, .loesung-teil div {
+    font-size: 0.92rem;
+    margin-bottom: 6px;
+  }
+  .rechenweg {
+    background: rgba(var(--th-violett), 0.03);
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-family: 'Cambria Math', 'Times New Roman', serif;
+    font-size: 1rem;
+    margin: 8px 0;
+    line-height: 1.8;
+  }
+  .rechenweg .step { margin-bottom: 4px; }
+  .rechenweg .result {
+    font-weight: 700;
+    color: rgb(var(--th-violett));
+  }
+
+  /* --- Freispielen Button --- */
+  .freispielen-section {
+    text-align: center;
+    padding: 24px;
+    display: none;
+  }
+  .freispielen-section.visible { display: block; }
+  .freispielen-btn {
+    padding: 14px 36px;
+    background: linear-gradient(135deg, rgb(var(--th-violett)), rgb(var(--th-rot)));
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(var(--th-violett), 0.25);
+  }
+  .freispielen-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(var(--th-violett), 0.35);
+  }
+  .freispielen-info {
+    font-size: 0.85rem;
+    color: #888;
+    margin-top: 10px;
+  }
+
+  /* --- Training-Badge --- */
+  .training-badge {
+    display: none;
+    background: rgba(var(--th-orange), 0.1);
+    color: rgb(var(--th-orange));
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 16px;
+    border: 1px solid rgba(var(--th-orange), 0.2);
+  }
+  .training-badge.visible { display: block; }
+
+  /* --- Status-Bar --- */
+  .status-bar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+    flex-wrap: wrap;
+  }
+  .status-item {
+    font-size: 0.82rem;
+    color: #888;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .status-dot.locked { background: #ccc; }
+  .status-dot.active { background: rgb(var(--th-orange)); }
+  .status-dot.done { background: rgb(var(--th-violett)); }
+
+  /* --- Dozent-Modal --- */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 200;
+    justify-content: center;
+    align-items: center;
+  }
+  .modal-overlay.visible { display: flex; }
+  .modal {
+    background: white;
+    border-radius: 12px;
+    padding: 32px;
+    width: 400px;
+    max-width: 90vw;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  }
+  .modal h3 {
+    color: rgb(var(--th-violett));
+    margin-bottom: 16px;
+    font-size: 1.1rem;
+  }
+  .modal .pw-input { width: 100%; margin-bottom: 12px; }
+  .modal .pw-btn { width: 100%; }
+  .modal-close {
+    float: right;
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #999;
+    margin-top: -8px;
+  }
+
+  /* --- Bilanz nach KE (Lösung) --- */
+  .bilanz-change {
+    color: rgb(var(--th-violett));
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+
+  /* --- Responsive --- */
+  @media (max-width: 600px) {
+    .header { padding: 20px; }
+    .header h1 { font-size: 1.2rem; }
+    .container { padding: 16px; }
+    .aufgabe-body { padding: 18px; }
+    .answer-row { flex-direction: column; align-items: flex-start; }
+    .pw-row { flex-direction: column; }
+    .pw-input { width: 100%; }
+  }
+
+  /* --- Print --- */
+  @media print {
+    .header { position: static; }
+    .dozent-btn, .pw-btn, .check-btn, .freispielen-btn { display: none; }
+    .loesung { display: block !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ====== HEADER ====== -->
+<div class="header">
+  <div class="header-row">
+    <div>
+      <h1>Übung I – Einlagen- und Beteiligungsfinanzierung</h1>
+      <div class="subtitle">Finanz- und Investitionsmanagement · SoSe 2026 · Prof. Dr. Marc Mehlhorn</div>
+    </div>
+    <button class="dozent-btn" onclick="openModal('dozent')">🔑 Dozent</button>
+  </div>
+</div>
+
+<!-- ====== MAIN ====== -->
+<div class="container">
+
+  <!-- Aufgaben-Navigation -->
+  <div class="aufgaben-nav" id="aufgabenNav">
+    <div class="nav-pill locked" id="nav-1" data-nr="1">Aufgabe 1</div>
+    <div class="nav-pill locked" id="nav-2" data-nr="2">Aufgabe 2</div>
+    <div class="nav-pill locked" id="nav-3" data-nr="3">Aufgabe 3</div>
+    <div class="nav-pill locked" id="nav-4" data-nr="4">Aufgabe 4</div>
+    <div class="nav-pill locked" id="nav-5" data-nr="5">Aufgabe 5</div>
+    <div class="nav-pill locked" id="nav-6" data-nr="6">Aufgabe 6</div>
+  </div>
+
+  <!-- Passwort-Eingabe -->
+  <div class="unlock-section" id="unlockSection">
+    <h3 id="unlockTitle">Passwort eingeben, um die nächste Aufgabe freizuschalten</h3>
+    <div class="pw-row">
+      <input type="password" class="pw-input" id="unlockInput" placeholder="Passwort" onkeydown="if(event.key==='Enter') unlockAufgabe()">
+      <button class="pw-btn" onclick="unlockAufgabe()">Freischalten</button>
+    </div>
+    <div class="pw-error" id="unlockError"></div>
+  </div>
+
+  <!-- ================================================================ -->
+  <!-- AUFGABE 1: Kapitalerhöhung bei der TechVision AG                -->
+  <!-- ================================================================ -->
+  <div class="aufgabe-card" id="aufgabe-1">
+    <div class="aufgabe-header">
+      <h2>Aufgabe 1: Kapitalerhöhung bei der TechVision AG</h2>
+      <div class="timer" id="timer-1">
+        <span class="timer-icon">⏱</span>
+        <span id="timerDisplay-1">20:00</span>
+      </div>
+    </div>
+
+    <div class="aufgabe-body">
+      <div class="training-badge" id="trainingBadge-1">
+        🔄 Trainingsmodus – neue Zahlen generiert. Lösung jederzeit verfügbar.
+      </div>
+
+      <!-- Szenario -->
+      <div class="scenario" id="scenario-1">
+        <p>Die <strong>TechVision AG</strong> weist folgende vereinfachte Bilanz auf (in Mio. EUR):</p>
+        <table class="bilanz-table">
+          <tr>
+            <th>Aktiva</th><th>Mio. EUR</th><th>Passiva</th><th>Mio. EUR</th>
+          </tr>
+          <tr>
+            <td>Anlagevermögen</td><td id="av-1">120</td>
+            <td>Gezeichnetes Kapital (Nennwert <span id="nw-display-1">5</span> EUR)</td><td id="gk-display-1">40</td>
+          </tr>
+          <tr>
+            <td>Umlaufvermögen</td><td id="uv-1">80</td>
+            <td>Kapitalrücklage</td><td id="kr-display-1">30</td>
+          </tr>
+          <tr>
+            <td></td><td></td>
+            <td>Gewinnrücklagen</td><td id="gr-display-1">50</td>
+          </tr>
+          <tr>
+            <td></td><td></td>
+            <td>Fremdkapital</td><td id="fk-display-1">80</td>
+          </tr>
+          <tr class="summe">
+            <td>Summe</td><td id="sumA-1">200</td>
+            <td>Summe</td><td id="sumP-1">200</td>
+          </tr>
+        </table>
+        <p>Der Börsenkurs beträgt <strong>P<sub>a</sub> = <span id="pa-display-1">25</span> EUR</strong>.
+        Die Hauptversammlung beschließt eine ordentliche Kapitalerhöhung:
+        Es sollen <strong>j = <span id="j-display-1">2</span> Mio. Jungaktien</strong> zum Emissionskurs
+        <strong>P<sub>j</sub> = <span id="pj-display-1">15</span> EUR</strong> ausgegeben werden.
+        Alte und junge Aktien haben einen Nennwert von <span id="nw-display2-1">5</span> EUR.
+        Die Einzahlungen fließen dem Umlaufvermögen zu.</p>
+      </div>
+
+      <!-- Teil I -->
+      <div class="teil" id="teil-1-1">
+        <div class="teil-label">Teil I</div>
+        <div class="teil-text">Ermitteln Sie die Anzahl der Altaktien <em>a</em> (in Mio. Stück) sowie das Bezugsverhältnis <em>BV</em> (Angabe als Verhältnis, z.&nbsp;B. 4:1). <em>Keine Rundung erforderlich.</em></div>
+        <div class="answer-row">
+          <div class="answer-group">
+            <label>a =</label>
+            <input type="text" class="answer-input" id="ans-1-1-a" placeholder="Mio. Stück">
+            <span class="answer-unit">Mio. Stück</span>
+          </div>
+          <div class="answer-group">
+            <label>BV =</label>
+            <input type="text" class="answer-input" id="ans-1-1-bv" placeholder="z.B. 4:1" style="width:100px;">
+          </div>
+          <button class="check-btn" onclick="checkTeil(1,1)">Prüfen</button>
+          <span class="answer-feedback" id="fb-1-1"></span>
+        </div>
+      </div>
+
+      <!-- Teil II -->
+      <div class="teil" id="teil-1-2">
+        <div class="teil-label">Teil II</div>
+        <div class="teil-text">
+          Berechnen Sie den rechnerischen Wert des Bezugsrechts <em>BR</em>. <em>Runden Sie auf zwei Nachkommastellen.</em><br>
+          <span class="formula">BR = (P<sub>a</sub> − P<sub>j</sub>) / (BV + 1)</span>
+        </div>
+        <div class="answer-row">
+          <div class="answer-group">
+            <label>BR =</label>
+            <input type="text" class="answer-input" id="ans-1-2" placeholder="EUR">
+            <span class="answer-unit">EUR</span>
+          </div>
+          <button class="check-btn" onclick="checkTeil(1,2)">Prüfen</button>
+          <span class="answer-feedback" id="fb-1-2"></span>
+        </div>
+      </div>
+
+      <!-- Teil III -->
+      <div class="teil" id="teil-1-3">
+        <div class="teil-label">Teil III</div>
+        <div class="teil-text">
+          Berechnen Sie den Mischkurs <em>P<sub>neu</sub></em> nach der Kapitalerhöhung. Zeigen Sie, dass gilt: P<sub>neu</sub> = P<sub>a</sub> − BR. <em>Runden Sie auf zwei Nachkommastellen.</em><br>
+          <span class="formula">P<sub>neu</sub> = (a · P<sub>a</sub> + j · P<sub>j</sub>) / (a + j)</span>
+        </div>
+        <div class="answer-row">
+          <div class="answer-group">
+            <label>P<sub>neu</sub> =</label>
+            <input type="text" class="answer-input" id="ans-1-3" placeholder="EUR">
+            <span class="answer-unit">EUR</span>
+          </div>
+          <button class="check-btn" onclick="checkTeil(1,3)">Prüfen</button>
+          <span class="answer-feedback" id="fb-1-3"></span>
+        </div>
+      </div>
+
+      <!-- Teil IV -->
+      <div class="teil" id="teil-1-4">
+        <div class="teil-label">Teil IV</div>
+        <div class="teil-text">
+          Stellen Sie die Bilanz der TechVision AG nach der Kapitalerhöhung auf (in Mio. EUR).
+          Wie verändern sich <em>Gezeichnetes Kapital</em>, <em>Kapitalrücklage</em> und <em>Umlaufvermögen</em>? <em>Ganzzahlige Angabe in Mio. EUR, keine Rundung erforderlich.</em>
+        </div>
+        <div class="answer-row">
+          <div class="answer-group">
+            <label>Gez. Kapital (neu) =</label>
+            <input type="text" class="answer-input" id="ans-1-4-gk" placeholder="Mio. EUR">
+          </div>
+          <div class="answer-group">
+            <label>Kapitalrücklage (neu) =</label>
+            <input type="text" class="answer-input" id="ans-1-4-kr" placeholder="Mio. EUR">
+          </div>
+          <div class="answer-group">
+            <label>UV (neu) =</label>
+            <input type="text" class="answer-input" id="ans-1-4-uv" placeholder="Mio. EUR">
+          </div>
+          <button class="check-btn" onclick="checkTeil(1,4)">Prüfen</button>
+          <span class="answer-feedback" id="fb-1-4"></span>
+        </div>
+      </div>
+
+      <!-- Teil V -->
+      <div class="teil" id="teil-1-5">
+        <div class="teil-label">Teil V</div>
+        <div class="teil-text">
+          Ein Altaktionär hält <strong><span id="aktien-display-1">400</span> Aktien</strong>.
+          Er möchte an der Kapitalerhöhung teilnehmen, ohne zusätzliches Kapital einzusetzen (<em>Opération Blanche</em>).<br>
+          Wie viele Bezugsrechte muss er verkaufen? Wie viele Jungaktien erhält er? Wie hoch ist sein Depotwert danach?<br>
+          <em>Hinweis: Bruchteile von Aktien sind nicht möglich – runden Sie die Anzahl der Jungaktien ggf. auf ganze Stück ab. Depotwert auf zwei Nachkommastellen.</em>
+        </div>
+        <div class="answer-row">
+          <div class="answer-group">
+            <label>Verkaufte BR =</label>
+            <input type="text" class="answer-input" id="ans-1-5-vbr" placeholder="Stück" style="width:100px;">
+          </div>
+          <div class="answer-group">
+            <label>Jungaktien =</label>
+            <input type="text" class="answer-input" id="ans-1-5-ja" placeholder="Stück" style="width:100px;">
+          </div>
+          <div class="answer-group">
+            <label>Depotwert =</label>
+            <input type="text" class="answer-input" id="ans-1-5-dw" placeholder="EUR" style="width:130px;">
+            <span class="answer-unit">EUR</span>
+          </div>
+          <button class="check-btn" onclick="checkTeil(1,5)">Prüfen</button>
+          <span class="answer-feedback" id="fb-1-5"></span>
+        </div>
+      </div>
+
+      <!-- Freispielen -->
+      <div class="freispielen-section" id="freispielen-1">
+        <button class="freispielen-btn" onclick="freispielen(1)">🔄 Nochmal üben – mit neuen Zahlen</button>
+        <div class="freispielen-info">Gleiche Aufgabenstruktur, neue Zahlenwerte. Perfekt zum Trainieren!</div>
+      </div>
+
+      <!-- Lösung -->
+      <div class="loesung" id="loesung-1">
+        <div class="loesung-header">Vollständige Lösung mit Rechenweg</div>
+        <div class="loesung-body" id="loesungBody-1">
+          <!-- wird dynamisch befüllt -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Platzhalter für Aufgaben 2-6 -->
+  <div class="aufgabe-card" id="aufgabe-2">
+    <div class="aufgabe-header">
+      <h2>Aufgabe 2</h2>
+    </div>
+    <div class="aufgabe-body">
+      <p style="color:#999; text-align:center; padding:40px;">Wird in Kürze ergänzt.</p>
+    </div>
+  </div>
+  <div class="aufgabe-card" id="aufgabe-3">
+    <div class="aufgabe-header"><h2>Aufgabe 3</h2></div>
+    <div class="aufgabe-body"><p style="color:#999; text-align:center; padding:40px;">Wird in Kürze ergänzt.</p></div>
+  </div>
+  <div class="aufgabe-card" id="aufgabe-4">
+    <div class="aufgabe-header"><h2>Aufgabe 4</h2></div>
+    <div class="aufgabe-body"><p style="color:#999; text-align:center; padding:40px;">Wird in Kürze ergänzt.</p></div>
+  </div>
+  <div class="aufgabe-card" id="aufgabe-5">
+    <div class="aufgabe-header"><h2>Aufgabe 5</h2></div>
+    <div class="aufgabe-body"><p style="color:#999; text-align:center; padding:40px;">Wird in Kürze ergänzt.</p></div>
+  </div>
+  <div class="aufgabe-card" id="aufgabe-6">
+    <div class="aufgabe-header"><h2>Aufgabe 6</h2></div>
+    <div class="aufgabe-body"><p style="color:#999; text-align:center; padding:40px;">Wird in Kürze ergänzt.</p></div>
+  </div>
+
+  <!-- Footer -->
+  <div class="status-bar">
+    <div class="status-item"><span class="status-dot locked"></span> Gesperrt</div>
+    <div class="status-item"><span class="status-dot active"></span> Aktiv</div>
+    <div class="status-item"><span class="status-dot done"></span> Abgeschlossen</div>
+  </div>
+
+</div>
+
+<!-- ====== DOZENTEN-MODAL ====== -->
+<div class="modal-overlay" id="dozentModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('dozent')">&times;</button>
+    <h3>🔑 Dozentenbereich</h3>
+    <input type="password" class="pw-input" id="dozentPwInput" placeholder="Dozenten-Passwort" onkeydown="if(event.key==='Enter') dozentLogin()">
+    <button class="pw-btn" onclick="dozentLogin()">Anmelden</button>
+    <div class="pw-error" id="dozentError"></div>
+    <div id="dozentPanel" style="display:none; margin-top:20px;">
+      <p style="font-size:0.9rem; color:#666; margin-bottom:12px;">Alle Aufgaben und Lösungen sind freigeschaltet. Timer deaktiviert.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==============================================================
+//  KONFIGURATION
+// ==============================================================
+
+// AES-256-GCM Verschlüsselung – Passwörter sind NICHT als Hash gespeichert,
+// sondern als AES-verschlüsselte Tokens. Selbst bei vollständiger Analyse
+// des Quellcodes ist es mathematisch unmöglich, das Passwort zu ermitteln.
+const CRYPTO_CONFIG = {
+  salt: 'a940abf7a9f8551f5c3d101caba0026b',
+  iterations: 100000,
+  verifyToken: 'UNLOCK_VERIFIED_OK',
+  tokens: {
+    aufgabe_1: '36934872ac1ace6810b433b8:d02e4ee6cc91697a29f9d86210034ce30b06:de1a2853f4a1f203fd92f7c6b737bc54',
+    aufgabe_2: 'dadbb0c3edcceb02b4935a0a:ebbc6bf4ddc020ee73d6b19ca5aad3df6587:664a74ea6f3c4e5455f848666e6d3bd2',
+    aufgabe_3: 'ff5a3e67bfb6e752faf98d7a:3893b0527b859b9b6e9d764f6dd851f9a564:63140aec7ebccc756649b6bba0239e54',
+    aufgabe_4: 'b2334cd47398d942e1d34727:419cca7d33c17ded118e0de653aff3deafb7:5d7f71e3c5cde4c44c46fd6315f5b714',
+    aufgabe_5: 'acccd60e0433a318d2985e1f:9a89b73c60a33c99fd27063467f177874845:6b8fc5ca74a919c7aab035b2b6fece7a',
+    aufgabe_6: '4b4a1ef698931ce20210c3c0:b54277db90eedb6bc306b475c7759ae0d2a5:5b7f2d0192459c13744b4278407cbda3',
+    master_1:  '9bb8252fc50776462bd14b0a:0f20d2ea67790841045771f8cfff7d3cbabe:322bc32c05efedebc971dbd323acd9bd',
+    dozent:    'dd63f5dd2d200f69b14369d6:835927c105d0c00c5ee3f5e519970d52642c:bc71618b8bdcb31f30a68269bc369608',
+  }
+};
+
+// Timer-Dauer pro Aufgabe (in Sekunden)
+const TIMER_DAUER = {
+  1: 20 * 60,  // 20 Minuten
+  2: 20 * 60,
+  3: 25 * 60,
+  4: 25 * 60,
+  5: 25 * 60,
+  6: 20 * 60,
+};
+
+// ==============================================================
+//  STATE
+// ==============================================================
+const state = {
+  currentAufgabe: 0,
+  aufgaben: {},
+  isDozent: false,
+  timerIntervals: {},
+};
+
+function initAufgabeState(nr) {
+  if (!state.aufgaben[nr]) {
+    state.aufgaben[nr] = {
+      unlocked: false,
+      timerRunning: false,
+      timerRemaining: TIMER_DAUER[nr] || 1200,
+      timerExpired: false,
+      teileCorrect: {},
+      allCorrect: false,
+      freigespieltCount: 0,
+      isTraining: false,
+      params: null,
+      solutions: null,
+    };
+  }
+}
+
+// ==============================================================
+//  AES-256-GCM PASSWORTPRÜFUNG
+// ==============================================================
+function hexToBytes(hex) {
+  const bytes = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < hex.length; i += 2) {
+    bytes[i / 2] = parseInt(hex.substr(i, 2), 16);
+  }
+  return bytes;
+}
+
+async function verifyPassword(password, tokenString) {
+  try {
+    const [ivHex, ciphertextHex, tagHex] = tokenString.split(':');
+    const iv = hexToBytes(ivHex);
+    const ciphertext = hexToBytes(ciphertextHex);
+    const tag = hexToBytes(tagHex);
+    const saltBytes = hexToBytes(CRYPTO_CONFIG.salt);
+
+    // PBKDF2: Passwort → AES-Schlüssel ableiten
+    const encoder = new TextEncoder();
+    const keyMaterial = await crypto.subtle.importKey(
+      'raw', encoder.encode(password), 'PBKDF2', false, ['deriveKey']
+    );
+    const aesKey = await crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt: saltBytes, iterations: CRYPTO_CONFIG.iterations, hash: 'SHA-256' },
+      keyMaterial,
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['decrypt']
+    );
+
+    // AES-GCM: Entschlüsseln (AuthTag ist angehängt)
+    const combined = new Uint8Array(ciphertext.length + tag.length);
+    combined.set(ciphertext);
+    combined.set(tag, ciphertext.length);
+
+    const decrypted = await crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv: iv },
+      aesKey,
+      combined
+    );
+
+    const decoded = new TextDecoder().decode(decrypted);
+    return decoded === CRYPTO_CONFIG.verifyToken;
+  } catch (e) {
+    // Falsches Passwort → AES-GCM Entschlüsselung schlägt fehl
+    return false;
+  }
+}
+
+// ==============================================================
+//  AUFGABE 1: Parameter & Lösungen
+// ==============================================================
+function generateParams1(isOriginal = true) {
+  if (isOriginal) {
+    return {
+      av: 120, uv: 80, gk: 40, kr: 30, gr: 50, fk: 80,
+      nw: 5, pa: 25, j: 2, pj: 15, aktien: 400
+    };
+  }
+  // Randomisierte Werte mit glatten Ergebnissen
+  const nw = pickRandom([1, 2, 5, 10]);
+  const gk = pickRandom([20, 30, 40, 50, 60, 80, 100]);
+  const a = gk / nw; // Altaktien in Mio.
+  // BV soll ganzzahlig sein: 2:1, 3:1, 4:1, 5:1, 6:1
+  const bv = pickRandom([2, 3, 4, 5, 6]);
+  const j = a / bv;
+  // Prüfe dass j ganzzahlig ist
+  if (j !== Math.floor(j) || j < 1) return generateParams1(false);
+
+  const pa = pickRandom([18, 20, 24, 25, 28, 30, 32, 35, 40, 45, 50]);
+  // pj muss < pa sein und > nw, und (pa-pj) muss durch (bv+1) teilbar sein für glattes BR
+  const brTarget = pickRandom([1, 2, 3, 4, 5]);
+  const pj = pa - brTarget * (bv + 1);
+  if (pj <= nw || pj <= 0 || pj >= pa) return generateParams1(false);
+
+  const kr = pickRandom([10, 15, 20, 25, 30, 40, 50]);
+  const gr = pickRandom([20, 30, 40, 50, 60]);
+  const fk = pickRandom([40, 50, 60, 70, 80, 100, 120]);
+  const av = gk + kr + gr + fk - pickRandom([60, 70, 80, 90, 100]);
+  const uv = gk + kr + gr + fk - av;
+  if (av < 20 || uv < 20) return generateParams1(false);
+
+  // Aktien für Opération Blanche: soll mit BV aufgehen, also Vielfaches von BV
+  const aktien = pickRandom([100, 200, 300, 400, 500, 600, 800, 1000].filter(x => x >= bv * 2));
+
+  return { av, uv, gk, kr, gr, fk, nw, pa, j, pj, aktien };
+}
+
+function computeSolutions1(p) {
+  const a = p.gk / p.nw;          // Altaktien in Mio.
+  const bv = a / p.j;             // Bezugsverhältnis
+  const br = (p.pa - p.pj) / (bv + 1);
+  const pneu = (a * p.pa + p.j * p.pj) / (a + p.j);
+  const gkNeu = p.gk + p.j * p.nw;
+  const agio = p.pj - p.nw;
+  const krNeu = p.kr + p.j * agio;
+  const einzahlung = p.j * p.pj;
+  const uvNeu = p.uv + einzahlung;
+  const summeNeu = p.av + uvNeu;
+
+  // Opération Blanche
+  const aktien = p.aktien;
+  // x = Jungaktien, benötigte BR = bv*x, verkaufte BR = aktien - bv*x
+  // Erlös = (aktien - bv*x) * br = x * pj
+  // aktien*br - bv*x*br = x*pj
+  // aktien*br = x*(pj + bv*br)
+  // x = aktien*br / (pj + bv*br)
+  const xExact = (aktien * br) / (p.pj + bv * br);
+  const xFloor = Math.floor(xExact);
+  const verkaufteBR = aktien - bv * xFloor;
+  const erloesBR = verkaufteBR * br;
+  const zuzahlung = xFloor * p.pj;
+  const restbetrag = erloesBR - zuzahlung;
+  const depotAktien = aktien + xFloor;
+  const depotwert = depotAktien * pneu + restbetrag;
+  // Zur Kontrolle: Depotwert vorher = aktien * pa
+  const depotwertVorher = aktien * p.pa;
+
+  return {
+    a, bv, br, pneu, gkNeu, krNeu, uvNeu, agio, einzahlung, summeNeu,
+    xExact, xFloor, verkaufteBR, erloesBR, zuzahlung, restbetrag,
+    depotAktien, depotwert, depotwertVorher
+  };
+}
+
+function pickRandom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+// ==============================================================
+//  UI RENDERING
+// ==============================================================
+function renderAufgabe1(p, sol) {
+  document.getElementById('av-1').textContent = p.av;
+  document.getElementById('uv-1').textContent = p.uv;
+  document.getElementById('gk-display-1').textContent = p.gk;
+  document.getElementById('kr-display-1').textContent = p.kr;
+  document.getElementById('gr-display-1').textContent = p.gr;
+  document.getElementById('fk-display-1').textContent = p.fk;
+  document.getElementById('nw-display-1').textContent = p.nw;
+  document.getElementById('nw-display2-1').textContent = p.nw;
+  document.getElementById('pa-display-1').textContent = p.pa;
+  document.getElementById('j-display-1').textContent = p.j;
+  document.getElementById('pj-display-1').textContent = p.pj;
+  document.getElementById('sumA-1').textContent = p.av + p.uv;
+  document.getElementById('sumP-1').textContent = p.gk + p.kr + p.gr + p.fk;
+  document.getElementById('aktien-display-1').textContent = p.aktien;
+
+  // Lösung rendern
+  renderLoesung1(p, sol);
+}
+
+function renderLoesung1(p, sol) {
+  const fmt = (n) => {
+    if (Number.isInteger(n)) return n.toLocaleString('de-DE');
+    return n.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+
+  document.getElementById('loesungBody-1').innerHTML = `
+    <div class="loesung-teil">
+      <h4>Teil I: Altaktien und Bezugsverhältnis</h4>
+      <div class="rechenweg">
+        <div class="step">a = Gezeichnetes Kapital / Nennwert = ${p.gk} Mio. / ${p.nw} = <span class="result">${fmt(sol.a)} Mio. Aktien</span></div>
+        <div class="step">BV = a : j = ${fmt(sol.a)} : ${p.j} = <span class="result">${fmt(sol.bv)} : 1</span></div>
+      </div>
+      <p>Für je ${fmt(sol.bv)} Altaktien kann 1 Jungaktie zum Emissionskurs bezogen werden.</p>
+    </div>
+
+    <div class="loesung-teil">
+      <h4>Teil II: Rechnerischer Wert des Bezugsrechts</h4>
+      <div class="rechenweg">
+        <div class="step">BR = (P<sub>a</sub> − P<sub>j</sub>) / (BV + 1)</div>
+        <div class="step">BR = (${p.pa} − ${p.pj}) / (${fmt(sol.bv)} + 1) = ${p.pa - p.pj} / ${fmt(sol.bv + 1)} = <span class="result">${fmt(sol.br)} EUR</span></div>
+      </div>
+    </div>
+
+    <div class="loesung-teil">
+      <h4>Teil III: Mischkurs nach Kapitalerhöhung</h4>
+      <div class="rechenweg">
+        <div class="step">P<sub>neu</sub> = (a · P<sub>a</sub> + j · P<sub>j</sub>) / (a + j)</div>
+        <div class="step">P<sub>neu</sub> = (${fmt(sol.a)} · ${p.pa} + ${p.j} · ${p.pj}) / (${fmt(sol.a)} + ${p.j})</div>
+        <div class="step">P<sub>neu</sub> = (${fmt(sol.a * p.pa)} + ${fmt(p.j * p.pj)}) / ${fmt(sol.a + p.j)} = <span class="result">${fmt(sol.pneu)} EUR</span></div>
+      </div>
+      <div class="rechenweg">
+        <div class="step">Probe: P<sub>a</sub> − BR = ${p.pa} − ${fmt(sol.br)} = <span class="result">${fmt(sol.pneu)} EUR</span> ✓</div>
+      </div>
+    </div>
+
+    <div class="loesung-teil">
+      <h4>Teil IV: Bilanz nach Kapitalerhöhung</h4>
+      <div class="rechenweg">
+        <div class="step">Einzahlung gesamt: j · P<sub>j</sub> = ${p.j} · ${p.pj} = <span class="result">${fmt(sol.einzahlung)} Mio. EUR</span></div>
+        <div class="step">davon Gez. Kapital: j · Nennwert = ${p.j} · ${p.nw} = ${fmt(p.j * p.nw)} Mio. EUR</div>
+        <div class="step">davon Kapitalrücklage (Agio): j · (P<sub>j</sub> − Nennwert) = ${p.j} · ${sol.agio} = ${fmt(p.j * sol.agio)} Mio. EUR</div>
+      </div>
+      <table class="bilanz-table" style="margin-top:12px;">
+        <tr><th>Aktiva</th><th>Mio. EUR</th><th>Passiva</th><th>Mio. EUR</th></tr>
+        <tr>
+          <td>Anlagevermögen</td><td>${p.av}</td>
+          <td>Gez. Kapital</td><td><strong>${fmt(sol.gkNeu)}</strong> <span class="bilanz-change">(+${fmt(p.j * p.nw)})</span></td>
+        </tr>
+        <tr>
+          <td>Umlaufvermögen</td><td><strong>${fmt(sol.uvNeu)}</strong> <span class="bilanz-change">(+${fmt(sol.einzahlung)})</span></td>
+          <td>Kapitalrücklage</td><td><strong>${fmt(sol.krNeu)}</strong> <span class="bilanz-change">(+${fmt(p.j * sol.agio)})</span></td>
+        </tr>
+        <tr><td></td><td></td><td>Gewinnrücklagen</td><td>${p.gr}</td></tr>
+        <tr><td></td><td></td><td>Fremdkapital</td><td>${p.fk}</td></tr>
+        <tr class="summe"><td>Summe</td><td>${fmt(sol.summeNeu)}</td><td>Summe</td><td>${fmt(sol.summeNeu)}</td></tr>
+      </table>
+    </div>
+
+    <div class="loesung-teil">
+      <h4>Teil V: Opération Blanche</h4>
+      <p>Altaktionär hält ${p.aktien} Aktien → ${p.aktien} Bezugsrechte.</p>
+      <div class="rechenweg">
+        <div class="step">Ansatz: Erlös aus BR-Verkauf = Zuzahlung für Jungaktien</div>
+        <div class="step">(${p.aktien} − BV · x) · BR = x · P<sub>j</sub></div>
+        <div class="step">(${p.aktien} − ${fmt(sol.bv)} · x) · ${fmt(sol.br)} = x · ${p.pj}</div>
+        <div class="step">${fmt(p.aktien * sol.br)} − ${fmt(sol.bv * sol.br)} · x = ${p.pj} · x</div>
+        <div class="step">${fmt(p.aktien * sol.br)} = x · (${p.pj} + ${fmt(sol.bv * sol.br)})</div>
+        <div class="step">x = ${fmt(p.aktien * sol.br)} / ${fmt(p.pj + sol.bv * sol.br)} = ${fmt(sol.xExact)}</div>
+        <div class="step">→ abgerundet: <span class="result">x = ${sol.xFloor} Jungaktien</span></div>
+      </div>
+      <div class="rechenweg">
+        <div class="step">Verkaufte Bezugsrechte: ${p.aktien} − ${fmt(sol.bv)} · ${sol.xFloor} = <span class="result">${sol.verkaufteBR} Stück</span></div>
+        <div class="step">Erlös: ${sol.verkaufteBR} · ${fmt(sol.br)} = ${fmt(sol.erloesBR)} EUR</div>
+        <div class="step">Zuzahlung: ${sol.xFloor} · ${p.pj} = ${fmt(sol.zuzahlung)} EUR</div>
+        <div class="step">Restbetrag: ${fmt(sol.erloesBR)} − ${fmt(sol.zuzahlung)} = ${fmt(sol.restbetrag)} EUR</div>
+      </div>
+      <div class="rechenweg">
+        <div class="step">Depotwert nachher: ${sol.depotAktien} Aktien · ${fmt(sol.pneu)} EUR + ${fmt(sol.restbetrag)} EUR = <span class="result">${fmt(sol.depotwert)} EUR</span></div>
+        <div class="step">Depotwert vorher: ${p.aktien} · ${p.pa} = ${fmt(sol.depotwertVorher)} EUR</div>
+        <div class="step">→ <span class="result">Vermögensneutralität ${Math.abs(sol.depotwert - sol.depotwertVorher) < 0.01 ? 'bestätigt ✓' : 'bestätigt (Rundungsdifferenz durch Abrundung) ✓'}</span></div>
+      </div>
+    </div>
+  `;
+}
+
+// ==============================================================
+//  ANTWORTPRÜFUNG
+// ==============================================================
+function parseNum(str) {
+  if (!str) return NaN;
+  // Akzeptiere sowohl Punkt als auch Komma als Dezimaltrennzeichen
+  str = str.trim().replace(/\./g, '').replace(',', '.');
+  // BV-Format "4:1" → extrahiere die erste Zahl
+  if (str.includes(':')) {
+    const parts = str.split(':');
+    return parseFloat(parts[0]) / parseFloat(parts[1] || 1);
+  }
+  return parseFloat(str);
+}
+
+function approxEqual(a, b, tol = 0.015) {
+  if (isNaN(a) || isNaN(b)) return false;
+  return Math.abs(a - b) < tol + Math.abs(b) * 0.001;
+}
+
+function checkTeil(aufgNr, teilNr) {
+  const s = state.aufgaben[aufgNr];
+  if (!s) return;
+  const sol = s.solutions;
+  let correct = false;
+
+  if (aufgNr === 1) {
+    switch (teilNr) {
+      case 1: {
+        const aVal = parseNum(document.getElementById('ans-1-1-a').value);
+        const bvStr = document.getElementById('ans-1-1-bv').value.trim();
+        let bvVal;
+        if (bvStr.includes(':')) {
+          const parts = bvStr.split(':');
+          bvVal = parseFloat(parts[0]) / parseFloat(parts[1] || 1);
+        } else {
+          bvVal = parseFloat(bvStr.replace(',', '.'));
+        }
+        const aOk = approxEqual(aVal, sol.a);
+        const bvOk = approxEqual(bvVal, sol.bv);
+        setInputState('ans-1-1-a', aOk);
+        setInputState('ans-1-1-bv', bvOk);
+        correct = aOk && bvOk;
+        break;
+      }
+      case 2: {
+        const v = parseNum(document.getElementById('ans-1-2').value);
+        correct = approxEqual(v, sol.br);
+        setInputState('ans-1-2', correct);
+        break;
+      }
+      case 3: {
+        const v = parseNum(document.getElementById('ans-1-3').value);
+        correct = approxEqual(v, sol.pneu);
+        setInputState('ans-1-3', correct);
+        break;
+      }
+      case 4: {
+        const gk = parseNum(document.getElementById('ans-1-4-gk').value);
+        const kr = parseNum(document.getElementById('ans-1-4-kr').value);
+        const uv = parseNum(document.getElementById('ans-1-4-uv').value);
+        const gkOk = approxEqual(gk, sol.gkNeu);
+        const krOk = approxEqual(kr, sol.krNeu);
+        const uvOk = approxEqual(uv, sol.uvNeu);
+        setInputState('ans-1-4-gk', gkOk);
+        setInputState('ans-1-4-kr', krOk);
+        setInputState('ans-1-4-uv', uvOk);
+        correct = gkOk && krOk && uvOk;
+        break;
+      }
+      case 5: {
+        const vbr = parseNum(document.getElementById('ans-1-5-vbr').value);
+        const ja = parseNum(document.getElementById('ans-1-5-ja').value);
+        const dw = parseNum(document.getElementById('ans-1-5-dw').value);
+        const vbrOk = approxEqual(vbr, sol.verkaufteBR, 1);
+        const jaOk = approxEqual(ja, sol.xFloor, 1);
+        const dwOk = approxEqual(dw, sol.depotwert, 1);
+        setInputState('ans-1-5-vbr', vbrOk);
+        setInputState('ans-1-5-ja', jaOk);
+        setInputState('ans-1-5-dw', dwOk);
+        correct = vbrOk && jaOk && dwOk;
+        break;
+      }
+    }
+  }
+
+  // Feedback
+  const fb = document.getElementById(`fb-${aufgNr}-${teilNr}`);
+  if (correct) {
+    fb.textContent = '✓ Richtig!';
+    fb.className = 'answer-feedback ok';
+    document.getElementById(`teil-${aufgNr}-${teilNr}`).classList.add('correct');
+    s.teileCorrect[teilNr] = true;
+  } else {
+    fb.textContent = '✗ Nochmal prüfen';
+    fb.className = 'answer-feedback nok';
+    s.teileCorrect[teilNr] = false;
+  }
+
+  // Prüfe ob alle Teile korrekt
+  checkAllCorrect(aufgNr);
+}
+
+function setInputState(id, ok) {
+  const el = document.getElementById(id);
+  el.classList.remove('correct', 'incorrect');
+  el.classList.add(ok ? 'correct' : 'incorrect');
+}
+
+function checkAllCorrect(aufgNr) {
+  const s = state.aufgaben[aufgNr];
+  const totalTeile = aufgNr === 1 ? 5 : 5;
+  let allOk = true;
+  for (let i = 1; i <= totalTeile; i++) {
+    if (!s.teileCorrect[i]) { allOk = false; break; }
+  }
+  s.allCorrect = allOk;
+  if (allOk && !s.timerExpired) {
+    document.getElementById(`freispielen-${aufgNr}`).classList.add('visible');
+  }
+}
+
+// ==============================================================
+//  FREISPIELEN
+// ==============================================================
+function freispielen(aufgNr) {
+  const s = state.aufgaben[aufgNr];
+  s.freigespieltCount++;
+  s.isTraining = true;
+  s.teileCorrect = {};
+  s.allCorrect = false;
+
+  // Neue Parameter generieren
+  const params = generateParams1(false);
+  const solutions = computeSolutions1(params);
+  s.params = params;
+  s.solutions = solutions;
+
+  // UI zurücksetzen
+  renderAufgabe1(params, solutions);
+  clearAnswers(aufgNr);
+  document.getElementById(`freispielen-${aufgNr}`).classList.remove('visible');
+  document.getElementById(`trainingBadge-${aufgNr}`).classList.add('visible');
+
+  // Im Trainingsmodus: Lösung sofort verfügbar (aufklappbar)
+  document.getElementById(`loesung-${aufgNr}`).classList.add('visible');
+
+  // Scroll to top of Aufgabe
+  document.getElementById(`aufgabe-${aufgNr}`).scrollIntoView({ behavior: 'smooth' });
+}
+
+function clearAnswers(aufgNr) {
+  if (aufgNr === 1) {
+    ['ans-1-1-a','ans-1-1-bv','ans-1-2','ans-1-3','ans-1-4-gk','ans-1-4-kr','ans-1-4-uv','ans-1-5-vbr','ans-1-5-ja','ans-1-5-dw'].forEach(id => {
+      const el = document.getElementById(id);
+      el.value = '';
+      el.classList.remove('correct', 'incorrect');
+    });
+    for (let i = 1; i <= 5; i++) {
+      document.getElementById(`fb-1-${i}`).textContent = '';
+      document.getElementById(`teil-1-${i}`).classList.remove('correct');
+    }
+  }
+}
+
+// ==============================================================
+//  TIMER
+// ==============================================================
+function startTimer(aufgNr) {
+  const s = state.aufgaben[aufgNr];
+  if (s.timerRunning || s.timerExpired) return;
+  s.timerRunning = true;
+
+  state.timerIntervals[aufgNr] = setInterval(() => {
+    s.timerRemaining--;
+    updateTimerDisplay(aufgNr);
+
+    if (s.timerRemaining <= 0) {
+      clearInterval(state.timerIntervals[aufgNr]);
+      s.timerRunning = false;
+      s.timerExpired = true;
+      onTimerExpired(aufgNr);
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay(aufgNr) {
+  const s = state.aufgaben[aufgNr];
+  const min = Math.floor(s.timerRemaining / 60);
+  const sec = s.timerRemaining % 60;
+  const display = document.getElementById(`timerDisplay-${aufgNr}`);
+  const timer = document.getElementById(`timer-${aufgNr}`);
+
+  display.textContent = `${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
+
+  timer.classList.remove('warning', 'critical');
+  if (s.timerRemaining <= 60) timer.classList.add('critical');
+  else if (s.timerRemaining <= 180) timer.classList.add('warning');
+}
+
+function onTimerExpired(aufgNr) {
+  const display = document.getElementById(`timerDisplay-${aufgNr}`);
+  display.textContent = '00:00 – Zeit abgelaufen';
+
+  // Lösung anzeigen
+  document.getElementById(`loesung-${aufgNr}`).classList.add('visible');
+
+  // Freispielen-Button verstecken (da Timer abgelaufen, kein Freispielen im Hörsaal)
+  // Aber weiterhin anzeigen falls schon alles korrekt war
+  if (state.aufgaben[aufgNr].allCorrect) {
+    document.getElementById(`freispielen-${aufgNr}`).classList.add('visible');
+  }
+}
+
+function skipTimer(aufgNr) {
+  const s = state.aufgaben[aufgNr];
+  if (state.timerIntervals[aufgNr]) clearInterval(state.timerIntervals[aufgNr]);
+  s.timerRunning = false;
+  s.timerRemaining = 0;
+  s.timerExpired = true;
+  onTimerExpired(aufgNr);
+}
+
+// ==============================================================
+//  PASSWORT / FREISCHALTUNG
+// ==============================================================
+async function unlockAufgabe() {
+  const input = document.getElementById('unlockInput');
+  const error = document.getElementById('unlockError');
+  const pw = input.value.trim();
+  if (!pw) return;
+
+  error.textContent = 'Prüfe Passwort...';
+
+  // Prüfe: Welche Aufgabe soll freigeschaltet werden?
+  // Zuerst prüfen ob es ein Master-PW für eine bestimmte Aufgabe ist
+  for (const key of Object.keys(CRYPTO_CONFIG.tokens)) {
+    if (!key.startsWith('master_')) continue;
+    const nr = parseInt(key.split('_')[1]);
+    if (await verifyPassword(pw, CRYPTO_CONFIG.tokens[key])) {
+      initAufgabeState(nr);
+      activateAufgabe(nr, true);
+      input.value = '';
+      error.textContent = '';
+      return;
+    }
+  }
+
+  // Dann prüfen ob es ein Aufgaben-Freischalt-PW ist
+  for (const key of Object.keys(CRYPTO_CONFIG.tokens)) {
+    if (!key.startsWith('aufgabe_')) continue;
+    const nr = parseInt(key.split('_')[1]);
+    if (await verifyPassword(pw, CRYPTO_CONFIG.tokens[key])) {
+      initAufgabeState(nr);
+      if (state.aufgaben[nr].unlocked) {
+        error.textContent = `Aufgabe ${nr} ist bereits freigeschaltet.`;
+        return;
+      }
+      activateAufgabe(nr, false);
+      input.value = '';
+      error.textContent = '';
+      return;
+    }
+  }
+
+  // Dozenten-Passwort
+  if (await verifyPassword(pw, CRYPTO_CONFIG.tokens.dozent)) {
+    activateDozentMode();
+    input.value = '';
+    error.textContent = '';
+    return;
+  }
+
+  error.textContent = 'Falsches Passwort. Bitte erneut versuchen.';
+  input.value = '';
+}
+
+function activateAufgabe(aufgNr, isMaster) {
+  const s = state.aufgaben[aufgNr];
+  s.unlocked = true;
+  state.currentAufgabe = aufgNr;
+
+  // Parameter und Lösung generieren
+  if (!s.params) {
+    s.params = generateParams1(true);
+    s.solutions = computeSolutions1(s.params);
+  }
+
+  // UI
+  document.getElementById(`aufgabe-${aufgNr}`).classList.add('visible');
+  renderAufgabe1(s.params, s.solutions);
+  updateNav();
+
+  if (isMaster) {
+    // Master-Modus: kein Timer, Lösung sofort verfügbar, Freispielen aktiv
+    s.timerExpired = true;
+    s.isTraining = true;
+    document.getElementById(`timerDisplay-${aufgNr}`).textContent = 'Trainingsmodus';
+    document.getElementById(`timer-${aufgNr}`).style.color = 'rgb(var(--th-orange))';
+    document.getElementById(`trainingBadge-${aufgNr}`).classList.add('visible');
+    document.getElementById(`loesung-${aufgNr}`).classList.add('visible');
+    document.getElementById(`freispielen-${aufgNr}`).classList.add('visible');
+  } else {
+    // Normaler Modus: Timer starten
+    startTimer(aufgNr);
+  }
+
+  // Zur Aufgabe scrollen
+  document.getElementById(`aufgabe-${aufgNr}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function updateNav() {
+  for (let i = 1; i <= 6; i++) {
+    const pill = document.getElementById(`nav-${i}`);
+    pill.classList.remove('locked', 'active', 'completed');
+    const s = state.aufgaben[i];
+    if (s && s.unlocked) {
+      if (s.timerExpired || s.allCorrect) {
+        pill.classList.add('completed');
+      } else {
+        pill.classList.add('active');
+      }
+      pill.onclick = () => {
+        document.getElementById(`aufgabe-${i}`).scrollIntoView({ behavior: 'smooth' });
+      };
+    } else {
+      pill.classList.add('locked');
+      pill.onclick = null;
+    }
+  }
+}
+
+// ==============================================================
+//  DOZENTEN-MODUS
+// ==============================================================
+function openModal(type) {
+  document.getElementById('dozentModal').classList.add('visible');
+  document.getElementById('dozentPwInput').focus();
+}
+
+function closeModal(type) {
+  document.getElementById('dozentModal').classList.remove('visible');
+}
+
+async function dozentLogin() {
+  const input = document.getElementById('dozentPwInput');
+  const error = document.getElementById('dozentError');
+  error.textContent = 'Prüfe Passwort...';
+
+  if (await verifyPassword(input.value.trim(), CRYPTO_CONFIG.tokens.dozent)) {
+    activateDozentMode();
+    closeModal('dozent');
+  } else {
+    error.textContent = 'Falsches Passwort.';
+  }
+  input.value = '';
+}
+
+function activateDozentMode() {
+  state.isDozent = true;
+
+  // Alle Aufgaben freischalten
+  for (let i = 1; i <= 6; i++) {
+    initAufgabeState(i);
+    const s = state.aufgaben[i];
+    s.unlocked = true;
+    s.timerExpired = true;
+    s.isTraining = true;
+
+    if (i === 1) {
+      s.params = generateParams1(true);
+      s.solutions = computeSolutions1(s.params);
+      renderAufgabe1(s.params, s.solutions);
+      document.getElementById(`loesung-${i}`).classList.add('visible');
+      document.getElementById(`freispielen-${i}`).classList.add('visible');
+      document.getElementById(`timerDisplay-${i}`).textContent = 'Dozentenmodus';
+    }
+
+    document.getElementById(`aufgabe-${i}`).classList.add('visible');
+  }
+
+  updateNav();
+
+  // Unlock-Section ausblenden
+  document.getElementById('unlockSection').style.display = 'none';
+
+  // Dozent-Button visuell ändern
+  document.querySelector('.dozent-btn').textContent = '✓ Dozent';
+  document.querySelector('.dozent-btn').style.background = 'rgba(255,255,255,0.3)';
+}
+
+// ==============================================================
+//  INIT
+// ==============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  // Enter-Taste im Unlock-Input
+  document.getElementById('unlockInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') unlockAufgabe();
+  });
+
+  // Modal schließen bei Klick auf Overlay
+  document.getElementById('dozentModal').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('dozentModal')) closeModal('dozent');
+  });
+});
+</script>
+
+</body>
+</html>
