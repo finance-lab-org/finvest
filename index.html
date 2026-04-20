@@ -1,0 +1,3073 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Online-Übungstool · Finanz- und Investitionsmanagement · TH Köln</title>
+<style>
+  :root {
+    --th-rot: 201, 12, 15;
+    --th-orange: 234, 91, 12;
+    --th-violett: 184, 37, 133;
+    --th-green: 56, 142, 60;
+    --bg: #fafafa;
+    --text: #1a1a1a;
+    --muted: #6b6b6b;
+    --border: #e3e3e3;
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* --- Header --- */
+  .header {
+    background: linear-gradient(135deg, rgb(var(--th-rot)), rgb(var(--th-violett)));
+    color: white;
+    padding: 24px 40px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+  }
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+  }
+  .brand { cursor: pointer; }
+  .brand h1 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .brand .subtitle {
+    font-size: 0.85rem;
+    opacity: 0.85;
+    margin-top: 2px;
+  }
+  .breadcrumb {
+    font-size: 0.85rem;
+    opacity: 0.85;
+  }
+  .breadcrumb a {
+    color: white;
+    text-decoration: none;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+  .breadcrumb a:hover { opacity: 1; }
+
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  .view { display: none; }
+  .view.active { display: block; animation: fadein 0.25s ease; }
+
+  @keyframes fadein {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* --- Landing --- */
+  .hero {
+    text-align: center;
+    margin-bottom: 48px;
+    padding: 40px 20px;
+  }
+  .hero h2 {
+    font-size: 1.8rem;
+    color: rgb(var(--th-violett));
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+  .hero p {
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 720px;
+    margin: 0 auto 12px;
+  }
+  .hero .intro-note {
+    display: inline-block;
+    background: rgba(var(--th-violett), 0.08);
+    color: rgb(var(--th-violett));
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-top: 16px;
+  }
+  .section-title {
+    font-size: 1.2rem;
+    color: rgb(var(--th-violett));
+    font-weight: 600;
+    margin-bottom: 20px;
+    padding-left: 4px;
+  }
+  .theme-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+  .theme-card {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .theme-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, rgb(var(--th-rot)), rgb(var(--th-violett)));
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+  .theme-card:hover:not(.locked) {
+    border-color: rgba(var(--th-violett), 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(var(--th-violett), 0.12);
+  }
+  .theme-card:hover:not(.locked)::before { opacity: 1; }
+  .theme-card.locked {
+    background: #f5f5f5;
+    cursor: not-allowed;
+    opacity: 0.65;
+  }
+  .theme-card .theme-num {
+    font-size: 0.85rem;
+    color: rgb(var(--th-violett));
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+  .theme-card .theme-kap {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .theme-card .theme-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 14px;
+    line-height: 1.35;
+  }
+  .theme-card.locked .theme-title { color: var(--muted); }
+  .theme-card .theme-meta {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .theme-card .status-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 12px;
+    margin-top: 10px;
+  }
+  .theme-card .status-active {
+    background: rgba(var(--th-violett), 0.12);
+    color: rgb(var(--th-violett));
+  }
+  .theme-card .status-coming {
+    background: rgba(var(--th-orange), 0.12);
+    color: rgb(var(--th-orange));
+  }
+
+  /* --- Back Link --- */
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: rgb(var(--th-violett));
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+    padding: 6px 0;
+    transition: opacity 0.2s;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .back-link:hover { opacity: 0.7; }
+
+  /* --- Übungs-Header --- */
+  .uebung-header { margin-bottom: 28px; }
+  .uebung-header .kap-label {
+    font-size: 0.85rem;
+    color: rgb(var(--th-violett));
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+  .uebung-header h2 {
+    font-size: 1.6rem;
+    color: var(--text);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .uebung-header .subtitle {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  /* --- Training Banner --- */
+  .training-banner {
+    background: linear-gradient(135deg, rgba(var(--th-green), 0.1), rgba(var(--th-violett), 0.08));
+    border: 1px solid rgba(var(--th-green), 0.3);
+    color: rgb(var(--th-green));
+    padding: 14px 22px;
+    border-radius: var(--radius);
+    font-size: 0.92rem;
+    font-weight: 500;
+    margin-bottom: 24px;
+    display: none;
+  }
+  .training-banner.active { display: block; }
+
+  /* ============================================================
+     DASHBOARD
+     ============================================================ */
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
+    margin-bottom: 30px;
+  }
+
+  .dash-card {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 210px;
+  }
+  .dash-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--border);
+    transition: background 0.25s;
+  }
+
+  .dash-card .dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  .dash-card .dash-num {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+  .dash-card .dash-icon {
+    font-size: 1.1rem;
+  }
+  .dash-card h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+  .dash-card .dash-subline {
+    font-size: 0.84rem;
+    color: var(--muted);
+    margin-bottom: 14px;
+    flex: 1;
+  }
+  .dash-card .dash-status {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 12px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .dash-card .dash-timer {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+  .dash-card .dash-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .dash-btn {
+    flex: 1;
+    min-width: 0;
+    padding: 9px 14px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    transition: all 0.2s;
+    text-align: center;
+    background: rgb(var(--th-violett));
+    color: white;
+  }
+  .dash-btn:hover { opacity: 0.88; }
+  .dash-btn.secondary {
+    background: white;
+    color: rgb(var(--th-violett));
+    border-color: rgba(var(--th-violett), 0.35);
+  }
+  .dash-btn.secondary:hover {
+    background: rgba(var(--th-violett), 0.06);
+  }
+
+  /* Dashboard-Kartenzustände */
+  .dash-card.not-impl {
+    background: #f5f5f5;
+    opacity: 0.75;
+  }
+  .dash-card.not-impl::before { background: #ccc; }
+  .dash-card.not-impl h3 { color: var(--muted); }
+
+  /* "fresh" = noch nicht angefangen; zeigt trotzdem Buttons */
+  .dash-card.fresh::before { background: var(--border); }
+  .dash-card.fresh:hover { border-color: rgba(var(--th-violett), 0.35); }
+  .dash-card.fresh:hover::before { background: rgb(var(--th-violett)); }
+
+  .dash-card.active {
+    border-color: rgba(var(--th-violett), 0.35);
+  }
+  .dash-card.active::before { background: rgb(var(--th-violett)); }
+  .dash-card.active .dash-icon,
+  .dash-card.active .dash-status { color: rgb(var(--th-violett)); }
+
+  .dash-card.done {
+    border-color: rgba(var(--th-green), 0.4);
+    background: linear-gradient(180deg, rgba(var(--th-green), 0.04), white 60%);
+  }
+  .dash-card.done::before { background: rgb(var(--th-green)); }
+  .dash-card.done .dash-icon,
+  .dash-card.done .dash-status { color: rgb(var(--th-green)); }
+  .dash-card.done .dash-btn {
+    background: rgb(var(--th-green));
+  }
+  .dash-card.done .dash-btn.secondary {
+    background: white;
+    color: rgb(var(--th-green));
+    border-color: rgba(var(--th-green), 0.4);
+  }
+  .dash-card.done .dash-btn.secondary:hover {
+    background: rgba(var(--th-green), 0.06);
+  }
+
+  /* --- Passwort-Modal --- */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 300;
+    justify-content: center;
+    align-items: center;
+    animation: modalfade 0.18s ease;
+  }
+  .modal-overlay.visible { display: flex; }
+  @keyframes modalfade { from { opacity: 0; } to { opacity: 1; } }
+
+  .modal {
+    background: white;
+    border-radius: var(--radius);
+    padding: 30px;
+    width: 440px;
+    max-width: 92vw;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.22);
+    position: relative;
+  }
+  .modal h3 {
+    color: rgb(var(--th-violett));
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+  }
+  .modal .modal-subline {
+    color: var(--muted);
+    font-size: 0.88rem;
+    margin-bottom: 18px;
+  }
+  .modal .pw-input { width: 100%; margin-bottom: 12px; }
+  .modal .modal-actions {
+    display: flex;
+    gap: 10px;
+  }
+  .modal .modal-actions .pw-btn { flex: 1; }
+  .modal .modal-actions .modal-cancel {
+    flex: 0 0 auto;
+    background: white;
+    color: var(--muted);
+    border: 1.5px solid var(--border);
+    padding: 11px 18px;
+    border-radius: 8px;
+    font-size: 0.93rem;
+    cursor: pointer;
+  }
+  .modal .modal-cancel:hover {
+    border-color: var(--muted);
+  }
+  .modal-close {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    background: none;
+    border: none;
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+    color: #aaa;
+    padding: 4px 10px;
+  }
+  .modal-close:hover { color: var(--text); }
+
+  /* Unlock section */
+  .unlock-section {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 24px;
+  }
+  .unlock-section h3 {
+    font-size: 0.92rem;
+    color: var(--muted);
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+  .pw-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .pw-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 11px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .pw-input:focus { border-color: rgba(var(--th-violett), 0.5); }
+  .pw-btn {
+    padding: 11px 22px;
+    background: rgb(var(--th-violett));
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.93rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .pw-btn:hover { opacity: 0.88; }
+  .pw-btn:disabled { opacity: 0.5; cursor: wait; }
+  .pw-message {
+    font-size: 0.88rem;
+    margin-top: 10px;
+    min-height: 1.3em;
+  }
+  .pw-message.error { color: rgb(var(--th-rot)); }
+  .pw-message.success { color: rgb(var(--th-green)); }
+  .pw-message.info { color: var(--muted); }
+
+  /* ============================================================
+     AUFGABE (Detailansicht)
+     ============================================================ */
+  .aufgabe-view {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .aufgabe-topbar {
+    padding: 18px 26px;
+    background: rgba(var(--th-violett), 0.04);
+    border-bottom: 1px solid rgba(var(--th-violett), 0.12);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .aufgabe-view.done .aufgabe-topbar {
+    background: rgba(var(--th-green), 0.05);
+    border-bottom-color: rgba(var(--th-green), 0.2);
+  }
+  .aufgabe-topbar h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: rgb(var(--th-violett));
+  }
+  .aufgabe-view.done .aufgabe-topbar h2 { color: rgb(var(--th-green)); }
+
+  .aufgabe-mode-badge {
+    font-size: 0.78rem;
+    font-weight: 600;
+    background: rgba(var(--th-violett), 0.12);
+    color: rgb(var(--th-violett));
+    padding: 3px 10px;
+    border-radius: 12px;
+    margin-left: 8px;
+  }
+
+  .timer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: rgb(var(--th-violett));
+  }
+  .timer.warning { color: rgb(var(--th-orange)); }
+  .timer.critical { color: rgb(var(--th-rot)); animation: pulse 1s infinite; }
+  .timer.expired { color: var(--muted); font-size: 0.88rem; font-weight: 500; }
+  .timer.hidden { display: none; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+  .aufgabe-body { padding: 26px; }
+
+  .scenario {
+    background: rgba(var(--th-violett), 0.03);
+    border-left: 3px solid rgba(var(--th-violett), 0.3);
+    padding: 18px 22px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 22px;
+    font-size: 0.95rem;
+  }
+  .scenario p { margin-bottom: 10px; }
+  .scenario p:last-child { margin-bottom: 0; }
+
+  .bilanz-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 0.9rem;
+  }
+  .bilanz-table th {
+    background: rgba(var(--th-violett), 0.08);
+    padding: 8px 14px;
+    text-align: left;
+    font-weight: 600;
+    color: rgb(var(--th-violett));
+    border-bottom: 2px solid rgba(var(--th-violett), 0.2);
+  }
+  .bilanz-table td {
+    padding: 7px 14px;
+    border-bottom: 1px solid #eee;
+  }
+  .bilanz-table td:nth-child(2),
+  .bilanz-table td:nth-child(4),
+  .bilanz-table th:nth-child(2),
+  .bilanz-table th:nth-child(4) { text-align: right; }
+  .bilanz-table tr.summe td {
+    font-weight: 700;
+    border-top: 2px solid rgba(var(--th-violett), 0.2);
+    border-bottom: none;
+  }
+
+  .teil {
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin-bottom: 16px;
+    transition: border-color 0.3s;
+  }
+  .teil.correct {
+    border-color: rgba(var(--th-green), 0.4);
+    background: rgba(var(--th-green), 0.02);
+  }
+  .teil-label {
+    font-weight: 600;
+    color: rgb(var(--th-violett));
+    margin-bottom: 6px;
+    font-size: 0.92rem;
+  }
+  .teil.correct .teil-label { color: rgb(var(--th-green)); }
+  .teil-text {
+    margin-bottom: 12px;
+    font-size: 0.94rem;
+  }
+  .teil-text em {
+    color: var(--muted);
+    font-size: 0.88rem;
+  }
+  .teil-text .formula {
+    font-family: 'Cambria Math', 'Times New Roman', serif;
+    font-style: italic;
+    background: rgba(var(--th-violett), 0.04);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .answer-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+  .answer-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .answer-group label {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: #555;
+    white-space: nowrap;
+  }
+  .answer-input {
+    width: 120px;
+    padding: 7px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.94rem;
+    text-align: right;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .answer-input:focus { border-color: rgba(var(--th-violett), 0.5); }
+  .answer-input.correct {
+    border-color: rgba(var(--th-green), 0.5);
+    background: rgba(var(--th-green), 0.04);
+  }
+  .answer-input.incorrect {
+    border-color: rgba(var(--th-rot), 0.5);
+    background: rgba(var(--th-rot), 0.04);
+  }
+  .answer-unit {
+    font-size: 0.82rem;
+    color: #888;
+  }
+  .check-btn {
+    padding: 7px 16px;
+    background: rgba(var(--th-violett), 0.1);
+    color: rgb(var(--th-violett));
+    border: 1.5px solid rgba(var(--th-violett), 0.25);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.84rem;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+  .check-btn:hover { background: rgba(var(--th-violett), 0.18); }
+  .answer-feedback {
+    font-size: 0.84rem;
+    font-weight: 500;
+    margin-left: 4px;
+  }
+  .answer-feedback.ok { color: rgb(var(--th-green)); }
+  .answer-feedback.nok { color: rgb(var(--th-rot)); }
+
+  /* --- Inline-Lösung pro Teil --- */
+  .teil-loesung {
+    background: rgba(var(--th-green), 0.04);
+    border-left: 3px solid rgba(var(--th-green), 0.45);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin-top: 14px;
+    display: none;
+  }
+  .teil-loesung.visible { display: block; }
+  .teil-loesung-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: rgb(var(--th-green));
+    margin-bottom: 6px;
+  }
+  .rechenweg {
+    background: rgba(var(--th-green), 0.04);
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-family: 'Cambria Math', 'Times New Roman', serif;
+    font-size: 0.98rem;
+    margin: 6px 0;
+    line-height: 1.65;
+  }
+  .rechenweg .step { margin-bottom: 3px; }
+  .rechenweg .result { font-weight: 700; color: rgb(var(--th-green)); }
+  .bilanz-change { color: rgb(var(--th-green)); font-size: 0.8rem; font-weight: 500; }
+
+  /* --- KPRIM-Aussagen (Aufgabe 1.6) --- */
+  .kprim-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+    flex-wrap: wrap;
+  }
+  .kprim-letter {
+    min-width: 22px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .kprim-text {
+    flex: 1;
+    min-width: 200px;
+    font-size: 0.94rem;
+  }
+  .kprim-radios {
+    display: flex;
+    gap: 14px;
+    flex-shrink: 0;
+    align-items: center;
+  }
+  .kprim-radios label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  /* Auf schmalen Screens: Radios unter den Text umbrechen */
+  @media (max-width: 540px) {
+    .kprim-text { min-width: 100%; }
+    .kprim-radios {
+      margin-left: 34px;
+      margin-top: 4px;
+    }
+  }
+
+  /* --- Coming Soon --- */
+  .coming-soon {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 60px 30px;
+    text-align: center;
+  }
+  .coming-soon h3 {
+    color: rgb(var(--th-orange));
+    margin-bottom: 12px;
+  }
+  .coming-soon p {
+    color: var(--muted);
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 600px) {
+    .header { padding: 18px 20px; }
+    .brand h1 { font-size: 1.1rem; }
+    main { padding: 24px 16px 60px; }
+    .hero { padding: 24px 10px; margin-bottom: 32px; }
+    .hero h2 { font-size: 1.4rem; }
+    .aufgabe-body { padding: 20px; }
+    .pw-row { flex-direction: column; align-items: stretch; }
+    .dash-actions { flex-direction: column; }
+  }
+
+  @media print {
+    .header { position: static; }
+    .pw-btn, .check-btn, .back-link, .dash-btn { display: none; }
+    .teil-loesung { display: block !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============== HEADER ============== -->
+<header class="header">
+  <div class="header-inner">
+    <div class="brand" onclick="navigate('home')">
+      <h1>Finanz- und Investitionsmanagement</h1>
+      <div class="subtitle">Online-Übungstool · TH Köln · SoSe 2026</div>
+    </div>
+    <div class="breadcrumb" id="breadcrumb">
+      <a href="#home" onclick="navigate('home'); return false;">Start</a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============== LANDING ============== -->
+  <section id="view-home" class="view active">
+    <div class="hero">
+      <h2>Willkommen zum Online-Übungstool</h2>
+      <p>Dieses interaktive Werkzeug begleitet die Vorlesung <em>Finanz- und Investitionsmanagement</em> im Bachelor-Studiengang der TH Köln. Sie lösen die Aufgaben direkt im Browser — erst in der Präsenzübung im Hörsaal, später selbstständig zur Prüfungsvorbereitung.</p>
+      <div class="intro-note">Prof. Dr. Marc Mehlhorn · Sommersemester 2026</div>
+    </div>
+
+    <h3 class="section-title">Wählen Sie ein Übungsthema</h3>
+    <div class="theme-grid">
+      <div class="theme-card" onclick="navigate('uebung-1')">
+        <div class="theme-num">Übung I</div>
+        <div class="theme-kap">Kapitel 3</div>
+        <div class="theme-title">Einlagen- und Beteiligungsfinanzierung</div>
+        <div class="theme-meta">6 Aufgaben</div>
+        <span class="status-badge status-active">verfügbar</span>
+      </div>
+      <div class="theme-card locked" onclick="comingSoonHint()">
+        <div class="theme-num">Übung II</div>
+        <div class="theme-kap">Kapitel 4</div>
+        <div class="theme-title">Kreditfinanzierung</div>
+        <div class="theme-meta">Aufgaben folgen</div>
+        <span class="status-badge status-coming">in Vorbereitung</span>
+      </div>
+      <div class="theme-card locked" onclick="comingSoonHint()">
+        <div class="theme-num">Übung III</div>
+        <div class="theme-kap">Kapitel 6</div>
+        <div class="theme-title">Dynamische Investitionsrechnung</div>
+        <div class="theme-meta">Aufgaben folgen</div>
+        <span class="status-badge status-coming">in Vorbereitung</span>
+      </div>
+      <div class="theme-card locked" onclick="comingSoonHint()">
+        <div class="theme-num">Übung IV</div>
+        <div class="theme-kap">Kapitel 7</div>
+        <div class="theme-title">Kapitalkosten und Kapitalstruktur</div>
+        <div class="theme-meta">Aufgaben folgen</div>
+        <span class="status-badge status-coming">in Vorbereitung</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== ÜBUNG I — DASHBOARD ============== -->
+  <section id="view-uebung-1" class="view">
+    <button class="back-link" onclick="navigate('home')">← Zurück zur Übersicht</button>
+
+    <div class="uebung-header">
+      <div class="kap-label">ÜBUNG I · KAPITEL 3</div>
+      <h2>Einlagen- und Beteiligungsfinanzierung</h2>
+      <div class="subtitle">Die Aufgaben werden im Hörsaal einzeln per Passwort freigeschaltet. Nach der Übung erhalten Sie ein Master-Passwort für den Trainingsmodus.</div>
+    </div>
+
+    <div class="training-banner" id="trainingBanner-1">
+      <strong>🎓 Trainingsmodus (Übung) aktiv.</strong> Alle Aufgaben sind freigeschaltet, ohne Timer. Sie können jede Aufgabe mit den Originalzahlen oder mit neu generierten Zahlen beliebig oft lösen.
+    </div>
+
+    <div class="dashboard-grid" id="dashboard-1">
+      <!-- wird per JS befüllt -->
+    </div>
+
+    <div class="unlock-section">
+      <h3>🎓 Master-Passwort — schaltet alle Aufgaben dieser Übung auf einmal frei (ohne Timer)</h3>
+      <div class="pw-row">
+        <input type="password" class="pw-input" id="masterInput-1" placeholder="Master-Passwort" onkeydown="if(event.key==='Enter') tryMaster(1)">
+        <button class="pw-btn" id="masterBtn-1" onclick="tryMaster(1)">Freischalten</button>
+      </div>
+      <div class="pw-message" id="masterMsg-1"></div>
+    </div>
+  </section>
+
+  <!-- ============== ÜBUNG I — AUFGABE-DETAIL ============== -->
+  <section id="view-uebung-1-aufgabe" class="view">
+    <button class="back-link" onclick="backToDashboard(1)">← Zurück zum Dashboard</button>
+    <div class="aufgabe-view" id="aufgabeView">
+      <!-- wird per JS befüllt -->
+    </div>
+  </section>
+
+  <!-- ============== ÜBUNG II–IV (Coming Soon) ============== -->
+  <section id="view-uebung-2" class="view">
+    <button class="back-link" onclick="navigate('home')">← Zurück zur Übersicht</button>
+    <div class="coming-soon">
+      <h3>Übung II — Kreditfinanzierung</h3>
+      <p>Diese Übung wird in Kürze ergänzt.</p>
+    </div>
+  </section>
+  <section id="view-uebung-3" class="view">
+    <button class="back-link" onclick="navigate('home')">← Zurück zur Übersicht</button>
+    <div class="coming-soon">
+      <h3>Übung III — Dynamische Investitionsrechnung</h3>
+      <p>Diese Übung wird in Kürze ergänzt.</p>
+    </div>
+  </section>
+  <section id="view-uebung-4" class="view">
+    <button class="back-link" onclick="navigate('home')">← Zurück zur Übersicht</button>
+    <div class="coming-soon">
+      <h3>Übung IV — Kapitalkosten und Kapitalstruktur</h3>
+      <p>Diese Übung wird in Kürze ergänzt.</p>
+    </div>
+  </section>
+
+  <!-- ============== PASSWORT-MODAL (für einzelne Aufgabe) ============== -->
+  <div class="modal-overlay" id="pwModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closePwModal()" aria-label="Schließen">&times;</button>
+      <h3 id="pwModalTitle">Aufgabe starten</h3>
+      <div class="modal-subline" id="pwModalSubline">Bitte geben Sie das Passwort ein, das Prof. Mehlhorn im Hörsaal durchgegeben hat. Nach dem Start läuft der Timer für diese Aufgabe.</div>
+      <input type="password" class="pw-input" id="pwModalInput" placeholder="Passwort" onkeydown="if(event.key==='Enter') submitPwModal(); else if(event.key==='Escape') closePwModal();">
+      <div class="modal-actions">
+        <button class="pw-btn" id="pwModalBtn" onclick="submitPwModal()">Aufgabe starten</button>
+        <button class="modal-cancel" onclick="closePwModal()">Abbrechen</button>
+      </div>
+      <div class="pw-message" id="pwModalMsg"></div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// =============================================================
+//  KONFIGURATION — AES-256-GCM Tokens, PBKDF2 100.000 Iterationen
+// =============================================================
+const CRYPTO_CONFIG = {
+  salt: '0c172797f03720ddf17ffe8a804a1056',
+  iterations: 100000,
+  verifyToken: 'UNLOCK_VERIFIED_OK',
+  tokens: {
+    uebung_1_aufgabe_1: 'd77962b7e03ced7253f53679:89390a768575808d9672ddf6077beff49708:a7329a44e3c8a1c86ef42ea99a48d380',
+    uebung_1_aufgabe_2: '79123cc339b6bdc5476580c7:4820505902a9234602c6b94a809040b5669b:7ef3ef4ca96f0a4320d64bb3e13e748d',
+    uebung_1_aufgabe_3: 'dbea1d3e23cb0c02d06d05a5:df1bae2e4a444a2fd9bab583d42e80192b75:c2e63a1d4bd111d80950a16ba3de28fb',
+    uebung_1_aufgabe_4: 'f1b7035560e6615780f30565:880d4157f1ac46fc0150e9bc595110430b28:41a7c6c30c955f1a874895fa48db5fe0',
+    uebung_1_aufgabe_5: '9e2154f98e1ccf812d23b464:e8634d1be9487bb71ad171af949c761791b0:56b8d35210d41c0bd060cbdecc1bd9a5',
+    uebung_1_aufgabe_6: '1ad7bdb20f84962470eab6ff:10bf1824487fc2f334d2f3cdf1ebc5ad013d:97bf9ff6a4dc88d49571bc4073d3188c',
+    uebung_1_master:    '5bdd95216afd477740ffa0c2:c95f1b0ac7136127297c6f7cd36824e8b496:9906249ad8b68fb5aeb1de9d87d030a0',
+  }
+};
+
+const AUFGABEN_META = {
+  1: {
+    1: { title: 'Aufgabe 1: Kapitalerhöhung bei der TechVision AG', subline: 'Bezugsrecht · Mischkurs · Bilanz · Opération Blanche', timer: 20*60 },
+    2: { title: 'Aufgabe 2: Vermögensänderung bei drei Aktionärstypen', subline: 'SolarWind AG · A nutzt aus · B verzichtet · C Opération Blanche', timer: 20*60 },
+    3: { title: 'Aufgabe 3: Spielraum bei der Festlegung des Emissionskurses', subline: 'NordLicht AG · Untergrenze · Marktwert-Veränderung', timer: 20*60 },
+    4: { title: 'Aufgabe 4: Bilanzielle Abbildung & Stimmrechtsverwässerung', subline: 'Phoenix AG · Gez. Kapital · Kapitalrücklage · Quote', timer: 25*60 },
+    5: { title: 'Aufgabe 5: Bezugsrechtshandel & Opération Blanche', subline: 'Varia AG · Gleichgewichtsherleitung · Mindestzahl Altaktien', timer: 25*60 },
+    6: { title: 'Aufgabe 6: Verständnis-Check (KPRIM)', subline: '5 Fragen · je 4 Aussagen Wahr/Falsch', timer: 15*60 },
+  }
+};
+
+// =============================================================
+//  STATE (mit localStorage-Persistenz)
+// =============================================================
+const STORAGE_KEY = 'finvest-fortschritt-v1';
+const state = loadState();
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      return parsed;
+    }
+  } catch (e) {}
+  return { uebungen: { 1: { aufgaben: {}, masterUnlocked: false } } };
+}
+
+function saveState() {
+  // Timer-Intervalle nicht mitspeichern
+  const snapshot = JSON.parse(JSON.stringify(state, (k, v) => {
+    if (k === 'interval') return undefined;
+    return v;
+  }));
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot)); } catch(e) {}
+}
+
+function initAufgabeState(uNr, aNr) {
+  const u = state.uebungen[uNr];
+  if (!u.aufgaben[aNr]) {
+    u.aufgaben[aNr] = {
+      unlocked: false,
+      timerRunning: false,
+      timerExpired: false,
+      timerRemaining: AUFGABEN_META[uNr]?.[aNr]?.timer || 1200,
+      timerEndTime: null,        // absoluter Ablaufzeitpunkt in ms (Date.now-Timeline)
+      trainingUebung: false,     // true wenn per Master-PW freigeschaltet
+      mode: 'original',          // 'original' | 'training' — welche Ansicht aktiv
+      original: null,            // { params, solutions, teileCorrect, allCorrect }
+      training: null,            // { params, solutions, teileCorrect, allCorrect } | null
+      interval: null,
+    };
+  }
+}
+
+// Aktiven Sub-State zurückgeben (original oder training)
+function getSub(s) {
+  return s.mode === 'training' ? s.training : s.original;
+}
+
+// =============================================================
+//  NAVIGATION
+// =============================================================
+let currentView = 'home';
+let currentAufgabe = null; // {uNr, aNr} bei Detailansicht
+
+function navigate(view) { window.location.hash = view; }
+
+function openAufgabe(uNr, aNr) {
+  currentAufgabe = { uNr, aNr };
+  window.location.hash = `uebung-${uNr}-aufgabe-${aNr}`;
+}
+
+function backToDashboard(uNr) {
+  currentAufgabe = null;
+  window.location.hash = `uebung-${uNr}`;
+}
+
+function updateView() {
+  const hash = (window.location.hash || '#home').replace('#', '');
+
+  // Aufgaben-Detailansicht?
+  const aufgabeMatch = hash.match(/^uebung-(\d+)-aufgabe-(\d+)$/);
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+
+  if (aufgabeMatch) {
+    const uNr = parseInt(aufgabeMatch[1]);
+    const aNr = parseInt(aufgabeMatch[2]);
+    currentAufgabe = { uNr, aNr };
+    renderAufgabenAnsicht(uNr, aNr);
+    document.getElementById('view-uebung-1-aufgabe').classList.add('active');
+    updateBreadcrumb(`uebung-${uNr}-aufgabe`, aNr);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+
+  currentAufgabe = null;
+  const target = document.getElementById('view-' + hash);
+  if (target) {
+    target.classList.add('active');
+    if (hash === 'uebung-1') renderDashboard(1);
+    updateBreadcrumb(hash);
+  } else {
+    document.getElementById('view-home').classList.add('active');
+    updateBreadcrumb('home');
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateBreadcrumb(view, aNr) {
+  const bc = document.getElementById('breadcrumb');
+  if (view === 'home') {
+    bc.innerHTML = '<a href="#home" onclick="navigate(\'home\'); return false;">Start</a>';
+    return;
+  }
+  const titles = { 'uebung-1':'Übung I', 'uebung-2':'Übung II', 'uebung-3':'Übung III', 'uebung-4':'Übung IV' };
+  if (view === 'uebung-1-aufgabe' && aNr) {
+    bc.innerHTML = `<a href="#home" onclick="navigate('home'); return false;">Start</a> · <a href="#uebung-1" onclick="navigate('uebung-1'); return false;">Übung I</a> · Aufgabe ${aNr}`;
+    return;
+  }
+  bc.innerHTML = `<a href="#home" onclick="navigate('home'); return false;">Start</a> · ${titles[view] || ''}`;
+}
+
+function comingSoonHint() {
+  alert('Diese Übung wird in Kürze freigeschaltet. Wir starten zunächst mit Übung I im Hörsaal am 28.04.');
+}
+
+window.addEventListener('hashchange', updateView);
+window.addEventListener('DOMContentLoaded', () => {
+  restoreTimers();
+  updateView();
+  // Modal: Klick auf Overlay außerhalb des Modals schließt
+  const modal = document.getElementById('pwModal');
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closePwModal();
+  });
+  // Enter in Antwortfeldern löst den nächstgelegenen "Prüfen"-Button aus.
+  // So können Studis nach Eingabe direkt Enter drücken, statt zur Maus zu wechseln.
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    const el = e.target;
+    if (!el.classList || !el.classList.contains('answer-input')) return;
+    const teil = el.closest('.teil');
+    if (!teil) return;
+    const btn = teil.querySelector('.check-btn');
+    if (btn) { e.preventDefault(); btn.click(); }
+  });
+});
+
+// =============================================================
+//  AES-256-GCM
+// =============================================================
+function hexToBytes(hex) {
+  const b = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < hex.length; i += 2) b[i/2] = parseInt(hex.substr(i, 2), 16);
+  return b;
+}
+
+async function verifyPassword(password, tokenString) {
+  try {
+    const [ivHex, ctHex, tagHex] = tokenString.split(':');
+    const iv = hexToBytes(ivHex);
+    const ct = hexToBytes(ctHex);
+    const tag = hexToBytes(tagHex);
+    const saltBytes = hexToBytes(CRYPTO_CONFIG.salt);
+    const keyMat = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']);
+    const aesKey = await crypto.subtle.deriveKey(
+      { name:'PBKDF2', salt:saltBytes, iterations:CRYPTO_CONFIG.iterations, hash:'SHA-256' },
+      keyMat, { name:'AES-GCM', length:256 }, false, ['decrypt']
+    );
+    const combined = new Uint8Array(ct.length + tag.length);
+    combined.set(ct); combined.set(tag, ct.length);
+    const dec = await crypto.subtle.decrypt({ name:'AES-GCM', iv }, aesKey, combined);
+    return new TextDecoder().decode(dec) === CRYPTO_CONFIG.verifyToken;
+  } catch(e) { return false; }
+}
+
+// =============================================================
+//  MASTER-PASSWORT (unter Dashboard)
+// =============================================================
+async function tryMaster(uNr) {
+  const input = document.getElementById(`masterInput-${uNr}`);
+  const btn = document.getElementById(`masterBtn-${uNr}`);
+  const msg = document.getElementById(`masterMsg-${uNr}`);
+  const pw = input.value.trim();
+  if (!pw) return;
+
+  btn.disabled = true;
+  msg.className = 'pw-message info';
+  msg.textContent = 'Passwort wird geprüft …';
+
+  if (await verifyPassword(pw, CRYPTO_CONFIG.tokens[`uebung_${uNr}_master`])) {
+    activateMaster(uNr);
+    input.value = '';
+    msg.className = 'pw-message success';
+    msg.textContent = '🎓 Master-Passwort erkannt — Trainingsmodus (Übung) aktiviert. Alle Aufgaben sind jetzt frei.';
+    btn.disabled = false;
+    saveState();
+    return;
+  }
+
+  msg.className = 'pw-message error';
+  msg.textContent = 'Falsches Master-Passwort.';
+  input.value = '';
+  btn.disabled = false;
+}
+
+// =============================================================
+//  EINZEL-AUFGABEN-PASSWORT (Modal)
+// =============================================================
+let pendingAufgabe = null; // {uNr, aNr}
+
+function askPasswordForAufgabe(uNr, aNr) {
+  pendingAufgabe = { uNr, aNr };
+  const modal = document.getElementById('pwModal');
+  const title = document.getElementById('pwModalTitle');
+  const input = document.getElementById('pwModalInput');
+  const msg = document.getElementById('pwModalMsg');
+  title.textContent = `Aufgabe ${aNr} starten`;
+  input.value = '';
+  msg.textContent = '';
+  modal.classList.add('visible');
+  setTimeout(() => input.focus(), 50);
+}
+
+function closePwModal() {
+  document.getElementById('pwModal').classList.remove('visible');
+  pendingAufgabe = null;
+}
+
+async function submitPwModal() {
+  if (!pendingAufgabe) return;
+  const { uNr, aNr } = pendingAufgabe;
+  const input = document.getElementById('pwModalInput');
+  const btn = document.getElementById('pwModalBtn');
+  const msg = document.getElementById('pwModalMsg');
+  const pw = input.value.trim();
+  if (!pw) return;
+
+  btn.disabled = true;
+  msg.className = 'pw-message info';
+  msg.textContent = 'Passwort wird geprüft …';
+
+  const token = CRYPTO_CONFIG.tokens[`uebung_${uNr}_aufgabe_${aNr}`];
+  if (token && await verifyPassword(pw, token)) {
+    btn.disabled = false;
+    closePwModal();
+    unlockAufgabe(uNr, aNr);
+    // Direkt in die Detailansicht wechseln
+    openAufgabeOriginal(uNr, aNr);
+    saveState();
+    return;
+  }
+
+  // Prüfen ob es das Master-Passwort war (netter Hinweis)
+  if (await verifyPassword(pw, CRYPTO_CONFIG.tokens[`uebung_${uNr}_master`])) {
+    msg.className = 'pw-message info';
+    msg.textContent = 'Das ist das Master-Passwort — bitte unten unter dem Dashboard eingeben.';
+    btn.disabled = false;
+    return;
+  }
+
+  msg.className = 'pw-message error';
+  msg.textContent = 'Falsches Passwort. Bitte erneut versuchen.';
+  btn.disabled = false;
+  input.select();
+}
+
+function activateMaster(uNr) {
+  state.uebungen[uNr].masterUnlocked = true;
+  document.getElementById(`trainingBanner-${uNr}`).classList.add('active');
+  for (let aNr = 1; aNr <= 6; aNr++) {
+    initAufgabeState(uNr, aNr);
+    const s = state.uebungen[uNr].aufgaben[aNr];
+    s.unlocked = true;
+    s.trainingUebung = true;
+    s.timerExpired = true;
+    ensureOriginal(uNr, aNr);
+  }
+  renderDashboard(uNr);
+}
+
+// Dispatch-Tabellen pro Aufgabe: param-generator + solution-computer
+const AUFGABEN_DISPATCH = {
+  '1-1': { gen: () => generateParams_1_1, sol: () => computeSolutions_1_1 },
+  '1-2': { gen: () => generateParams_1_2, sol: () => computeSolutions_1_2 },
+  '1-3': { gen: () => generateParams_1_3, sol: () => computeSolutions_1_3 },
+  '1-4': { gen: () => generateParams_1_4, sol: () => computeSolutions_1_4 },
+  '1-5': { gen: () => generateParams_1_5, sol: () => computeSolutions_1_5 },
+  '1-6': { gen: () => generateParams_1_6, sol: () => computeSolutions_1_6 },
+};
+
+function ensureOriginal(uNr, aNr) {
+  const s = state.uebungen[uNr].aufgaben[aNr];
+  if (s.original) return;
+  const d = AUFGABEN_DISPATCH[`${uNr}-${aNr}`];
+  if (d) {
+    const params = d.gen()(true);   // fixed=true
+    s.original = {
+      params,
+      solutions: d.sol()(params),
+      teileCorrect: {},
+      allCorrect: false,
+    };
+  } else {
+    s.original = { params: null, solutions: null, teileCorrect: {}, allCorrect: false };
+  }
+}
+
+function ensureTraining(uNr, aNr) {
+  const s = state.uebungen[uNr].aufgaben[aNr];
+  if (s.training) return;
+  const d = AUFGABEN_DISPATCH[`${uNr}-${aNr}`];
+  if (d) {
+    const params = d.gen()(false);   // fixed=false → zufällig
+    s.training = {
+      params,
+      solutions: d.sol()(params),
+      teileCorrect: {},
+      allCorrect: false,
+    };
+  }
+}
+
+function unlockAufgabe(uNr, aNr) {
+  initAufgabeState(uNr, aNr);
+  const s = state.uebungen[uNr].aufgaben[aNr];
+  s.unlocked = true;
+  s.mode = 'original';
+  ensureOriginal(uNr, aNr);
+  startTimer(uNr, aNr);
+  renderDashboard(uNr);
+}
+
+// Neue Zahlen für Training-Modus generieren (Dispatch)
+function regenerateTraining(uNr, aNr) {
+  const s = state.uebungen[uNr].aufgaben[aNr];
+  const d = AUFGABEN_DISPATCH[`${uNr}-${aNr}`];
+  if (d) {
+    const params = d.gen()(false);
+    s.training = {
+      params,
+      solutions: d.sol()(params),
+      teileCorrect: {},
+      allCorrect: false,
+    };
+  }
+  saveState();
+  renderAufgabenAnsicht(uNr, aNr);
+}
+
+// =============================================================
+//  DASHBOARD RENDERING
+// =============================================================
+function renderDashboard(uNr) {
+  const grid = document.getElementById(`dashboard-${uNr}`);
+  if (!grid) return;
+  const u = state.uebungen[uNr];
+
+  // Banner zeigen, falls Master aktiv
+  if (u.masterUnlocked) {
+    document.getElementById(`trainingBanner-${uNr}`).classList.add('active');
+  }
+
+  grid.innerHTML = '';
+  for (let aNr = 1; aNr <= 6; aNr++) {
+    initAufgabeState(uNr, aNr);
+    const s = u.aufgaben[aNr];
+    const meta = AUFGABEN_META[uNr][aNr];
+    const card = document.createElement('div');
+    card.className = 'dash-card';
+    card.id = `dash-${uNr}-${aNr}`;
+
+    let stateClass = '';
+    let icon = '▶';
+    let statusLine = 'bereit zum Start';
+    let actions = '';
+
+    if (meta.notImplemented) {
+      // Platzhalter — noch nicht implementiert
+      stateClass = 'not-impl';
+      icon = '…';
+      statusLine = 'wird in Kürze ergänzt';
+      actions = `<button class="dash-btn secondary" disabled style="opacity:0.6;cursor:not-allowed;">folgt</button>`;
+    } else if (s.unlocked) {
+      const orig = s.original || {};
+      const origDone = s.timerExpired || orig.allCorrect || s.trainingUebung;
+
+      if (origDone) {
+        // Durch / abgeschlossen → zwei separate Buttons
+        stateClass = 'done';
+        icon = s.trainingUebung ? '🎓' : '✓';
+        statusLine = s.trainingUebung
+          ? 'freigeschaltet (Trainingsmodus Übung)'
+          : (orig.allCorrect ? 'alle Teile korrekt gelöst' : 'Zeit abgelaufen · Lösung verfügbar');
+
+        const trainingHint = s.training
+          ? ` <span style="opacity:0.75;font-size:0.78rem;">(fortsetzen)</span>`
+          : '';
+        actions = `
+          <button class="dash-btn" onclick="openAufgabeOriginal(${uNr},${aNr})">Aufgabe Original</button>
+          <button class="dash-btn secondary" onclick="openAufgabeTraining(${uNr},${aNr})">Aufgabe neue Zahlen${trainingHint}</button>
+        `;
+      } else {
+        // Aktiv — Timer läuft, Original noch nicht durch
+        stateClass = 'active';
+        icon = '⏱';
+        statusLine = `<span>läuft noch:</span> <span class="dash-timer" id="dashTimer-${uNr}-${aNr}">${formatTime(s.timerRemaining)}</span>`;
+        actions = `<button class="dash-btn" onclick="openAufgabeOriginal(${uNr},${aNr})">Aufgabe lösen</button>`;
+      }
+    } else {
+      // Noch nicht gestartet — Button sichtbar, Passwort folgt beim Klick
+      stateClass = 'fresh';
+      icon = '▶';
+      statusLine = 'Klick auf "Aufgabe lösen" und Passwort eingeben';
+      actions = `<button class="dash-btn" onclick="askPasswordForAufgabe(${uNr},${aNr})">Aufgabe lösen</button>`;
+    }
+
+    card.classList.add(stateClass);
+    card.innerHTML = `
+      <div class="dash-header">
+        <div class="dash-num">AUFGABE ${aNr}</div>
+        <div class="dash-icon">${icon}</div>
+      </div>
+      <h3>${meta.title.replace(/^Aufgabe \d+:?\s*/, '') || 'Aufgabe ' + aNr}</h3>
+      <div class="dash-subline">${meta.subline}</div>
+      <div class="dash-status">${statusLine}</div>
+      <div class="dash-actions">${actions}</div>
+    `;
+    grid.appendChild(card);
+  }
+}
+
+function formatTime(sec) {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+}
+
+// =============================================================
+//  AUFGABE ÖFFNEN (Original oder Training)
+// =============================================================
+function openAufgabeOriginal(uNr, aNr) {
+  const s = state.uebungen[uNr].aufgaben[aNr];
+  s.mode = 'original';
+  ensureOriginal(uNr, aNr);
+  saveState();
+  openAufgabe(uNr, aNr);
+}
+
+function openAufgabeTraining(uNr, aNr) {
+  const s = state.uebungen[uNr].aufgaben[aNr];
+  s.mode = 'training';
+  ensureTraining(uNr, aNr);   // erzeugt neuen Training-State nur beim ersten Mal
+  saveState();
+  openAufgabe(uNr, aNr);
+}
+
+
+// =============================================================
+//  AUFGABE DETAILANSICHT RENDERING
+// =============================================================
+function renderAufgabenAnsicht(uNr, aNr) {
+  const s = state.uebungen[uNr].aufgaben[aNr];
+  if (!s || !s.unlocked) {
+    document.getElementById('aufgabeView').innerHTML = `
+      <div style="padding:40px;text-align:center;color:var(--muted);">
+        Diese Aufgabe ist noch nicht freigeschaltet. <a href="#uebung-${uNr}" onclick="navigate('uebung-${uNr}');return false;">Zurück zum Dashboard</a>
+      </div>
+    `;
+    return;
+  }
+
+  const rendererMap = {
+    '1-1': renderAufgabe_1_1,
+    '1-2': renderAufgabe_1_2,
+    '1-3': renderAufgabe_1_3,
+    '1-4': renderAufgabe_1_4,
+    '1-5': renderAufgabe_1_5,
+    '1-6': renderAufgabe_1_6,
+  };
+  const fn = rendererMap[`${uNr}-${aNr}`];
+  if (fn) {
+    fn();
+  } else {
+    document.getElementById('aufgabeView').innerHTML = `
+      <div style="padding:40px;text-align:center;color:var(--muted);">
+        Diese Aufgabe wird in Kürze ergänzt.
+      </div>
+    `;
+  }
+}
+
+// =============================================================
+//  AUFGABE 1.1 — Parameter, Lösungen, Rendering
+// =============================================================
+function pickRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function generateParams_1_1(fixed) {
+  if (fixed) return { av:120, uv:80, gk:40, kr:30, gr:50, fk:80, nw:5, pa:25, j:2, pj:15, aktien:400 };
+  const nw = pickRandom([1,2,5,10]);
+  const gk = pickRandom([20,30,40,50,60,80,100]);
+  const a = gk / nw;
+  const bv = pickRandom([2,3,4,5,6]);
+  const j = a / bv;
+  if (j !== Math.floor(j) || j < 1) return generateParams_1_1(false);
+  const pa = pickRandom([18,20,24,25,28,30,32,35,40,45,50]);
+  const brTarget = pickRandom([1,2,3,4,5]);
+  const pj = pa - brTarget * (bv + 1);
+  if (pj <= nw || pj <= 0 || pj >= pa) return generateParams_1_1(false);
+  const kr = pickRandom([10,15,20,25,30,40,50]);
+  const gr = pickRandom([20,30,40,50,60]);
+  const fk = pickRandom([40,50,60,70,80,100,120]);
+  const av = gk + kr + gr + fk - pickRandom([60,70,80,90,100]);
+  const uv = gk + kr + gr + fk - av;
+  if (av < 20 || uv < 20) return generateParams_1_1(false);
+  const aktien = pickRandom([100,200,300,400,500,600,800,1000].filter(x => x >= bv * 2));
+  return { av, uv, gk, kr, gr, fk, nw, pa, j, pj, aktien };
+}
+
+function computeSolutions_1_1(p) {
+  const a = p.gk / p.nw;
+  const bv = a / p.j;
+  const br = (p.pa - p.pj) / (bv + 1);
+  const pneu = (a * p.pa + p.j * p.pj) / (a + p.j);
+  const gkNeu = p.gk + p.j * p.nw;
+  const agio = p.pj - p.nw;
+  const krNeu = p.kr + p.j * agio;
+  const einzahlung = p.j * p.pj;
+  const uvNeu = p.uv + einzahlung;
+  const summeNeu = p.av + uvNeu;
+  const aktien = p.aktien;
+  const xExact = (aktien * br) / (p.pj + bv * br);
+  const xFloor = Math.floor(xExact + 1e-9);
+  const verkaufteBR = aktien - bv * xFloor;
+  const erloesBR = verkaufteBR * br;
+  const zuzahlung = xFloor * p.pj;
+  const restbetrag = erloesBR - zuzahlung;
+  const depotAktien = aktien + xFloor;
+  const depotwert = depotAktien * pneu + restbetrag;
+  const depotwertVorher = aktien * p.pa;
+  return { a, bv, br, pneu, gkNeu, krNeu, uvNeu, agio, einzahlung, summeNeu, xExact, xFloor, verkaufteBR, erloesBR, zuzahlung, restbetrag, depotAktien, depotwert, depotwertVorher };
+}
+
+function renderAufgabe_1_1() {
+  const s = state.uebungen[1].aufgaben[1];
+  const sub = getSub(s);
+  if (!sub) {
+    document.getElementById('aufgabeView').innerHTML = `<div style="padding:40px;text-align:center;color:var(--muted);">Keine Aufgabendaten geladen.</div>`;
+    return;
+  }
+  const p = sub.params;
+
+  // Modus-Badge und Timer
+  let modeBadge = '';
+  let timerHtml = '';
+  let trainingActions = '';
+  if (s.mode === 'training') {
+    modeBadge = '<span class="aufgabe-mode-badge" style="background:rgba(234,91,12,0.12);color:rgb(var(--th-orange));">🔄 Neue Zahlen · ohne Timer</span>';
+    timerHtml = '<div class="timer hidden" id="detailTimer"></div>';
+    trainingActions = `<button class="check-btn" style="background:rgba(234,91,12,0.1);color:rgb(var(--th-orange));border-color:rgba(234,91,12,0.3);" onclick="regenerateTraining(1,1)">🔄 Neue Zahlen generieren</button>`;
+  } else if (s.trainingUebung) {
+    modeBadge = '<span class="aufgabe-mode-badge" style="background:rgba(56,142,60,0.12);color:rgb(var(--th-green));">🎓 Training (Übung)</span>';
+    timerHtml = '<div class="timer hidden" id="detailTimer"></div>';
+  } else if (s.timerExpired) {
+    modeBadge = '';
+    timerHtml = '<div class="timer expired" id="detailTimer">⏱ Zeit abgelaufen</div>';
+  } else {
+    modeBadge = '';
+    timerHtml = `<div class="timer" id="detailTimer">⏱ <span id="detailTimerDisplay">${formatTime(s.timerRemaining)}</span></div>`;
+  }
+
+  const view = document.getElementById('aufgabeView');
+  // "done" wird grün eingefärbt (abgeschlossen)
+  const isDoneLook = (s.mode === 'original' && (s.timerExpired || sub.allCorrect || s.trainingUebung))
+                  || (s.mode === 'training' && sub.allCorrect);
+  const doneClass = isDoneLook ? 'done' : '';
+  view.className = 'aufgabe-view ' + doneClass;
+  view.innerHTML = `
+    <div class="aufgabe-topbar">
+      <div>
+        <h2>Aufgabe 1: Kapitalerhöhung bei der TechVision AG${modeBadge}</h2>
+      </div>
+      ${timerHtml}
+    </div>
+    <div class="aufgabe-body">
+      <div class="scenario">
+        <p>Die <strong>TechVision AG</strong> weist folgende vereinfachte Bilanz auf (in Mio. EUR):</p>
+        <table class="bilanz-table">
+          <tr><th>Aktiva</th><th>Mio. EUR</th><th>Passiva</th><th>Mio. EUR</th></tr>
+          <tr><td>Anlagevermögen</td><td>${p.av}</td><td>Gezeichnetes Kapital (Nennwert ${p.nw} EUR)</td><td>${p.gk}</td></tr>
+          <tr><td>Umlaufvermögen</td><td>${p.uv}</td><td>Kapitalrücklage</td><td>${p.kr}</td></tr>
+          <tr><td></td><td></td><td>Gewinnrücklagen</td><td>${p.gr}</td></tr>
+          <tr><td></td><td></td><td>Fremdkapital</td><td>${p.fk}</td></tr>
+          <tr class="summe"><td>Summe</td><td>${p.av+p.uv}</td><td>Summe</td><td>${p.gk+p.kr+p.gr+p.fk}</td></tr>
+        </table>
+        <p>Der Börsenkurs beträgt <strong>P<sub>a</sub> = ${p.pa} EUR</strong>. Die Hauptversammlung beschließt eine ordentliche Kapitalerhöhung: Es sollen <strong>j = ${p.j} Mio. Jungaktien</strong> zum Emissionskurs <strong>P<sub>j</sub> = ${p.pj} EUR</strong> ausgegeben werden. Alte und junge Aktien haben einen Nennwert von ${p.nw} EUR. Die Einzahlungen fließen dem Umlaufvermögen zu.</p>
+      </div>
+
+      <div class="teil" id="teil-1-1-1">
+        <div class="teil-label">Teil I</div>
+        <div class="teil-text">Ermitteln Sie die Anzahl der Altaktien <em>a</em> (in Mio. Stück) sowie das Bezugsverhältnis <em>BV</em> (Angabe als Verhältnis, z.&nbsp;B. 4:1). <em>Keine Rundung erforderlich.</em></div>
+        <div class="answer-row">
+          <div class="answer-group"><label>a =</label><input type="text" class="answer-input" id="ans-1-1-1-a" placeholder="Mio. Stück"><span class="answer-unit">Mio. Stück</span></div>
+          <div class="answer-group"><label>BV =</label><input type="text" class="answer-input" id="ans-1-1-1-bv" placeholder="z.B. 4:1" style="width:100px;"></div>
+          <button class="check-btn" onclick="checkTeil_1_1(1)">Prüfen</button>
+          <span class="answer-feedback" id="fb-1-1-1"></span>
+        </div>
+        <div class="teil-loesung" id="loes-1-1-1"></div>
+      </div>
+
+      <div class="teil" id="teil-1-1-2">
+        <div class="teil-label">Teil II</div>
+        <div class="teil-text">Berechnen Sie den rechnerischen Wert des Bezugsrechts <em>BR</em>. <em>Runden Sie auf zwei Nachkommastellen.</em><br><span class="formula">BR = (P<sub>a</sub> − P<sub>j</sub>) / (BV + 1)</span></div>
+        <div class="answer-row">
+          <div class="answer-group"><label>BR =</label><input type="text" class="answer-input" id="ans-1-1-2" placeholder="EUR"><span class="answer-unit">EUR</span></div>
+          <button class="check-btn" onclick="checkTeil_1_1(2)">Prüfen</button>
+          <span class="answer-feedback" id="fb-1-1-2"></span>
+        </div>
+        <div class="teil-loesung" id="loes-1-1-2"></div>
+      </div>
+
+      <div class="teil" id="teil-1-1-3">
+        <div class="teil-label">Teil III</div>
+        <div class="teil-text">Berechnen Sie den Mischkurs <em>P<sub>neu</sub></em> nach der Kapitalerhöhung. Zeigen Sie, dass gilt: P<sub>neu</sub> = P<sub>a</sub> − BR. <em>Runden Sie auf zwei Nachkommastellen.</em><br><span class="formula">P<sub>neu</sub> = (a · P<sub>a</sub> + j · P<sub>j</sub>) / (a + j)</span></div>
+        <div class="answer-row">
+          <div class="answer-group"><label>P<sub>neu</sub> =</label><input type="text" class="answer-input" id="ans-1-1-3" placeholder="EUR"><span class="answer-unit">EUR</span></div>
+          <button class="check-btn" onclick="checkTeil_1_1(3)">Prüfen</button>
+          <span class="answer-feedback" id="fb-1-1-3"></span>
+        </div>
+        <div class="teil-loesung" id="loes-1-1-3"></div>
+      </div>
+
+      <div class="teil" id="teil-1-1-4">
+        <div class="teil-label">Teil IV</div>
+        <div class="teil-text">Stellen Sie die Bilanz der TechVision AG nach der Kapitalerhöhung auf (in Mio. EUR). Wie verändern sich <em>Gezeichnetes Kapital</em>, <em>Kapitalrücklage</em> und <em>Umlaufvermögen</em>? <em>Ganzzahlige Angabe in Mio. EUR.</em></div>
+        <div class="answer-row">
+          <div class="answer-group"><label>Gez. Kapital (neu) =</label><input type="text" class="answer-input" id="ans-1-1-4-gk" placeholder="Mio. EUR"></div>
+          <div class="answer-group"><label>Kapitalrücklage (neu) =</label><input type="text" class="answer-input" id="ans-1-1-4-kr" placeholder="Mio. EUR"></div>
+          <div class="answer-group"><label>UV (neu) =</label><input type="text" class="answer-input" id="ans-1-1-4-uv" placeholder="Mio. EUR"></div>
+          <button class="check-btn" onclick="checkTeil_1_1(4)">Prüfen</button>
+          <span class="answer-feedback" id="fb-1-1-4"></span>
+        </div>
+        <div class="teil-loesung" id="loes-1-1-4"></div>
+      </div>
+
+      <div class="teil" id="teil-1-1-5">
+        <div class="teil-label">Teil V</div>
+        <div class="teil-text">Ein Altaktionär hält <strong>${p.aktien} Aktien</strong>. Er möchte an der Kapitalerhöhung teilnehmen, ohne zusätzliches Kapital einzusetzen (<em>Opération Blanche</em>).<br>Wie viele Bezugsrechte muss er verkaufen? Wie viele Jungaktien erhält er? Wie hoch ist sein Depotwert danach?<br><em>Hinweis: Bruchteile von Aktien sind nicht möglich — runden Sie die Anzahl der Jungaktien ggf. auf ganze Stück ab. Depotwert auf zwei Nachkommastellen.</em></div>
+        <div class="answer-row">
+          <div class="answer-group"><label>Verkaufte BR =</label><input type="text" class="answer-input" id="ans-1-1-5-vbr" placeholder="Stück" style="width:100px;"></div>
+          <div class="answer-group"><label>Jungaktien =</label><input type="text" class="answer-input" id="ans-1-1-5-ja" placeholder="Stück" style="width:100px;"></div>
+          <div class="answer-group"><label>Depotwert =</label><input type="text" class="answer-input" id="ans-1-1-5-dw" placeholder="EUR" style="width:130px;"><span class="answer-unit">EUR</span></div>
+          <button class="check-btn" onclick="checkTeil_1_1(5)">Prüfen</button>
+          <span class="answer-feedback" id="fb-1-1-5"></span>
+        </div>
+        <div class="teil-loesung" id="loes-1-1-5"></div>
+      </div>
+    </div>
+  `;
+
+  // Lösungen anzeigen, wenn:
+  //  - im Original-Modus: Timer abgelaufen ODER alle Teile korrekt ODER Training (Übung)
+  //  - im Training-Modus: alle Teile korrekt
+  const showLoesungen = (s.mode === 'original' && (s.timerExpired || sub.allCorrect || s.trainingUebung))
+                      || (s.mode === 'training' && sub.allCorrect);
+  if (showLoesungen) showAllLoesungen_1_1();
+
+  // Bereits korrekt beantwortete Teile wieder markieren (z.B. bei Reload)
+  for (const teil of Object.keys(sub.teileCorrect)) {
+    if (sub.teileCorrect[teil]) {
+      const el = document.getElementById(`teil-1-1-${teil}`);
+      if (el) el.classList.add('correct');
+    }
+  }
+
+  // "Neue Zahlen generieren"-Button ans Ende (nur im Training-Modus)
+  if (trainingActions) {
+    const body = view.querySelector('.aufgabe-body');
+    if (body) {
+      const div = document.createElement('div');
+      div.style.textAlign = 'center';
+      div.style.marginTop = '20px';
+      div.innerHTML = trainingActions;
+      body.appendChild(div);
+    }
+  }
+}
+
+// =============================================================
+//  LÖSUNGEN (inline pro Teil)
+// =============================================================
+function renderLoesungTeil_1_1(teil) {
+  const s = state.uebungen[1].aufgaben[1];
+  const sub = getSub(s);
+  if (!sub) return;
+  const p = sub.params, sol = sub.solutions;
+  const fmt = n => Number.isInteger(n) ? n.toLocaleString('de-DE') : n.toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+  const blocks = {
+    1: `
+      <div class="teil-loesung-label">LÖSUNG · TEIL I</div>
+      <div class="rechenweg">
+        <div class="step">a = Gezeichnetes Kapital / Nennwert = ${p.gk} Mio. / ${p.nw} = <span class="result">${fmt(sol.a)} Mio. Aktien</span></div>
+        <div class="step">BV = a : j = ${fmt(sol.a)} : ${p.j} = <span class="result">${fmt(sol.bv)} : 1</span></div>
+      </div>
+      <p style="font-size:0.88rem;color:var(--muted);margin-top:6px;">Für je ${fmt(sol.bv)} Altaktien kann 1 Jungaktie zum Emissionskurs bezogen werden.</p>
+    `,
+    2: `
+      <div class="teil-loesung-label">LÖSUNG · TEIL II</div>
+      <div class="rechenweg">
+        <div class="step">BR = (P<sub>a</sub> − P<sub>j</sub>) / (BV + 1)</div>
+        <div class="step">BR = (${p.pa} − ${p.pj}) / (${fmt(sol.bv)} + 1) = ${p.pa - p.pj} / ${fmt(sol.bv + 1)} = <span class="result">${fmt(sol.br)} EUR</span></div>
+      </div>
+    `,
+    3: `
+      <div class="teil-loesung-label">LÖSUNG · TEIL III</div>
+      <div class="rechenweg">
+        <div class="step">P<sub>neu</sub> = (a · P<sub>a</sub> + j · P<sub>j</sub>) / (a + j)</div>
+        <div class="step">P<sub>neu</sub> = (${fmt(sol.a)} · ${p.pa} + ${p.j} · ${p.pj}) / (${fmt(sol.a)} + ${p.j})</div>
+        <div class="step">P<sub>neu</sub> = (${fmt(sol.a * p.pa)} + ${fmt(p.j * p.pj)}) / ${fmt(sol.a + p.j)} = <span class="result">${fmt(sol.pneu)} EUR</span></div>
+      </div>
+      <div class="rechenweg">
+        <div class="step">Probe: P<sub>a</sub> − BR = ${p.pa} − ${fmt(sol.br)} = <span class="result">${fmt(sol.pneu)} EUR</span> ✓</div>
+      </div>
+    `,
+    4: `
+      <div class="teil-loesung-label">LÖSUNG · TEIL IV</div>
+      <div class="rechenweg">
+        <div class="step">Einzahlung gesamt: j · P<sub>j</sub> = ${p.j} · ${p.pj} = <span class="result">${fmt(sol.einzahlung)} Mio. EUR</span></div>
+        <div class="step">davon Gez. Kapital (Nennwert): j · ${p.nw} = ${fmt(p.j * p.nw)} Mio. EUR</div>
+        <div class="step">davon Kapitalrücklage (Agio): j · (${p.pj} − ${p.nw}) = ${fmt(p.j * sol.agio)} Mio. EUR</div>
+      </div>
+      <table class="bilanz-table" style="margin-top:12px;">
+        <tr><th>Aktiva</th><th>Mio. EUR</th><th>Passiva</th><th>Mio. EUR</th></tr>
+        <tr><td>Anlagevermögen</td><td>${p.av}</td><td>Gez. Kapital</td><td><strong>${fmt(sol.gkNeu)}</strong> <span class="bilanz-change">(+${fmt(p.j * p.nw)})</span></td></tr>
+        <tr><td>Umlaufvermögen</td><td><strong>${fmt(sol.uvNeu)}</strong> <span class="bilanz-change">(+${fmt(sol.einzahlung)})</span></td><td>Kapitalrücklage</td><td><strong>${fmt(sol.krNeu)}</strong> <span class="bilanz-change">(+${fmt(p.j * sol.agio)})</span></td></tr>
+        <tr><td></td><td></td><td>Gewinnrücklagen</td><td>${p.gr}</td></tr>
+        <tr><td></td><td></td><td>Fremdkapital</td><td>${p.fk}</td></tr>
+        <tr class="summe"><td>Summe</td><td>${fmt(sol.summeNeu)}</td><td>Summe</td><td>${fmt(sol.summeNeu)}</td></tr>
+      </table>
+    `,
+    5: `
+      <div class="teil-loesung-label">LÖSUNG · TEIL V</div>
+      <p style="font-size:0.9rem;">Der Altaktionär hält ${p.aktien} Aktien → ${p.aktien} Bezugsrechte.</p>
+      <div class="rechenweg">
+        <div class="step">Ansatz: Erlös aus BR-Verkauf = Zuzahlung für Jungaktien</div>
+        <div class="step">(${p.aktien} − BV · x) · BR = x · P<sub>j</sub></div>
+        <div class="step">(${p.aktien} − ${fmt(sol.bv)} · x) · ${fmt(sol.br)} = x · ${p.pj}</div>
+        <div class="step">${fmt(p.aktien * sol.br)} = x · (${p.pj} + ${fmt(sol.bv * sol.br)})</div>
+        <div class="step">x = ${fmt(sol.xExact)} → abgerundet: <span class="result">x = ${sol.xFloor} Jungaktien</span></div>
+      </div>
+      <div class="rechenweg">
+        <div class="step">Verkaufte Bezugsrechte: ${p.aktien} − ${fmt(sol.bv)} · ${sol.xFloor} = <span class="result">${sol.verkaufteBR} Stück</span></div>
+        <div class="step">Erlös aus BR-Verkauf: ${sol.verkaufteBR} · ${fmt(sol.br)} = ${fmt(sol.erloesBR)} EUR</div>
+        <div class="step">Zuzahlung für Jungaktien: ${sol.xFloor} · ${p.pj} = ${fmt(sol.zuzahlung)} EUR</div>
+        <div class="step">Restbetrag (liquide Mittel): ${fmt(sol.erloesBR)} − ${fmt(sol.zuzahlung)} = ${fmt(sol.restbetrag)} EUR</div>
+      </div>
+      <div class="rechenweg">
+        <div class="step">Depotwert nachher: ${sol.depotAktien} · ${fmt(sol.pneu)} + ${fmt(sol.restbetrag)} = <span class="result">${fmt(sol.depotwert)} EUR</span></div>
+        <div class="step">Depotwert vorher: ${p.aktien} · ${p.pa} = ${fmt(sol.depotwertVorher)} EUR</div>
+        <div class="step">→ Vermögensneutralität bestätigt ✓</div>
+      </div>
+    `
+  };
+
+  const loes = document.getElementById(`loes-1-1-${teil}`);
+  if (loes) {
+    loes.innerHTML = blocks[teil];
+    loes.classList.add('visible');
+  }
+}
+
+function showAllLoesungen_1_1() {
+  for (let t = 1; t <= 5; t++) renderLoesungTeil_1_1(t);
+}
+
+// =============================================================
+//  ANTWORTPRÜFUNG
+// =============================================================
+function parseNum(str) {
+  if (!str) return NaN;
+  str = str.trim();
+  // Bezugsverhältnis "4:1" etc. — beide Seiten dezimal-normalisieren
+  if (str.includes(':')) {
+    const parts = str.split(':');
+    return parseFloat(normalizeDecimal(parts[0])) / parseFloat(normalizeDecimal(parts[1] || '1'));
+  }
+  return parseFloat(normalizeDecimal(str));
+}
+
+// Heuristik: unterscheide deutsche Tausenderpunkte von englischen Dezimalpunkten.
+// Regeln:
+//   - "1,50"           → deutsches Dezimal           → 1.50
+//   - "1.500,25"       → deutsch: Punkt = Tausender  → 1500.25
+//   - "1.500"          → Punkt gefolgt von exakt 3 Ziffern → Tausender → 1500
+//   - "1.5", "1.50"    → Punkt + 1–2 Ziffern → englisches Dezimal → 1.5 / 1.50
+//   - "10.000.000"     → mehrfache Punkte → Tausender → 10000000
+function normalizeDecimal(str) {
+  str = String(str).trim();
+  if (str === '') return str;
+  // Vorzeichen separat behandeln, damit "-1.200" korrekt als -1200 erkannt wird
+  let sign = '';
+  if (str.startsWith('-') || str.startsWith('+')) {
+    sign = str[0];
+    str = str.substring(1);
+  }
+  if (str.includes(',')) {
+    // Deutsche Notation mit Komma → Punkte sind Tausender, Komma ist Dezimal
+    return sign + str.replace(/\./g, '').replace(',', '.');
+  }
+  if (str.includes('.')) {
+    const parts = str.split('.');
+    if (parts.length > 2) {
+      // Mehrere Punkte → sicher Tausendertrenner
+      return sign + parts.join('');
+    }
+    const [before, after] = parts;
+    if (/^\d+$/.test(before) && /^\d{3}$/.test(after)) {
+      // Exakt 3 Nachkommaziffern nach einem einzigen Punkt → Tausender
+      return sign + before + after;
+    }
+    // Sonst (z.B. "1.5", "10.75") Dezimalpunkt — unverändert lassen
+    return sign + str;
+  }
+  return sign + str;
+}
+
+function approxEqual(a, b, tol=0.015) {
+  // Absolute Toleranz (keine relative!) — bei vorgegebener Nachkommastellen-Rundung
+  // reichen 0,015 aus, um 2-Nachkommastellen-Rundungsfehler zu akzeptieren.
+  if (isNaN(a) || isNaN(b)) return false;
+  return Math.abs(a - b) <= tol;
+}
+
+// Strikter Vergleich für Stückzahlen.
+// Eingaben wie 9,6 oder 10,5 werden als falsch gewertet — Stückzahlen MÜSSEN
+// ganzzahlig sein, sonst hat der Studi etwas nicht verstanden. Ein kleiner
+// Epsilon-Toleranzwert fängt nur Fließkomma-Artefakte des Parsers ab.
+function approxEqualInt(a, b) {
+  if (isNaN(a) || isNaN(b)) return false;
+  return Math.abs(a - b) < 1e-9;
+}
+
+function setInputState(id, ok) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('correct', 'incorrect');
+  el.classList.add(ok ? 'correct' : 'incorrect');
+}
+
+function checkTeil_1_1(teil) {
+  const s = state.uebungen[1].aufgaben[1];
+  const sub = getSub(s);
+  if (!sub) return;
+  const sol = sub.solutions;
+  let ok = false;
+
+  switch (teil) {
+    case 1: {
+      const aVal = parseNum(document.getElementById('ans-1-1-1-a').value);
+      const bvStr = document.getElementById('ans-1-1-1-bv').value.trim();
+      const bvVal = parseNum(bvStr);
+      const aOk = approxEqual(aVal, sol.a);
+      const bvOk = approxEqual(bvVal, sol.bv);
+      setInputState('ans-1-1-1-a', aOk); setInputState('ans-1-1-1-bv', bvOk);
+      ok = aOk && bvOk;
+      break;
+    }
+    case 2: ok = approxEqual(parseNum(document.getElementById('ans-1-1-2').value), sol.br); setInputState('ans-1-1-2', ok); break;
+    case 3: ok = approxEqual(parseNum(document.getElementById('ans-1-1-3').value), sol.pneu); setInputState('ans-1-1-3', ok); break;
+    case 4: {
+      const gkOk = approxEqual(parseNum(document.getElementById('ans-1-1-4-gk').value), sol.gkNeu);
+      const krOk = approxEqual(parseNum(document.getElementById('ans-1-1-4-kr').value), sol.krNeu);
+      const uvOk = approxEqual(parseNum(document.getElementById('ans-1-1-4-uv').value), sol.uvNeu);
+      setInputState('ans-1-1-4-gk', gkOk); setInputState('ans-1-1-4-kr', krOk); setInputState('ans-1-1-4-uv', uvOk);
+      ok = gkOk && krOk && uvOk;
+      break;
+    }
+    case 5: {
+      // Stückzahlen: exakter Integer-Vergleich. Depotwert: Standard-Toleranz 0,015.
+      const vbrOk = approxEqualInt(parseNum(document.getElementById('ans-1-1-5-vbr').value), sol.verkaufteBR);
+      const jaOk = approxEqualInt(parseNum(document.getElementById('ans-1-1-5-ja').value), sol.xFloor);
+      const dwOk = approxEqual(parseNum(document.getElementById('ans-1-1-5-dw').value), sol.depotwert);
+      setInputState('ans-1-1-5-vbr', vbrOk); setInputState('ans-1-1-5-ja', jaOk); setInputState('ans-1-1-5-dw', dwOk);
+      ok = vbrOk && jaOk && dwOk;
+      break;
+    }
+  }
+
+  const fb = document.getElementById(`fb-1-1-${teil}`);
+  if (ok) {
+    fb.textContent = '✓ Richtig!';
+    fb.className = 'answer-feedback ok';
+    document.getElementById(`teil-1-1-${teil}`).classList.add('correct');
+    sub.teileCorrect[teil] = true;
+  } else {
+    fb.textContent = '✗ Nochmal prüfen';
+    fb.className = 'answer-feedback nok';
+    sub.teileCorrect[teil] = false;
+  }
+
+  // Alle Teile korrekt? → Lösungen einblenden
+  let allOk = true;
+  for (let i = 1; i <= 5; i++) if (!sub.teileCorrect[i]) { allOk = false; break; }
+  sub.allCorrect = allOk;
+  if (allOk) {
+    showAllLoesungen_1_1();
+    document.getElementById('aufgabeView').classList.add('done');
+  }
+  saveState();
+}
+
+// =============================================================
+//  TIMER
+// =============================================================
+function startTimer(uNr, aNr) {
+  const s = state.uebungen[uNr].aufgaben[aNr];
+  if (s.timerRunning || s.timerExpired) return;
+  s.timerRunning = true;
+  // Absoluten Endzeitpunkt fixieren — der Timer läuft damit auch "in Echtzeit",
+  // d.h. wenn der Tab geschlossen wird, verstreicht die Zeit trotzdem.
+  if (!s.timerEndTime) {
+    s.timerEndTime = Date.now() + s.timerRemaining * 1000;
+  }
+  s.interval = setInterval(() => tickTimer(uNr, aNr), 1000);
+  tickTimer(uNr, aNr);   // sofortiger Initial-Update
+}
+
+function tickTimer(uNr, aNr) {
+  const s = state.uebungen[uNr].aufgaben[aNr];
+  // Verbleibende Zeit aus absolutem Endzeitpunkt berechnen
+  const remaining = Math.max(0, Math.round((s.timerEndTime - Date.now()) / 1000));
+  s.timerRemaining = remaining;
+  updateDashTimer(uNr, aNr);
+  updateDetailTimer(uNr, aNr);
+  if (remaining <= 0) {
+    clearInterval(s.interval);
+    s.timerRunning = false;
+    s.timerExpired = true;
+    onTimerExpired(uNr, aNr);
+  }
+  // Alle 5 Sek. persistieren (Endzeitpunkt ist bereits gespeichert)
+  if (remaining % 5 === 0) saveState();
+}
+
+function updateDashTimer(uNr, aNr) {
+  const el = document.getElementById(`dashTimer-${uNr}-${aNr}`);
+  if (el) {
+    const s = state.uebungen[uNr].aufgaben[aNr];
+    el.textContent = formatTime(s.timerRemaining);
+    if (s.timerRemaining <= 60) el.style.color = 'rgb(var(--th-rot))';
+    else if (s.timerRemaining <= 180) el.style.color = 'rgb(var(--th-orange))';
+  }
+}
+
+function updateDetailTimer(uNr, aNr) {
+  if (!currentAufgabe || currentAufgabe.uNr !== uNr || currentAufgabe.aNr !== aNr) return;
+  const s = state.uebungen[uNr].aufgaben[aNr];
+  // Im Training-Modus gibt es keinen Detail-Timer
+  if (s.mode === 'training') return;
+  const display = document.getElementById('detailTimerDisplay');
+  const timer = document.getElementById('detailTimer');
+  if (!display || !timer) return;
+  display.textContent = formatTime(s.timerRemaining);
+  timer.classList.remove('warning', 'critical');
+  if (s.timerRemaining <= 60) timer.classList.add('critical');
+  else if (s.timerRemaining <= 180) timer.classList.add('warning');
+}
+
+function onTimerExpired(uNr, aNr) {
+  const s = state.uebungen[uNr].aufgaben[aNr];
+  // Dashboard neu rendern (Karte wechselt von aktiv → done mit beiden Buttons)
+  renderDashboard(uNr);
+  // Falls Studi gerade im Original ist → Lösungen einblenden
+  if (currentAufgabe && currentAufgabe.uNr === uNr && currentAufgabe.aNr === aNr && s.mode === 'original') {
+    renderAufgabe_1_1();
+  }
+  // Im Training-Modus läuft der User einfach ungestört weiter.
+  saveState();
+}
+
+// =============================================================
+//  SHARED HELPERS für Aufgaben 1.2 – 1.6
+// =============================================================
+function buildAufgabeChrome(s, uNr, aNr) {
+  let modeBadge = '', timerHtml = '', trainingActions = '';
+  if (s.mode === 'training') {
+    modeBadge = '<span class="aufgabe-mode-badge" style="background:rgba(234,91,12,0.12);color:rgb(var(--th-orange));">🔄 Neue Zahlen · ohne Timer</span>';
+    timerHtml = '<div class="timer hidden" id="detailTimer"></div>';
+    trainingActions = `<button class="check-btn" style="background:rgba(234,91,12,0.1);color:rgb(var(--th-orange));border-color:rgba(234,91,12,0.3);" onclick="regenerateTraining(${uNr},${aNr})">🔄 Neue Zahlen generieren</button>`;
+  } else if (s.trainingUebung) {
+    modeBadge = '<span class="aufgabe-mode-badge" style="background:rgba(56,142,60,0.12);color:rgb(var(--th-green));">🎓 Training (Übung)</span>';
+    timerHtml = '<div class="timer hidden" id="detailTimer"></div>';
+  } else if (s.timerExpired) {
+    timerHtml = '<div class="timer expired" id="detailTimer">⏱ Zeit abgelaufen</div>';
+  } else {
+    timerHtml = `<div class="timer" id="detailTimer">⏱ <span id="detailTimerDisplay">${formatTime(s.timerRemaining)}</span></div>`;
+  }
+  return { modeBadge, timerHtml, trainingActions };
+}
+
+function finalizeAufgabeRender(s, sub, view, trainingActions, numTeile, regenerateCall, showAllLoesungenFn) {
+  const showLoesungen = (s.mode === 'original' && (s.timerExpired || sub.allCorrect || s.trainingUebung))
+                      || (s.mode === 'training' && sub.allCorrect);
+  if (showLoesungen) showAllLoesungenFn();
+  for (const teil of Object.keys(sub.teileCorrect)) {
+    if (sub.teileCorrect[teil]) {
+      const el = document.getElementById(view.querySelector(`[id^="teil-"][id$="-${teil}"]`)?.id);
+      if (el) el.classList.add('correct');
+    }
+  }
+  if (trainingActions) {
+    const body = view.querySelector('.aufgabe-body');
+    if (body) {
+      const div = document.createElement('div');
+      div.style.textAlign = 'center'; div.style.marginTop = '20px';
+      div.innerHTML = trainingActions;
+      body.appendChild(div);
+    }
+  }
+}
+
+function finalizeCheck(s, sub, fbId, teilId, uNr, aNr, teilNr, ok, totalTeile, showAllLoesungenFn) {
+  const fb = document.getElementById(fbId);
+  if (ok) {
+    fb.textContent = '✓ Richtig!'; fb.className = 'answer-feedback ok';
+    document.getElementById(teilId).classList.add('correct');
+    sub.teileCorrect[teilNr] = true;
+  } else {
+    fb.textContent = '✗ Nochmal prüfen'; fb.className = 'answer-feedback nok';
+    sub.teileCorrect[teilNr] = false;
+  }
+  let allOk = true;
+  for (let i = 1; i <= totalTeile; i++) if (!sub.teileCorrect[i]) { allOk = false; break; }
+  sub.allCorrect = allOk;
+  if (allOk) {
+    showAllLoesungenFn();
+    document.getElementById('aufgabeView').classList.add('done');
+  }
+  saveState();
+}
+
+function setLoes(id, html) {
+  const el = document.getElementById(id);
+  if (el) { el.innerHTML = html; el.classList.add('visible'); }
+}
+
+// =============================================================
+//  AUFGABE 1.2 — SolarWind AG, Aktionäre A/B/C
+// =============================================================
+function generateParams_1_2(fixed) {
+  if (fixed) return { av:180, uv:60, gk:60, kr:40, gr:20, fk:120, nw:10, pa:36, j:1.5, pj:24, aktien:200 };
+  // Zufallsversion mit glatten Ergebnissen
+  const nw = 10;
+  const bv = pickRandom([2, 3, 4, 5]);
+  const j_mio = pickRandom([1, 1.5, 2, 2.5, 3]);
+  const gk = j_mio * bv * nw; // a*nw = gk, a = j*bv
+  if (gk > 200) return generateParams_1_2(false);
+  const brTarget = pickRandom([2, 3, 4]);
+  const pa = pickRandom([24, 30, 36, 40, 44, 48]);
+  const pj = pa - brTarget * (bv + 1);
+  if (pj <= nw || pj <= 0) return generateParams_1_2(false);
+  const kr = pickRandom([20, 30, 40, 50]);
+  const gr = pickRandom([10, 20, 30, 40]);
+  const fk = pickRandom([80, 100, 120, 150]);
+  const av = gk + kr + gr + fk - pickRandom([40, 50, 60, 70, 80]);
+  const uv = gk + kr + gr + fk - av;
+  if (av < 20 || uv < 20) return generateParams_1_2(false);
+
+  // aktien muss BEIDES erfüllen:
+  // 1) durch bv teilbar (sonst bezieht A gebrochene Jungaktien → didaktisch unsauber)
+  // 2) Opération Blanche für C ganzzahlig: x = aktien·br / (pj + bv·br) ∈ ℤ
+  const br = brTarget;
+  const denom = pj + bv * br;
+  const g1 = ggT(br, denom);
+  const op_unit = denom / g1;                     // Basis für OpBlanche
+  const g2 = ggT(op_unit, bv);
+  const lcm = (op_unit * bv) / g2;                // Basis, die BEIDES erfüllt
+  const candidates = [1,2,3,4,5,6,7,8].map(m => m * lcm).filter(n => n >= 100 && n <= 500);
+  if (candidates.length === 0) return generateParams_1_2(false);
+  const aktien = pickRandom(candidates);
+
+  return { av, uv, gk, kr, gr, fk, nw, pa, j: j_mio, pj, aktien };
+}
+
+function computeSolutions_1_2(p) {
+  const a = p.gk / p.nw;              // Altaktien in Mio.
+  const bv = a / p.j;                 // Bezugsverhältnis
+  const br = (p.pa - p.pj) / (bv + 1);
+  const pneu = (a * p.pa + p.j * p.pj) / (a + p.j);
+
+  // Vorher-Zustand pro Aktionär (je "aktien" Altaktien)
+  const vorher_aktien = p.aktien * p.pa;     // Aktienvermögen vorher
+  const vorher_bar = 0;                       // Barvermögen vorher (als Referenz = 0)
+  const vorher_gesamt = vorher_aktien + vorher_bar;
+
+  // A: Bezugsrechte voll ausnutzen → bezieht aktien/bv Jungaktien, zahlt dafür
+  const a_jung = p.aktien / bv;   // sollte ganzzahlig sein bei passender Auswahl
+  const a_bar = vorher_bar - a_jung * p.pj;          // negativ (Zuzahlung)
+  const a_aktien = (p.aktien + a_jung) * pneu;
+  const a_gesamt = a_aktien + a_bar;
+
+  // B: Verzicht (keine Ausübung, kein Verkauf)
+  const b_bar = 0;
+  const b_aktien = p.aktien * pneu;
+  const b_gesamt = b_aktien;
+
+  // C: Opération Blanche
+  const xExact = (p.aktien * br) / (p.pj + bv * br);
+  const xFloor = Math.floor(xExact + 1e-9);
+  const verkaufteBR = p.aktien - bv * xFloor;
+  const erloesBR = verkaufteBR * br;
+  const zuzahlung = xFloor * p.pj;
+  const restbetrag = erloesBR - zuzahlung;
+  const c_bar = restbetrag;
+  const c_aktien = (p.aktien + xFloor) * pneu;
+  const c_gesamt = c_aktien + c_bar;
+
+  return {
+    a, bv, br, pneu,
+    vorher_aktien, vorher_bar, vorher_gesamt,
+    a_jung, a_bar, a_aktien, a_gesamt,
+    b_bar, b_aktien, b_gesamt,
+    xFloor, verkaufteBR, erloesBR, zuzahlung, restbetrag,
+    c_bar, c_aktien, c_gesamt,
+  };
+}
+
+function renderAufgabe_1_2() {
+  const s = state.uebungen[1].aufgaben[2];
+  const sub = getSub(s);
+  if (!sub) { document.getElementById('aufgabeView').innerHTML = `<div style="padding:40px;text-align:center;color:var(--muted);">Keine Aufgabendaten.</div>`; return; }
+  const p = sub.params;
+
+  const { modeBadge, timerHtml, trainingActions } = buildAufgabeChrome(s, 1, 2);
+  const view = document.getElementById('aufgabeView');
+  const isDoneLook = (s.mode === 'original' && (s.timerExpired || sub.allCorrect || s.trainingUebung))
+                  || (s.mode === 'training' && sub.allCorrect);
+  view.className = 'aufgabe-view ' + (isDoneLook ? 'done' : '');
+
+  view.innerHTML = `
+    <div class="aufgabe-topbar">
+      <div><h2>Aufgabe 2: Vermögensänderung bei drei Aktionärstypen${modeBadge}</h2></div>
+      ${timerHtml}
+    </div>
+    <div class="aufgabe-body">
+      <div class="scenario">
+        <p>Die <strong>SolarWind AG</strong> weist folgende Bilanz auf (in Mio. EUR):</p>
+        <table class="bilanz-table">
+          <tr><th>Aktiva</th><th>Mio. EUR</th><th>Passiva</th><th>Mio. EUR</th></tr>
+          <tr><td>Anlagevermögen</td><td>${p.av}</td><td>Gezeichnetes Kapital (Nennwert ${p.nw} EUR)</td><td>${p.gk}</td></tr>
+          <tr><td>Umlaufvermögen</td><td>${p.uv}</td><td>Kapitalrücklage</td><td>${p.kr}</td></tr>
+          <tr><td></td><td></td><td>Gewinnrücklagen</td><td>${p.gr}</td></tr>
+          <tr><td></td><td></td><td>Fremdkapital</td><td>${p.fk}</td></tr>
+          <tr class="summe"><td>Summe</td><td>${p.av+p.uv}</td><td>Summe</td><td>${p.gk+p.kr+p.gr+p.fk}</td></tr>
+        </table>
+        <p>Kurs <strong>P<sub>a</sub> = ${p.pa} EUR</strong>. Ordentliche Kapitalerhöhung: <strong>j = ${p.j} Mio. Jungaktien</strong> zum Emissionskurs <strong>P<sub>j</sub> = ${p.pj} EUR</strong>, Nennwert ${p.nw} EUR.</p>
+      </div>
+
+      <div class="teil" id="teil-1-2-1">
+        <div class="teil-label">Teil I — Bezugsverhältnis und Bezugsrecht</div>
+        <div class="teil-text">Bestimmen Sie das Bezugsverhältnis <em>BV</em> und den rechnerischen Wert des Bezugsrechts <em>BR</em>. <em>BV als Verhältnis (z.&nbsp;B. 4:1). BR auf zwei Nachkommastellen.</em></div>
+        <div class="answer-row">
+          <div class="answer-group"><label>BV =</label><input type="text" class="answer-input" id="ans-1-2-1-bv" placeholder="z.B. 4:1" style="width:100px;"></div>
+          <div class="answer-group"><label>BR =</label><input type="text" class="answer-input" id="ans-1-2-1-br" placeholder="EUR"><span class="answer-unit">EUR</span></div>
+          <button class="check-btn" onclick="checkTeil_1_2(1)">Prüfen</button>
+          <span class="answer-feedback" id="fb-1-2-1"></span>
+        </div>
+        <div class="teil-loesung" id="loes-1-2-1"></div>
+      </div>
+
+      <div class="teil" id="teil-1-2-2">
+        <div class="teil-label">Teil II — Mischkurs</div>
+        <div class="teil-text">Berechnen Sie den Mischkurs <em>P<sub>neu</sub></em> nach der Kapitalerhöhung. <em>Auf zwei Nachkommastellen.</em></div>
+        <div class="answer-row">
+          <div class="answer-group"><label>P<sub>neu</sub> =</label><input type="text" class="answer-input" id="ans-1-2-2" placeholder="EUR"><span class="answer-unit">EUR</span></div>
+          <button class="check-btn" onclick="checkTeil_1_2(2)">Prüfen</button>
+          <span class="answer-feedback" id="fb-1-2-2"></span>
+        </div>
+        <div class="teil-loesung" id="loes-1-2-2"></div>
+      </div>
+
+      <div class="teil" id="teil-1-2-3">
+        <div class="teil-label">Teil III — Vermögensveränderung bei A, B, C</div>
+        <div class="teil-text">Die Aktionäre <strong>A, B und C</strong> besitzen jeweils <strong>${p.aktien} Altaktien</strong>. Jeder hatte vor der Kapitalerhöhung ein Barvermögen von 0 EUR. Tragen Sie die Werte <em>nach</em> der Kapitalerhöhung ein.<br><em>Alle Werte in EUR, auf zwei Nachkommastellen.</em></div>
+        <div style="margin-top:10px;"><strong>A</strong> — nutzt seine Bezugsrechte voll aus (zahlt Emissionskurs für alle zustehenden Jungaktien):
+          <div class="answer-row">
+            <div class="answer-group"><label>Barvermögen A =</label><input type="text" class="answer-input" id="ans-1-2-3-a-bar" placeholder="EUR" style="width:140px;"><span class="answer-unit">EUR</span></div>
+            <div class="answer-group"><label>Aktienvermögen A =</label><input type="text" class="answer-input" id="ans-1-2-3-a-akt" placeholder="EUR" style="width:140px;"><span class="answer-unit">EUR</span></div>
+            <div class="answer-group"><label>Gesamt A =</label><input type="text" class="answer-input" id="ans-1-2-3-a-ges" placeholder="EUR" style="width:140px;"><span class="answer-unit">EUR</span></div>
+          </div>
+        </div>
+        <div style="margin-top:10px;"><strong>B</strong> — verzichtet komplett (kein Bezug, kein Verkauf):
+          <div class="answer-row">
+            <div class="answer-group"><label>Barvermögen B =</label><input type="text" class="answer-input" id="ans-1-2-3-b-bar" placeholder="EUR" style="width:140px;"><span class="answer-unit">EUR</span></div>
+            <div class="answer-group"><label>Aktienvermögen B =</label><input type="text" class="answer-input" id="ans-1-2-3-b-akt" placeholder="EUR" style="width:140px;"><span class="answer-unit">EUR</span></div>
+            <div class="answer-group"><label>Gesamt B =</label><input type="text" class="answer-input" id="ans-1-2-3-b-ges" placeholder="EUR" style="width:140px;"><span class="answer-unit">EUR</span></div>
+          </div>
+        </div>
+        <div style="margin-top:10px;"><strong>C</strong> — Opération Blanche (Jungaktien-Anzahl ggf. abrunden):
+          <div class="answer-row">
+            <div class="answer-group"><label>Barvermögen C =</label><input type="text" class="answer-input" id="ans-1-2-3-c-bar" placeholder="EUR" style="width:140px;"><span class="answer-unit">EUR</span></div>
+            <div class="answer-group"><label>Aktienvermögen C =</label><input type="text" class="answer-input" id="ans-1-2-3-c-akt" placeholder="EUR" style="width:140px;"><span class="answer-unit">EUR</span></div>
+            <div class="answer-group"><label>Gesamt C =</label><input type="text" class="answer-input" id="ans-1-2-3-c-ges" placeholder="EUR" style="width:140px;"><span class="answer-unit">EUR</span></div>
+          </div>
+        </div>
+        <div style="margin-top:10px;">
+          <button class="check-btn" onclick="checkTeil_1_2(3)">Prüfen</button>
+          <span class="answer-feedback" id="fb-1-2-3"></span>
+        </div>
+        <div class="teil-loesung" id="loes-1-2-3"></div>
+      </div>
+
+      <div class="teil" id="teil-1-2-4">
+        <div class="teil-label">Teil IV — Wer erleidet einen Vermögensverlust?</div>
+        <div class="teil-text">Beurteilen Sie die Aktionäre. Welcher erleidet einen <strong>echten Vermögensverlust</strong> gegenüber dem Zustand vor der Kapitalerhöhung?</div>
+        <div class="answer-row" style="flex-direction:column;align-items:flex-start;gap:6px;">
+          <label><input type="radio" name="teil4a" value="A"> A (nutzt voll aus)</label>
+          <label><input type="radio" name="teil4a" value="B"> B (verzichtet)</label>
+          <label><input type="radio" name="teil4a" value="C"> C (Opération Blanche)</label>
+          <label><input type="radio" name="teil4a" value="keiner"> Keiner — alle sind vermögensneutral</label>
+        </div>
+        <div style="margin-top:10px;">
+          <button class="check-btn" onclick="checkTeil_1_2(4)">Prüfen</button>
+          <span class="answer-feedback" id="fb-1-2-4"></span>
+        </div>
+        <div class="teil-loesung" id="loes-1-2-4"></div>
+      </div>
+    </div>
+  `;
+
+  finalizeAufgabeRender(s, sub, view, trainingActions, 4, 'regenerateTraining(1,2)', showAllLoesungen_1_2);
+}
+
+function checkTeil_1_2(teil) {
+  const s = state.uebungen[1].aufgaben[2];
+  const sub = getSub(s); if (!sub) return;
+  const sol = sub.solutions;
+  let ok = false;
+  switch (teil) {
+    case 1: {
+      const bvStr = document.getElementById('ans-1-2-1-bv').value.trim();
+      let bvVal;
+      bvVal = parseNum(bvStr);  // Handhabt sowohl '4:1' als auch '4,00' und '4'
+      const br = parseNum(document.getElementById('ans-1-2-1-br').value);
+      const bvOk = approxEqual(bvVal, sol.bv);
+      const brOk = approxEqual(br, sol.br);
+      setInputState('ans-1-2-1-bv', bvOk); setInputState('ans-1-2-1-br', brOk);
+      ok = bvOk && brOk; break;
+    }
+    case 2: ok = approxEqual(parseNum(document.getElementById('ans-1-2-2').value), sol.pneu); setInputState('ans-1-2-2', ok); break;
+    case 3: {
+      const checks = [
+        ['ans-1-2-3-a-bar', sol.a_bar], ['ans-1-2-3-a-akt', sol.a_aktien], ['ans-1-2-3-a-ges', sol.a_gesamt],
+        ['ans-1-2-3-b-bar', sol.b_bar], ['ans-1-2-3-b-akt', sol.b_aktien], ['ans-1-2-3-b-ges', sol.b_gesamt],
+        ['ans-1-2-3-c-bar', sol.c_bar], ['ans-1-2-3-c-akt', sol.c_aktien], ['ans-1-2-3-c-ges', sol.c_gesamt],
+      ];
+      let allOk = true;
+      for (const [id, target] of checks) {
+        const v = parseNum(document.getElementById(id).value);
+        // EUR-Werte, auf zwei Nachkommastellen gerundet → Standard-Toleranz 0,015
+        const r = approxEqual(v, target);
+        setInputState(id, r);
+        if (!r) allOk = false;
+      }
+      ok = allOk; break;
+    }
+    case 4: {
+      const chosen = document.querySelector('input[name="teil4a"]:checked');
+      ok = chosen && chosen.value === 'B'; break;
+    }
+  }
+  finalizeCheck(s, sub, `fb-1-2-${teil}`, `teil-1-2-${teil}`, 1, 2, teil, ok, 4, showAllLoesungen_1_2);
+}
+
+function showAllLoesungen_1_2() {
+  const s = state.uebungen[1].aufgaben[2];
+  const sub = getSub(s); if (!sub) return;
+  const p = sub.params, sol = sub.solutions;
+  const fmt = n => Number.isInteger(n) ? n.toLocaleString('de-DE') : n.toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+  setLoes('loes-1-2-1', `
+    <div class="teil-loesung-label">LÖSUNG · TEIL I</div>
+    <div class="rechenweg">
+      <div class="step">a = ${p.gk} / ${p.nw} = ${fmt(sol.a)} Mio. Altaktien · BV = a:j = ${fmt(sol.a)} : ${p.j} = <span class="result">${fmt(sol.bv)} : 1</span></div>
+      <div class="step">BR = (${p.pa} − ${p.pj}) / (${fmt(sol.bv)} + 1) = <span class="result">${fmt(sol.br)} EUR</span></div>
+    </div>`);
+  setLoes('loes-1-2-2', `
+    <div class="teil-loesung-label">LÖSUNG · TEIL II</div>
+    <div class="rechenweg">
+      <div class="step">P<sub>neu</sub> = (${fmt(sol.a*p.pa)} + ${fmt(p.j*p.pj)}) / ${fmt(sol.a+p.j)} = <span class="result">${fmt(sol.pneu)} EUR</span></div>
+    </div>`);
+  setLoes('loes-1-2-3', `
+    <div class="teil-loesung-label">LÖSUNG · TEIL III</div>
+    <div class="rechenweg">
+      <div class="step"><strong>Vorher:</strong> jeder hält ${p.aktien} Aktien · Wert = ${p.aktien} · ${p.pa} = <span class="result">${fmt(p.aktien*p.pa)} EUR</span>, Barvermögen 0 EUR</div>
+    </div>
+    <div class="rechenweg">
+      <div class="step"><strong>A (voll ausnutzen):</strong> ${p.aktien} Bezugsrechte / ${fmt(sol.bv)} = ${fmt(sol.a_jung)} Jungaktien</div>
+      <div class="step">Zuzahlung: ${fmt(sol.a_jung)} · ${p.pj} = ${fmt(sol.a_jung*p.pj)} EUR</div>
+      <div class="step">Barvermögen = <span class="result">${fmt(sol.a_bar)} EUR</span> · Aktienvermögen = (${p.aktien} + ${fmt(sol.a_jung)}) · ${fmt(sol.pneu)} = <span class="result">${fmt(sol.a_aktien)} EUR</span></div>
+      <div class="step">Gesamt = <span class="result">${fmt(sol.a_gesamt)} EUR</span> (= vorher ${fmt(p.aktien*p.pa)} EUR ✓)</div>
+    </div>
+    <div class="rechenweg">
+      <div class="step"><strong>B (verzichtet):</strong> keine Transaktion</div>
+      <div class="step">Barvermögen = <span class="result">0,00 EUR</span> · Aktienvermögen = ${p.aktien} · ${fmt(sol.pneu)} = <span class="result">${fmt(sol.b_aktien)} EUR</span></div>
+      <div class="step">Gesamt = <span class="result">${fmt(sol.b_gesamt)} EUR</span> — <strong>Verlust</strong> gegenüber vorher ${fmt(p.aktien*p.pa)} EUR (Differenz ${fmt(p.aktien*p.pa - sol.b_gesamt)} EUR = ${p.aktien} · BR)</div>
+    </div>
+    <div class="rechenweg">
+      <div class="step"><strong>C (Opération Blanche):</strong> x = ${p.aktien}·BR / (P<sub>j</sub> + BV·BR) = ${fmt(sol.xFloor + (p.aktien*sol.br)/(p.pj+sol.bv*sol.br) - Math.floor((p.aktien*sol.br)/(p.pj+sol.bv*sol.br)))} → abgerundet <span class="result">${sol.xFloor} Jungaktien</span></div>
+      <div class="step">Verkaufte BR: ${sol.verkaufteBR} · ${fmt(sol.br)} = ${fmt(sol.erloesBR)} EUR · Zuzahlung: ${sol.xFloor} · ${p.pj} = ${fmt(sol.zuzahlung)} EUR · Restbargeld: <span class="result">${fmt(sol.restbetrag)} EUR</span></div>
+      <div class="step">Aktienvermögen = (${p.aktien} + ${sol.xFloor}) · ${fmt(sol.pneu)} = <span class="result">${fmt(sol.c_aktien)} EUR</span></div>
+      <div class="step">Gesamt = ${fmt(sol.c_aktien)} + ${fmt(sol.c_bar)} = <span class="result">${fmt(sol.c_gesamt)} EUR</span> ≈ vorher (Rundungsdifferenz durch Abrunden der Jungaktien)</div>
+    </div>`);
+  setLoes('loes-1-2-4', `
+    <div class="teil-loesung-label">LÖSUNG · TEIL IV</div>
+    <p style="font-size:0.92rem;"><strong>B</strong> erleidet einen Vermögensverlust in Höhe von ${p.aktien} · BR = ${fmt(p.aktien*sol.br)} EUR. Das ist der klassische Verwässerungseffekt bei Verzicht auf das Bezugsrecht <em>ohne</em> Verkauf. A bleibt vermögensneutral (er zahlt zu, bekommt aber entsprechend mehr Aktien). C ist durch die Opération Blanche ebenfalls vermögensneutral (bis auf eine geringe Rundungsdifferenz aus der ganzzahligen Aktienanzahl).</p>`);
+}
+
+// =============================================================
+//  AUFGABE 1.3 — NordLicht AG, Spielraum Emissionskurs
+// =============================================================
+function generateParams_1_3(fixed) {
+  // Parameter: a (Altaktien), pa, nw, ziel_summe (zu beschaffen), pj (vorgegeben)
+  if (fixed) return { a_stk: 900000, pa: 40, nw: 10, ziel: 6_000_000, pj: 20 };
+  const nw = pickRandom([1, 5, 10]);
+  const a_stk = pickRandom([200000, 400000, 500000, 600000, 800000, 1000000]);
+  const pa = pickRandom([20, 25, 30, 36, 40, 45, 50, 60]);
+  // Emissionskurs so wählen, dass j = ziel / pj ganzzahlig ist und ein glattes BV ergibt
+  const bv = pickRandom([2, 3, 4, 5]);
+  const j_stk = a_stk / bv;
+  if (j_stk !== Math.floor(j_stk)) return generateParams_1_3(false);
+  // pj so, dass pj > nw und BR glatt ist
+  const brTarget = pickRandom([2, 3, 4, 5]);
+  const pj = pa - brTarget * (bv + 1);
+  if (pj <= nw || pj <= 0) return generateParams_1_3(false);
+  const ziel = j_stk * pj;
+  return { a_stk, pa, nw, ziel, pj };
+}
+
+function computeSolutions_1_3(p) {
+  const pj_min = p.nw;             // Untergrenze: Nennwert (§ 9 AktG)
+  const pj_max = p.pa;             // Obergrenze (theoretisch): Altaktienkurs
+  const j_stk = p.ziel / p.pj;     // Anzahl auszugebender Jungaktien
+  const bv = p.a_stk / j_stk;      // Bezugsverhältnis a:j
+  const br = (p.pa - p.pj) / (bv + 1);
+  const pneu = (p.a_stk * p.pa + j_stk * p.pj) / (p.a_stk + j_stk);
+  const diff = p.pa - pneu;        // sollte exakt BR sein
+  return { pj_min, pj_max, j_stk, bv, br, pneu, diff };
+}
+
+function renderAufgabe_1_3() {
+  const s = state.uebungen[1].aufgaben[3];
+  const sub = getSub(s); if (!sub) { document.getElementById('aufgabeView').innerHTML = `<div style="padding:40px;text-align:center;color:var(--muted);">Keine Daten.</div>`; return; }
+  const p = sub.params;
+  const { modeBadge, timerHtml, trainingActions } = buildAufgabeChrome(s, 1, 3);
+  const view = document.getElementById('aufgabeView');
+  const isDoneLook = (s.mode === 'original' && (s.timerExpired || sub.allCorrect || s.trainingUebung))
+                  || (s.mode === 'training' && sub.allCorrect);
+  view.className = 'aufgabe-view ' + (isDoneLook ? 'done' : '');
+
+  const fmtZahl = n => n.toLocaleString('de-DE');
+  view.innerHTML = `
+    <div class="aufgabe-topbar"><div><h2>Aufgabe 3: Spielraum bei der Festlegung des Emissionskurses${modeBadge}</h2></div>${timerHtml}</div>
+    <div class="aufgabe-body">
+      <div class="scenario">
+        <p>Die <strong>NordLicht AG</strong> hat ${fmtZahl(p.a_stk)} Altaktien im Umlauf. Der Börsenkurs beträgt <strong>P<sub>a</sub> = ${p.pa} EUR</strong>, der Nennwert einer Aktie <strong>${p.nw} EUR</strong>. Durch eine ordentliche Kapitalerhöhung sollen <strong>${fmtZahl(p.ziel)} EUR</strong> eingeworben werden.</p>
+      </div>
+
+      <div class="teil" id="teil-1-3-1">
+        <div class="teil-label">Teil I — Spielraum für den Emissionskurs</div>
+        <div class="teil-text">Welche rechtliche Untergrenze und welche wirtschaftliche Obergrenze gelten für den Emissionskurs <em>P<sub>j</sub></em>? <em>Beide Angaben ganzzahlig in EUR.</em></div>
+        <div class="answer-row">
+          <div class="answer-group"><label>P<sub>j,min</sub> =</label><input type="text" class="answer-input" id="ans-1-3-1-min" placeholder="EUR"><span class="answer-unit">EUR</span></div>
+          <div class="answer-group"><label>P<sub>j,max</sub> =</label><input type="text" class="answer-input" id="ans-1-3-1-max" placeholder="EUR"><span class="answer-unit">EUR</span></div>
+          <button class="check-btn" onclick="checkTeil_1_3(1)">Prüfen</button>
+          <span class="answer-feedback" id="fb-1-3-1"></span>
+        </div>
+        <div class="teil-loesung" id="loes-1-3-1"></div>
+      </div>
+
+      <div class="teil" id="teil-1-3-2">
+        <div class="teil-label">Teil II — Anzahl Jungaktien und Bezugsverhältnis</div>
+        <div class="teil-text">Der Emissionskurs wird auf <strong>P<sub>j</sub> = ${p.pj} EUR</strong> festgesetzt. Ermitteln Sie die Anzahl der Jungaktien <em>j</em> (ganzzahlig in Stück) und das Bezugsverhältnis <em>BV</em> (z.&nbsp;B. 4:1).</div>
+        <div class="answer-row">
+          <div class="answer-group"><label>j =</label><input type="text" class="answer-input" id="ans-1-3-2-j" placeholder="Stück" style="width:140px;"><span class="answer-unit">Stück</span></div>
+          <div class="answer-group"><label>BV =</label><input type="text" class="answer-input" id="ans-1-3-2-bv" placeholder="z.B. 4:1" style="width:100px;"></div>
+          <button class="check-btn" onclick="checkTeil_1_3(2)">Prüfen</button>
+          <span class="answer-feedback" id="fb-1-3-2"></span>
+        </div>
+        <div class="teil-loesung" id="loes-1-3-2"></div>
+      </div>
+
+      <div class="teil" id="teil-1-3-3">
+        <div class="teil-label">Teil III — Rechnerischer Wert des Bezugsrechts</div>
+        <div class="teil-text">Berechnen Sie den rechnerischen Wert des Bezugsrechts <em>BR</em>. <em>Auf zwei Nachkommastellen.</em></div>
+        <div class="answer-row">
+          <div class="answer-group"><label>BR =</label><input type="text" class="answer-input" id="ans-1-3-3" placeholder="EUR"><span class="answer-unit">EUR</span></div>
+          <button class="check-btn" onclick="checkTeil_1_3(3)">Prüfen</button>
+          <span class="answer-feedback" id="fb-1-3-3"></span>
+        </div>
+        <div class="teil-loesung" id="loes-1-3-3"></div>
+      </div>
+
+      <div class="teil" id="teil-1-3-4">
+        <div class="teil-label">Teil IV — Kurs nach Kapitalerhöhung</div>
+        <div class="teil-text">Berechnen Sie den Kurs <em>P<sub>neu</sub></em> nach der Kapitalerhöhung und die Differenz zu P<sub>a</sub>. <em>Beide Werte auf zwei Nachkommastellen.</em> Wählen Sie anschließend die zutreffende Aussage.</div>
+        <div class="answer-row">
+          <div class="answer-group"><label>P<sub>neu</sub> =</label><input type="text" class="answer-input" id="ans-1-3-4-pneu" placeholder="EUR"><span class="answer-unit">EUR</span></div>
+          <div class="answer-group"><label>P<sub>a</sub> − P<sub>neu</sub> =</label><input type="text" class="answer-input" id="ans-1-3-4-diff" placeholder="EUR"><span class="answer-unit">EUR</span></div>
+        </div>
+        <div style="margin-top:10px;">Die Differenz entspricht exakt dem Bezugsrecht, weil …</div>
+        <div class="answer-row" style="flex-direction:column;align-items:flex-start;gap:6px;">
+          <label><input type="radio" name="teil34" value="A"> A) … das Bezugsrecht den Kursrückgang kompensiert: Altaktionäre verlieren zwar am Aktienkurs, gewinnen aber am Bezugsrecht exakt gleich viel zurück (Kompensationseffekt).</label>
+          <label><input type="radio" name="teil34" value="B"> B) … der Emissionskurs per Gesetz stets genau dem Nennwert entspricht.</label>
+          <label><input type="radio" name="teil34" value="C"> C) … der Vorstand die Höhe des Bezugsrechts unabhängig von P<sub>a</sub> und P<sub>j</sub> festlegt.</label>
+        </div>
+        <div style="margin-top:10px;">
+          <button class="check-btn" onclick="checkTeil_1_3(4)">Prüfen</button>
+          <span class="answer-feedback" id="fb-1-3-4"></span>
+        </div>
+        <div class="teil-loesung" id="loes-1-3-4"></div>
+      </div>
+    </div>
+  `;
+  finalizeAufgabeRender(s, sub, view, trainingActions, 4, 'regenerateTraining(1,3)', showAllLoesungen_1_3);
+}
+
+function checkTeil_1_3(teil) {
+  const s = state.uebungen[1].aufgaben[3];
+  const sub = getSub(s); if (!sub) return;
+  const sol = sub.solutions;
+  let ok = false;
+  switch (teil) {
+    case 1: {
+      const mn = parseNum(document.getElementById('ans-1-3-1-min').value);
+      const mx = parseNum(document.getElementById('ans-1-3-1-max').value);
+      const mnOk = approxEqual(mn, sol.pj_min); const mxOk = approxEqual(mx, sol.pj_max);
+      setInputState('ans-1-3-1-min', mnOk); setInputState('ans-1-3-1-max', mxOk);
+      ok = mnOk && mxOk; break;
+    }
+    case 2: {
+      const j = parseNum(document.getElementById('ans-1-3-2-j').value);
+      const bvStr = document.getElementById('ans-1-3-2-bv').value.trim();
+      let bvVal;
+      bvVal = parseNum(bvStr);  // Handhabt sowohl '4:1' als auch '4,00' und '4'
+      const jOk = approxEqualInt(j, sol.j_stk); const bvOk = approxEqual(bvVal, sol.bv);
+      setInputState('ans-1-3-2-j', jOk); setInputState('ans-1-3-2-bv', bvOk);
+      ok = jOk && bvOk; break;
+    }
+    case 3: ok = approxEqual(parseNum(document.getElementById('ans-1-3-3').value), sol.br); setInputState('ans-1-3-3', ok); break;
+    case 4: {
+      const pneu = parseNum(document.getElementById('ans-1-3-4-pneu').value);
+      const diff = parseNum(document.getElementById('ans-1-3-4-diff').value);
+      const pneuOk = approxEqual(pneu, sol.pneu); const diffOk = approxEqual(diff, sol.diff);
+      setInputState('ans-1-3-4-pneu', pneuOk); setInputState('ans-1-3-4-diff', diffOk);
+      const chosen = document.querySelector('input[name="teil34"]:checked');
+      const mcOk = chosen && chosen.value === 'A';
+      ok = pneuOk && diffOk && mcOk; break;
+    }
+  }
+  finalizeCheck(s, sub, `fb-1-3-${teil}`, `teil-1-3-${teil}`, 1, 3, teil, ok, 4, showAllLoesungen_1_3);
+}
+
+function showAllLoesungen_1_3() {
+  const s = state.uebungen[1].aufgaben[3];
+  const sub = getSub(s); if (!sub) return;
+  const p = sub.params, sol = sub.solutions;
+  const fmt = n => Number.isInteger(n) ? n.toLocaleString('de-DE') : n.toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+  setLoes('loes-1-3-1', `
+    <div class="teil-loesung-label">LÖSUNG · TEIL I</div>
+    <div class="rechenweg">
+      <div class="step">Untergrenze: <strong>Nennwert = ${p.nw} EUR</strong> (§ 9 AktG: Unter-pari-Emission verboten)</div>
+      <div class="step">Obergrenze: <strong>Altaktienkurs P<sub>a</sub> = ${p.pa} EUR</strong> (darüber wäre kein Grund mehr, das Bezugsrecht zu nutzen — Kapitalerhöhung wäre nicht platzierbar)</div>
+    </div>`);
+  setLoes('loes-1-3-2', `
+    <div class="teil-loesung-label">LÖSUNG · TEIL II</div>
+    <div class="rechenweg">
+      <div class="step">j = Zielvolumen / P<sub>j</sub> = ${fmt(p.ziel)} / ${p.pj} = <span class="result">${fmt(sol.j_stk)} Stück</span></div>
+      <div class="step">BV = a : j = ${fmt(p.a_stk)} : ${fmt(sol.j_stk)} = <span class="result">${fmt(sol.bv)} : 1</span></div>
+    </div>`);
+  setLoes('loes-1-3-3', `
+    <div class="teil-loesung-label">LÖSUNG · TEIL III</div>
+    <div class="rechenweg">
+      <div class="step">BR = (P<sub>a</sub> − P<sub>j</sub>) / (BV + 1) = (${p.pa} − ${p.pj}) / (${fmt(sol.bv)} + 1) = <span class="result">${fmt(sol.br)} EUR</span></div>
+    </div>`);
+  setLoes('loes-1-3-4', `
+    <div class="teil-loesung-label">LÖSUNG · TEIL IV</div>
+    <div class="rechenweg">
+      <div class="step">P<sub>neu</sub> = (a·P<sub>a</sub> + j·P<sub>j</sub>) / (a + j) = <span class="result">${fmt(sol.pneu)} EUR</span></div>
+      <div class="step">P<sub>a</sub> − P<sub>neu</sub> = ${p.pa} − ${fmt(sol.pneu)} = <span class="result">${fmt(sol.diff)} EUR</span> = BR ✓</div>
+    </div>
+    <p style="font-size:0.92rem;">Richtig ist <strong>A</strong>: Der Verwässerungseffekt (Kursrückgang) wird durch den Wert des Bezugsrechts exakt kompensiert. Altaktionäre stehen vermögensmäßig neutral da, wenn sie ihr Bezugsrecht nutzen oder verkaufen.</p>`);
+}
+
+// =============================================================
+//  AUFGABE 1.4 — Phoenix AG, Bilanz & Stimmrechtsquote
+// =============================================================
+function generateParams_1_4(fixed) {
+  if (fixed) return { gk: 100, kr: 80, gr: 40, nw: 10, pa: 48, pj: 30, bv: 2, aktien_a: 2_100_000 };
+  const nw = pickRandom([1, 5, 10]);
+  const bv = pickRandom([2, 3, 4]);
+  const gk = pickRandom([50, 80, 100, 120, 150]);
+  const a_mio = gk / nw;
+  // j_mio = a_mio/bv muss ganzzahlig sein (sonst krumme Jungaktien-Anzahl in Teil I)
+  if ((a_mio / bv) !== Math.floor(a_mio / bv)) return generateParams_1_4(false);
+  const a_stk = a_mio * 1_000_000;
+  const pa = pickRandom([30, 36, 40, 45, 48, 55, 60]);
+  const brTarget = pickRandom([3, 4, 5, 6]);
+  const pj = pa - brTarget * (bv + 1);
+  if (pj <= nw || pj <= 0) return generateParams_1_4(false);
+  const kr = pickRandom([40, 60, 80, 100]);
+  const gr = pickRandom([20, 30, 40, 50]);
+
+  // aktien_a muss die Opération Blanche glatt aufgehen lassen (analog zu 1.2):
+  // x = aktien·br / (pj + bv·br) muss ganzzahlig sein → aktien Vielfaches von
+  // (pj+bv·br)/ggT(br, pj+bv·br). Außerdem soll Quote (aktien/a_stk) eine
+  // ordentliche Prozentzahl ergeben.
+  const br = brTarget;
+  const denom = pj + bv * br;
+  const g1 = ggT(br, denom);
+  const op_unit = denom / g1;   // kleinste Einheit, die Op Blanche glatt macht
+  // Sinnvolle Zielanteile 5–30 % von a_stk, gerundet auf Vielfache von op_unit
+  const zielAnteile = [0.05, 0.07, 0.10, 0.12, 0.15, 0.18, 0.20, 0.25, 0.30];
+  const candidates = zielAnteile
+    .map(p => Math.round((a_stk * p) / op_unit) * op_unit)
+    .filter(n => n >= op_unit && n < a_stk);
+  if (candidates.length === 0) return generateParams_1_4(false);
+  const aktien_a = pickRandom(candidates);
+  return { gk, kr, gr, nw, pa, pj, bv, aktien_a };
+}
+
+function computeSolutions_1_4(p) {
+  const a_mio = p.gk / p.nw;              // Altaktien in Mio.
+  const a_stk = a_mio * 1_000_000;        // Altaktien in Stück
+  const j_stk = a_stk / p.bv;             // Jungaktien in Stück
+  const j_mio = a_mio / p.bv;
+  const br = (p.pa - p.pj) / (p.bv + 1);
+  const pneu = (a_stk * p.pa + j_stk * p.pj) / (a_stk + j_stk);
+  // Bilanz
+  const agio = p.pj - p.nw;
+  const einzahlung_mio = j_mio * p.pj;
+  const gkNeu = p.gk + j_mio * p.nw;
+  const krNeu = p.kr + j_mio * agio;
+  // Stimmrechtsquote vor und nach
+  const quote_vorher = p.aktien_a / a_stk;
+  // Opération Blanche: Aktionär A verkauft Bezugsrechte und behält ganzzahlige Jungaktien
+  const xExact = (p.aktien_a * br) / (p.pj + p.bv * br);
+  const xFloor = Math.floor(xExact + 1e-9);
+  const quote_nachher = (p.aktien_a + xFloor) / (a_stk + j_stk);
+  const quote_diff = quote_vorher - quote_nachher;
+  return { a_mio, a_stk, j_stk, j_mio, br, pneu, agio, einzahlung_mio, gkNeu, krNeu, xFloor, quote_vorher, quote_nachher, quote_diff };
+}
+
+function renderAufgabe_1_4() {
+  const s = state.uebungen[1].aufgaben[4];
+  const sub = getSub(s); if (!sub) { document.getElementById('aufgabeView').innerHTML = `<div style="padding:40px;text-align:center;color:var(--muted);">Keine Daten.</div>`; return; }
+  const p = sub.params;
+  const { modeBadge, timerHtml, trainingActions } = buildAufgabeChrome(s, 1, 4);
+  const view = document.getElementById('aufgabeView');
+  const isDoneLook = (s.mode === 'original' && (s.timerExpired || sub.allCorrect || s.trainingUebung))
+                  || (s.mode === 'training' && sub.allCorrect);
+  view.className = 'aufgabe-view ' + (isDoneLook ? 'done' : '');
+
+  view.innerHTML = `
+    <div class="aufgabe-topbar"><div><h2>Aufgabe 4: Bilanzielle Abbildung & Stimmrechtsverwässerung${modeBadge}</h2></div>${timerHtml}</div>
+    <div class="aufgabe-body">
+      <div class="scenario">
+        <p>Die <strong>Phoenix AG</strong> weist folgendes Eigenkapital auf (in Mio. EUR):</p>
+        <table class="bilanz-table">
+          <tr><th>Position</th><th>Mio. EUR</th></tr>
+          <tr><td>Gezeichnetes Kapital (Nennwert ${p.nw} EUR)</td><td>${p.gk}</td></tr>
+          <tr><td>Kapitalrücklage</td><td>${p.kr}</td></tr>
+          <tr><td>Gewinnrücklagen</td><td>${p.gr}</td></tr>
+        </table>
+        <p>Kurs <strong>P<sub>a</sub> = ${p.pa} EUR</strong>, Emissionskurs <strong>P<sub>j</sub> = ${p.pj} EUR</strong>, Bezugsverhältnis <strong>${p.bv}:1</strong>.</p>
+      </div>
+
+      <div class="teil" id="teil-1-4-1">
+        <div class="teil-label">Teil I — Anzahl Alt- und Jungaktien</div>
+        <div class="teil-text">Ermitteln Sie die Anzahl der Altaktien <em>a</em> und Jungaktien <em>j</em>. <em>Angabe in Mio. Stück, keine Rundung.</em></div>
+        <div class="answer-row">
+          <div class="answer-group"><label>a =</label><input type="text" class="answer-input" id="ans-1-4-1-a" placeholder="Mio."><span class="answer-unit">Mio. Stück</span></div>
+          <div class="answer-group"><label>j =</label><input type="text" class="answer-input" id="ans-1-4-1-j" placeholder="Mio."><span class="answer-unit">Mio. Stück</span></div>
+          <button class="check-btn" onclick="checkTeil_1_4(1)">Prüfen</button>
+          <span class="answer-feedback" id="fb-1-4-1"></span>
+        </div>
+        <div class="teil-loesung" id="loes-1-4-1"></div>
+      </div>
+
+      <div class="teil" id="teil-1-4-2">
+        <div class="teil-label">Teil II — Bezugsrecht und Mischkurs</div>
+        <div class="teil-text">Berechnen Sie <em>BR</em> und <em>P<sub>neu</sub></em>. <em>Beide auf zwei Nachkommastellen.</em></div>
+        <div class="answer-row">
+          <div class="answer-group"><label>BR =</label><input type="text" class="answer-input" id="ans-1-4-2-br" placeholder="EUR"><span class="answer-unit">EUR</span></div>
+          <div class="answer-group"><label>P<sub>neu</sub> =</label><input type="text" class="answer-input" id="ans-1-4-2-pneu" placeholder="EUR"><span class="answer-unit">EUR</span></div>
+          <button class="check-btn" onclick="checkTeil_1_4(2)">Prüfen</button>
+          <span class="answer-feedback" id="fb-1-4-2"></span>
+        </div>
+        <div class="teil-loesung" id="loes-1-4-2"></div>
+      </div>
+
+      <div class="teil" id="teil-1-4-3">
+        <div class="teil-label">Teil III — Bilanzielle Abbildung</div>
+        <div class="teil-text">Wie ändern sich die Eigenkapitalpositionen und wie hoch ist die Gesamteinzahlung? <em>Alle Werte in Mio. EUR, auf zwei Nachkommastellen (bzw. ganzzahlig, wenn sie glatt aufgehen).</em></div>
+        <div class="answer-row">
+          <div class="answer-group"><label>Gez. Kapital (neu) =</label><input type="text" class="answer-input" id="ans-1-4-3-gk" placeholder="Mio. EUR" style="width:140px;"></div>
+          <div class="answer-group"><label>Kapitalrücklage (neu) =</label><input type="text" class="answer-input" id="ans-1-4-3-kr" placeholder="Mio. EUR" style="width:140px;"></div>
+          <div class="answer-group"><label>Einzahlung gesamt =</label><input type="text" class="answer-input" id="ans-1-4-3-ein" placeholder="Mio. EUR" style="width:140px;"></div>
+          <button class="check-btn" onclick="checkTeil_1_4(3)">Prüfen</button>
+          <span class="answer-feedback" id="fb-1-4-3"></span>
+        </div>
+        <div class="teil-loesung" id="loes-1-4-3"></div>
+      </div>
+
+      <div class="teil" id="teil-1-4-4">
+        <div class="teil-label">Teil IV — Stimmrechtsquote bei Opération Blanche</div>
+        <div class="teil-text">Aktionär A besitzt <strong>${p.aktien_a.toLocaleString('de-DE')} Altaktien</strong> und führt eine <em>Opération Blanche</em> durch (Jungaktien ggf. abrunden). <em>Alle Quoten in Prozent auf zwei Nachkommastellen (z.&nbsp;B. 12,50 für 12,5%). Differenz in Prozentpunkten auf zwei Nachkommastellen.</em></div>
+        <div class="answer-row">
+          <div class="answer-group"><label>Quote vorher =</label><input type="text" class="answer-input" id="ans-1-4-4-vor" placeholder="z.B. 10,00" style="width:110px;"><span class="answer-unit">%</span></div>
+          <div class="answer-group"><label>Quote nachher =</label><input type="text" class="answer-input" id="ans-1-4-4-nach" placeholder="z.B. 8,50" style="width:110px;"><span class="answer-unit">%</span></div>
+          <div class="answer-group"><label>Differenz =</label><input type="text" class="answer-input" id="ans-1-4-4-diff" placeholder="Prozentpunkte" style="width:130px;"><span class="answer-unit">%‑Pkt.</span></div>
+          <button class="check-btn" onclick="checkTeil_1_4(4)">Prüfen</button>
+          <span class="answer-feedback" id="fb-1-4-4"></span>
+        </div>
+        <div class="teil-loesung" id="loes-1-4-4"></div>
+      </div>
+    </div>
+  `;
+  finalizeAufgabeRender(s, sub, view, trainingActions, 4, 'regenerateTraining(1,4)', showAllLoesungen_1_4);
+}
+
+function checkTeil_1_4(teil) {
+  const s = state.uebungen[1].aufgaben[4];
+  const sub = getSub(s); if (!sub) return;
+  const sol = sub.solutions;
+  let ok = false;
+  switch (teil) {
+    case 1: {
+      const a = parseNum(document.getElementById('ans-1-4-1-a').value);
+      const j = parseNum(document.getElementById('ans-1-4-1-j').value);
+      const aOk = approxEqual(a, sol.a_mio); const jOk = approxEqual(j, sol.j_mio);
+      setInputState('ans-1-4-1-a', aOk); setInputState('ans-1-4-1-j', jOk);
+      ok = aOk && jOk; break;
+    }
+    case 2: {
+      const br = parseNum(document.getElementById('ans-1-4-2-br').value);
+      const pneu = parseNum(document.getElementById('ans-1-4-2-pneu').value);
+      const brOk = approxEqual(br, sol.br); const pnOk = approxEqual(pneu, sol.pneu);
+      setInputState('ans-1-4-2-br', brOk); setInputState('ans-1-4-2-pneu', pnOk);
+      ok = brOk && pnOk; break;
+    }
+    case 3: {
+      const gk = parseNum(document.getElementById('ans-1-4-3-gk').value);
+      const kr = parseNum(document.getElementById('ans-1-4-3-kr').value);
+      const ein = parseNum(document.getElementById('ans-1-4-3-ein').value);
+      const gkOk = approxEqual(gk, sol.gkNeu); const krOk = approxEqual(kr, sol.krNeu); const eOk = approxEqual(ein, sol.einzahlung_mio);
+      setInputState('ans-1-4-3-gk', gkOk); setInputState('ans-1-4-3-kr', krOk); setInputState('ans-1-4-3-ein', eOk);
+      ok = gkOk && krOk && eOk; break;
+    }
+    case 4: {
+      const vor = parseNum(document.getElementById('ans-1-4-4-vor').value);
+      const nach = parseNum(document.getElementById('ans-1-4-4-nach').value);
+      const diff = parseNum(document.getElementById('ans-1-4-4-diff').value);
+      const vOk = approxEqual(vor, sol.quote_vorher * 100);
+      const nOk = approxEqual(nach, sol.quote_nachher * 100);
+      // Differenz: Vorzeichen ignorieren, damit sowohl +1,5 als auch -1,5 akzeptiert werden
+      const dOk = approxEqual(Math.abs(diff), Math.abs(sol.quote_diff * 100));
+      setInputState('ans-1-4-4-vor', vOk); setInputState('ans-1-4-4-nach', nOk); setInputState('ans-1-4-4-diff', dOk);
+      ok = vOk && nOk && dOk; break;
+    }
+  }
+  finalizeCheck(s, sub, `fb-1-4-${teil}`, `teil-1-4-${teil}`, 1, 4, teil, ok, 4, showAllLoesungen_1_4);
+}
+
+function showAllLoesungen_1_4() {
+  const s = state.uebungen[1].aufgaben[4];
+  const sub = getSub(s); if (!sub) return;
+  const p = sub.params, sol = sub.solutions;
+  const fmt = n => Number.isInteger(n) ? n.toLocaleString('de-DE') : n.toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2});
+  const fmtPct = n => (n*100).toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2});
+  setLoes('loes-1-4-1', `
+    <div class="teil-loesung-label">LÖSUNG · TEIL I</div>
+    <div class="rechenweg">
+      <div class="step">a = ${p.gk} / ${p.nw} = <span class="result">${fmt(sol.a_mio)} Mio. Altaktien</span></div>
+      <div class="step">j = a / BV = ${fmt(sol.a_mio)} / ${p.bv} = <span class="result">${fmt(sol.j_mio)} Mio. Jungaktien</span></div>
+    </div>`);
+  setLoes('loes-1-4-2', `
+    <div class="teil-loesung-label">LÖSUNG · TEIL II</div>
+    <div class="rechenweg">
+      <div class="step">BR = (${p.pa} − ${p.pj}) / (${p.bv} + 1) = <span class="result">${fmt(sol.br)} EUR</span></div>
+      <div class="step">P<sub>neu</sub> = (${fmt(sol.a_mio*p.pa)} + ${fmt(sol.j_mio*p.pj)}) / ${fmt(sol.a_mio+sol.j_mio)} = <span class="result">${fmt(sol.pneu)} EUR</span></div>
+    </div>`);
+  setLoes('loes-1-4-3', `
+    <div class="teil-loesung-label">LÖSUNG · TEIL III</div>
+    <div class="rechenweg">
+      <div class="step">Einzahlung: j · P<sub>j</sub> = ${fmt(sol.j_mio)} · ${p.pj} = <span class="result">${fmt(sol.einzahlung_mio)} Mio. EUR</span></div>
+      <div class="step">Gez. Kapital (neu) = ${p.gk} + ${fmt(sol.j_mio)}·${p.nw} = <span class="result">${fmt(sol.gkNeu)} Mio. EUR</span></div>
+      <div class="step">Kapitalrücklage (neu) = ${p.kr} + ${fmt(sol.j_mio)}·(${p.pj}−${p.nw}) = ${p.kr} + ${fmt(sol.j_mio*sol.agio)} = <span class="result">${fmt(sol.krNeu)} Mio. EUR</span></div>
+    </div>`);
+  setLoes('loes-1-4-4', `
+    <div class="teil-loesung-label">LÖSUNG · TEIL IV</div>
+    <div class="rechenweg">
+      <div class="step">Quote vorher = ${p.aktien_a.toLocaleString('de-DE')} / ${fmt(sol.a_stk)} = <span class="result">${fmtPct(sol.quote_vorher)} %</span></div>
+      <div class="step">Opération Blanche: A erhält x = ${sol.xFloor} Jungaktien (abgerundet)</div>
+      <div class="step">Quote nachher = (${p.aktien_a.toLocaleString('de-DE')} + ${sol.xFloor}) / (${fmt(sol.a_stk)} + ${fmt(sol.j_stk)}) = <span class="result">${fmtPct(sol.quote_nachher)} %</span></div>
+      <div class="step">Differenz = <span class="result">${fmtPct(sol.quote_diff)} %‑Pkt.</span> — Stimmrechtsverwässerung trotz Opération Blanche, weil Bezugsrechte teilweise verkauft werden mussten.</div>
+    </div>`);
+}
+
+// =============================================================
+//  AUFGABE 1.5 — Varia AG, Gleichgewicht + Opération Blanche Mindestzahl
+// =============================================================
+// ggT zweier Zahlen
+function ggT(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { [a, b] = [b, a % b]; } return a; }
+
+function generateParams_1_5(fixed) {
+  if (fixed) return { gk: 200, nw: 50, pa: 180, pj: 100, gk_erhoehung: 50 };
+  const nw = pickRandom([5, 10, 50, 100]);
+  const bv = pickRandom([2, 3, 4]);
+  const a_mio = pickRandom([2, 3, 4, 5, 6, 8, 10]);
+  const gk = a_mio * nw;
+  const j_mio = a_mio / bv;
+  if (j_mio !== Math.floor(j_mio)) return generateParams_1_5(false);
+  const gk_erhoehung = j_mio * nw;
+  const brTarget = pickRandom([10, 15, 20, 25, 30]);
+  const pa = pickRandom([80, 100, 120, 150, 180, 200]);
+  const pj = pa - brTarget * (bv + 1);
+  if (pj <= nw || pj <= 0 || pj >= pa) return generateParams_1_5(false);
+  return { gk, nw, pa, pj, gk_erhoehung };
+}
+
+function computeSolutions_1_5(p) {
+  const a_mio = p.gk / p.nw;                        // Altaktien in Mio.
+  const j_mio = p.gk_erhoehung / p.nw;              // Jungaktien in Mio.
+  const bv = a_mio / j_mio;                         // Bezugsverhältnis
+  const br = (p.pa - p.pj) / (bv + 1);
+  const pneu = (a_mio * p.pa + j_mio * p.pj) / (a_mio + j_mio);
+  const diff = p.pa - pneu;
+  const marktwert_vorher = a_mio * p.pa;            // in Mio. EUR
+  const marktwert_nachher = (a_mio + j_mio) * pneu;
+  // Herleitung: Weg a) 1 Altaktie zu Pneu; Weg b) BV Bezugsrechte + Pj Zuzahlung
+  const weg_a = pneu;
+  const weg_b = bv * br + p.pj;
+  // Opération Blanche — Mindestzahl Altaktien, damit x ganzzahlig ist
+  // x = N * BR / (Pj + BV*BR) muss ganzzahlig sein
+  // → N muss Vielfaches von (Pj + BV*BR) / ggT(BR, Pj + BV*BR) sein; praktisch: kleinster N mit N*BR % (Pj+BV*BR) = 0
+  // Wir multiplizieren mit geeignetem Faktor:
+  const denom = p.pj + bv * br;    // z.B. 100 + 3*20 = 160
+  const num = br;                   // z.B. 20
+  // N muss so sein, dass N*num/denom ganzzahlig ist
+  // → N = denom / ggT(num, denom) (kleinstes N)
+  const g = ggT(Math.round(num * 100), Math.round(denom * 100));
+  // Explizit runden → garantiert exakte Ganzzahlen, keine Fließkomma-Artefakte
+  const N_min = Math.round(Math.round(denom * 100) / g);
+  const x_min = Math.round((N_min * num * 100) / (denom * 100));
+  return { a_mio, j_mio, bv, br, pneu, diff, marktwert_vorher, marktwert_nachher, weg_a, weg_b, N_min, x_min };
+}
+
+function renderAufgabe_1_5() {
+  const s = state.uebungen[1].aufgaben[5];
+  const sub = getSub(s); if (!sub) { document.getElementById('aufgabeView').innerHTML = `<div style="padding:40px;text-align:center;color:var(--muted);">Keine Daten.</div>`; return; }
+  const p = sub.params;
+  const { modeBadge, timerHtml, trainingActions } = buildAufgabeChrome(s, 1, 5);
+  const view = document.getElementById('aufgabeView');
+  const isDoneLook = (s.mode === 'original' && (s.timerExpired || sub.allCorrect || s.trainingUebung))
+                  || (s.mode === 'training' && sub.allCorrect);
+  view.className = 'aufgabe-view ' + (isDoneLook ? 'done' : '');
+
+  view.innerHTML = `
+    <div class="aufgabe-topbar"><div><h2>Aufgabe 5: Bezugsrechtshandel & Opération Blanche${modeBadge}</h2></div>${timerHtml}</div>
+    <div class="aufgabe-body">
+      <div class="scenario">
+        <p>Die <strong>Varia AG</strong> plant eine ordentliche Kapitalerhöhung:</p>
+        <ul style="margin:8px 0 8px 22px;font-size:0.93rem;">
+          <li>Bisheriges Grundkapital: <strong>${p.gk} Mio. EUR</strong> (Aktien à ${p.nw} EUR)</li>
+          <li>Börsenkurs <strong>P<sub>a</sub> = ${p.pa} EUR</strong> (konstant während Bezugsrechtshandel)</li>
+          <li>Erhöhung des gezeichneten Kapitals um <strong>${p.gk_erhoehung} Mio. EUR</strong> in ${p.nw}-EUR-Aktien</li>
+          <li>Emissionskurs <strong>P<sub>j</sub> = ${p.pj} EUR</strong></li>
+        </ul>
+      </div>
+
+      <div class="teil" id="teil-1-5-1">
+        <div class="teil-label">Teil I — Bezugsverhältnis und Marktwert vor Kapitalerhöhung</div>
+        <div class="teil-text">Bestimmen Sie das Bezugsverhältnis <em>BV</em> (z.&nbsp;B. 4:1) und den Marktwert der Varia AG vor der Kapitalerhöhung. <em>Marktwert in Mio. EUR, ganzzahlig.</em></div>
+        <div class="answer-row">
+          <div class="answer-group"><label>BV =</label><input type="text" class="answer-input" id="ans-1-5-1-bv" placeholder="z.B. 4:1" style="width:100px;"></div>
+          <div class="answer-group"><label>Marktwert vorher =</label><input type="text" class="answer-input" id="ans-1-5-1-mw" placeholder="Mio. EUR" style="width:130px;"><span class="answer-unit">Mio. EUR</span></div>
+          <button class="check-btn" onclick="checkTeil_1_5(1)">Prüfen</button>
+          <span class="answer-feedback" id="fb-1-5-1"></span>
+        </div>
+        <div class="teil-loesung" id="loes-1-5-1"></div>
+      </div>
+
+      <div class="teil" id="teil-1-5-2">
+        <div class="teil-label">Teil II — Bezugsrecht, Mischkurs, Marktwert nachher</div>
+        <div class="teil-text">Berechnen Sie <em>BR</em>, <em>P<sub>neu</sub></em> und den Marktwert der Varia AG nach der Kapitalerhöhung. <em>BR und P<sub>neu</sub> auf zwei Nachkommastellen, Marktwert in Mio. EUR auf zwei Nachkommastellen.</em></div>
+        <div class="answer-row">
+          <div class="answer-group"><label>BR =</label><input type="text" class="answer-input" id="ans-1-5-2-br" placeholder="EUR"><span class="answer-unit">EUR</span></div>
+          <div class="answer-group"><label>P<sub>neu</sub> =</label><input type="text" class="answer-input" id="ans-1-5-2-pneu" placeholder="EUR"><span class="answer-unit">EUR</span></div>
+          <div class="answer-group"><label>Marktwert nachher =</label><input type="text" class="answer-input" id="ans-1-5-2-mw" placeholder="Mio. EUR" style="width:130px;"><span class="answer-unit">Mio. EUR</span></div>
+          <button class="check-btn" onclick="checkTeil_1_5(2)">Prüfen</button>
+          <span class="answer-feedback" id="fb-1-5-2"></span>
+        </div>
+        <div class="teil-loesung" id="loes-1-5-2"></div>
+      </div>
+
+      <div class="teil" id="teil-1-5-3">
+        <div class="teil-label">Teil III — Gleichgewichtsbedingung</div>
+        <div class="teil-text">Ein bisher nicht beteiligter Anleger will nach der Emission genau <strong>1 Aktie</strong> halten. Er hat zwei Wege. Berechnen Sie die Kosten beider Wege. <em>Auf zwei Nachkommastellen in EUR.</em></div>
+        <div class="answer-row">
+          <div class="answer-group"><label>Weg a) Kauf 1 Altaktie =</label><input type="text" class="answer-input" id="ans-1-5-3-wa" placeholder="EUR" style="width:130px;"><span class="answer-unit">EUR</span></div>
+          <div class="answer-group"><label>Weg b) BV BR + P<sub>j</sub> =</label><input type="text" class="answer-input" id="ans-1-5-3-wb" placeholder="EUR" style="width:130px;"><span class="answer-unit">EUR</span></div>
+          <button class="check-btn" onclick="checkTeil_1_5(3)">Prüfen</button>
+          <span class="answer-feedback" id="fb-1-5-3"></span>
+        </div>
+        <div class="teil-loesung" id="loes-1-5-3"></div>
+      </div>
+
+      <div class="teil" id="teil-1-5-4">
+        <div class="teil-label">Teil IV — Mindestzahl für Opération Blanche</div>
+        <div class="teil-text">Ein Anleger möchte eine Opération Blanche so durchführen, dass <strong>exakt kein Bargeld freigesetzt oder eingesetzt</strong> wird (keine Restgröße, keine Abrundung). Wie viele Altaktien benötigt er <strong>mindestens</strong> für diese ganzzahlige Opération Blanche? Wie viele Jungaktien erhält er dann?<br><em>Beide Werte ganzzahlig in Stück.</em></div>
+        <div class="answer-row">
+          <div class="answer-group"><label>N<sub>min</sub> Altaktien =</label><input type="text" class="answer-input" id="ans-1-5-4-n" placeholder="Stück" style="width:110px;"><span class="answer-unit">Stück</span></div>
+          <div class="answer-group"><label>Jungaktien =</label><input type="text" class="answer-input" id="ans-1-5-4-x" placeholder="Stück" style="width:110px;"><span class="answer-unit">Stück</span></div>
+          <button class="check-btn" onclick="checkTeil_1_5(4)">Prüfen</button>
+          <span class="answer-feedback" id="fb-1-5-4"></span>
+        </div>
+        <div class="teil-loesung" id="loes-1-5-4"></div>
+      </div>
+    </div>
+  `;
+  finalizeAufgabeRender(s, sub, view, trainingActions, 4, 'regenerateTraining(1,5)', showAllLoesungen_1_5);
+}
+
+function checkTeil_1_5(teil) {
+  const s = state.uebungen[1].aufgaben[5];
+  const sub = getSub(s); if (!sub) return;
+  const sol = sub.solutions;
+  let ok = false;
+  switch (teil) {
+    case 1: {
+      const bvStr = document.getElementById('ans-1-5-1-bv').value.trim();
+      let bvVal;
+      bvVal = parseNum(bvStr);  // Handhabt sowohl '4:1' als auch '4,00' und '4'
+      const mw = parseNum(document.getElementById('ans-1-5-1-mw').value);
+      const bvOk = approxEqual(bvVal, sol.bv); const mwOk = approxEqual(mw, sol.marktwert_vorher);
+      setInputState('ans-1-5-1-bv', bvOk); setInputState('ans-1-5-1-mw', mwOk);
+      ok = bvOk && mwOk; break;
+    }
+    case 2: {
+      const br = parseNum(document.getElementById('ans-1-5-2-br').value);
+      const pneu = parseNum(document.getElementById('ans-1-5-2-pneu').value);
+      const mw = parseNum(document.getElementById('ans-1-5-2-mw').value);
+      const brOk = approxEqual(br, sol.br); const pOk = approxEqual(pneu, sol.pneu); const mOk = approxEqual(mw, sol.marktwert_nachher);
+      setInputState('ans-1-5-2-br', brOk); setInputState('ans-1-5-2-pneu', pOk); setInputState('ans-1-5-2-mw', mOk);
+      ok = brOk && pOk && mOk; break;
+    }
+    case 3: {
+      const wa = parseNum(document.getElementById('ans-1-5-3-wa').value);
+      const wb = parseNum(document.getElementById('ans-1-5-3-wb').value);
+      const waOk = approxEqual(wa, sol.weg_a); const wbOk = approxEqual(wb, sol.weg_b);
+      setInputState('ans-1-5-3-wa', waOk); setInputState('ans-1-5-3-wb', wbOk);
+      ok = waOk && wbOk; break;
+    }
+    case 4: {
+      const n = parseNum(document.getElementById('ans-1-5-4-n').value);
+      const x = parseNum(document.getElementById('ans-1-5-4-x').value);
+      const nOk = approxEqualInt(n, sol.N_min); const xOk = approxEqualInt(x, sol.x_min);
+      setInputState('ans-1-5-4-n', nOk); setInputState('ans-1-5-4-x', xOk);
+      ok = nOk && xOk; break;
+    }
+  }
+  finalizeCheck(s, sub, `fb-1-5-${teil}`, `teil-1-5-${teil}`, 1, 5, teil, ok, 4, showAllLoesungen_1_5);
+}
+
+function showAllLoesungen_1_5() {
+  const s = state.uebungen[1].aufgaben[5];
+  const sub = getSub(s); if (!sub) return;
+  const p = sub.params, sol = sub.solutions;
+  const fmt = n => Number.isInteger(n) ? n.toLocaleString('de-DE') : n.toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2});
+  setLoes('loes-1-5-1', `
+    <div class="teil-loesung-label">LÖSUNG · TEIL I</div>
+    <div class="rechenweg">
+      <div class="step">a = ${p.gk} / ${p.nw} = ${fmt(sol.a_mio)} Mio. · j = ${p.gk_erhoehung} / ${p.nw} = ${fmt(sol.j_mio)} Mio.</div>
+      <div class="step">BV = a : j = <span class="result">${fmt(sol.bv)} : 1</span></div>
+      <div class="step">Marktwert vorher = ${fmt(sol.a_mio)} · ${p.pa} = <span class="result">${fmt(sol.marktwert_vorher)} Mio. EUR</span></div>
+    </div>`);
+  setLoes('loes-1-5-2', `
+    <div class="teil-loesung-label">LÖSUNG · TEIL II</div>
+    <div class="rechenweg">
+      <div class="step">BR = (${p.pa} − ${p.pj}) / (${fmt(sol.bv)} + 1) = <span class="result">${fmt(sol.br)} EUR</span></div>
+      <div class="step">P<sub>neu</sub> = (${fmt(sol.a_mio*p.pa)} + ${fmt(sol.j_mio*p.pj)}) / ${fmt(sol.a_mio+sol.j_mio)} = <span class="result">${fmt(sol.pneu)} EUR</span></div>
+      <div class="step">Marktwert nachher = (${fmt(sol.a_mio)} + ${fmt(sol.j_mio)}) · ${fmt(sol.pneu)} = <span class="result">${fmt(sol.marktwert_nachher)} Mio. EUR</span></div>
+      <div class="step">Kontrolle: Marktwert nachher = Marktwert vorher + Einzahlung = ${fmt(sol.marktwert_vorher)} + ${fmt(sol.j_mio*p.pj)} = ${fmt(sol.marktwert_vorher + sol.j_mio*p.pj)} Mio. EUR ✓</div>
+    </div>`);
+  setLoes('loes-1-5-3', `
+    <div class="teil-loesung-label">LÖSUNG · TEIL III</div>
+    <div class="rechenweg">
+      <div class="step">Weg a): 1 Altaktie zum Kurs P<sub>neu</sub> = <span class="result">${fmt(sol.weg_a)} EUR</span></div>
+      <div class="step">Weg b): ${fmt(sol.bv)} Bezugsrechte + P<sub>j</sub> = ${fmt(sol.bv)} · ${fmt(sol.br)} + ${p.pj} = <span class="result">${fmt(sol.weg_b)} EUR</span></div>
+    </div>
+    <p style="font-size:0.92rem;">Im Gleichgewicht müssen beide Wege gleich teuer sein — sonst könnte man durch Arbitrage risikofrei gewinnen. Aus <strong>P<sub>neu</sub> = BV · BR + P<sub>j</sub></strong> folgt durch Einsetzen von P<sub>neu</sub> = (a·P<sub>a</sub> + j·P<sub>j</sub>)/(a+j) und Umformen die bekannte Bezugsrechtsformel <strong>BR = (P<sub>a</sub> − P<sub>j</sub>) / (BV + 1)</strong>.</p>`);
+  setLoes('loes-1-5-4', `
+    <div class="teil-loesung-label">LÖSUNG · TEIL IV</div>
+    <div class="rechenweg">
+      <div class="step">Bedingung Opération Blanche: Erlös aus BR-Verkauf = Zuzahlung</div>
+      <div class="step">(N − BV · x) · BR = x · P<sub>j</sub> &nbsp;&nbsp;→&nbsp;&nbsp; x = N · BR / (P<sub>j</sub> + BV · BR)</div>
+      <div class="step">Mit den konkreten Werten: x = N · ${fmt(sol.br)} / (${p.pj} + ${fmt(sol.bv)} · ${fmt(sol.br)}) = N · ${fmt(sol.br)} / ${fmt(p.pj + sol.bv*sol.br)}</div>
+      <div class="step">x ist nur dann ganzzahlig, wenn N Vielfaches von ${fmt((p.pj + sol.bv*sol.br) / ggT(Math.round(sol.br*100), Math.round((p.pj + sol.bv*sol.br)*100)) )} ist.</div>
+      <div class="step">Kleinstes N = <span class="result">${sol.N_min.toLocaleString('de-DE')} Altaktien</span> → x = <span class="result">${sol.x_min.toLocaleString('de-DE')} Jungaktien</span></div>
+    </div>`);
+}
+
+// =============================================================
+//  AUFGABE 1.6 — KPRIM (5 Fragen × 4 Aussagen)
+// =============================================================
+const KPRIM_FRAGEN = [
+  {
+    titel: 'Frage 1 — Bezugsrecht',
+    aussagen: [
+      { text: 'Durch vollständige Ausübung seines Bezugsrechts kann ein Altaktionär seine Stimmrechtsquote konstant halten.', korrekt: true },
+      { text: 'Der rechnerische Wert des Bezugsrechts ist unabhängig vom Bezugsverhältnis.', korrekt: false },
+      { text: 'Je höher der Emissionskurs P<sub>j</sub> (ceteris paribus), desto niedriger der rechnerische Wert des Bezugsrechts.', korrekt: true },
+      { text: 'Ohne Bezugsrechtshandel erleidet ein Altaktionär, der sein Bezugsrecht ungenutzt verfallen lässt, einen Vermögensschaden in Höhe des Bezugsrechts je Altaktie.', korrekt: true },
+    ],
+  },
+  {
+    titel: 'Frage 2 — Mischkurs & Verwässerung',
+    aussagen: [
+      { text: 'Der Mischkurs P<sub>neu</sub> liegt grundsätzlich zwischen P<sub>j</sub> und P<sub>a</sub>, sofern P<sub>j</sub> &lt; P<sub>a</sub>.', korrekt: true },
+      { text: 'Je größer der Abstand P<sub>a</sub> − P<sub>j</sub>, desto stärker sinkt P<sub>neu</sub> gegenüber P<sub>a</sub>.', korrekt: true },
+      { text: 'Der Kompensationseffekt beschreibt, dass der Vermögensverlust durch Kursverwässerung durch den Wert des Bezugsrechts ausgeglichen wird.', korrekt: true },
+      { text: 'Der Verwässerungseffekt tritt nur bei genehmigten Kapitalerhöhungen auf.', korrekt: false },
+    ],
+  },
+  {
+    titel: 'Frage 3 — Bilanzielle Abbildung',
+    aussagen: [
+      { text: 'Bei einer Kapitalerhöhung gegen Bareinlage steigt das Gezeichnete Kapital um j · Nennwert.', korrekt: true },
+      { text: 'Das Agio (P<sub>j</sub> − Nennwert) wird je Jungaktie der Kapitalrücklage zugeführt.', korrekt: true },
+      { text: 'Bei einer Kapitalerhöhung gegen Bareinlage steigt das Umlaufvermögen um j · P<sub>j</sub>.', korrekt: true },
+      { text: 'Liegt der Emissionskurs unter dem Nennwert, ist die Kapitalerhöhung gesetzlich zulässig, solange die Hauptversammlung zustimmt.', korrekt: false },
+    ],
+  },
+  {
+    titel: 'Frage 4 — Opération Blanche',
+    aussagen: [
+      { text: 'Bei einer Opération Blanche setzt der Altaktionär kein zusätzliches Kapital ein.', korrekt: true },
+      { text: 'Bei einer Opération Blanche bleibt die Stimmrechtsquote des Altaktionärs exakt erhalten.', korrekt: false },
+      { text: 'Das Gesamtvermögen (Aktien + Bargeld) des Altaktionärs bleibt durch die Opération Blanche grundsätzlich unverändert.', korrekt: true },
+      { text: 'Ein Aktionär, der auf sein Bezugsrecht verzichtet und es nicht verkauft, steht vermögensmäßig schlechter da als ein Aktionär, der eine Opération Blanche durchführt.', korrekt: true },
+    ],
+  },
+  {
+    titel: 'Frage 5 — Kapitalerhöhungsarten & Rahmenbedingungen',
+    aussagen: [
+      { text: 'Eine ordentliche Kapitalerhöhung bedarf eines HV-Beschlusses mit 3/4-Mehrheit des vertretenen Grundkapitals.', korrekt: true },
+      { text: 'Bei einer Kapitalerhöhung aus Gesellschaftsmitteln fließen dem Unternehmen zusätzliche liquide Mittel zu.', korrekt: false },
+      { text: 'Das genehmigte Kapital erlaubt dem Vorstand, innerhalb einer bestimmten Frist und bis zu einer festgelegten Höhe Kapital zu erhöhen.', korrekt: true },
+      { text: 'Bei bedingter Kapitalerhöhung bestimmt sich der Umfang nach der Inanspruchnahme (z.&nbsp;B. durch Optionsausübung) und nicht nach einem festen Betrag.', korrekt: true },
+    ],
+  },
+];
+
+function generateParams_1_6(fixed) {
+  // KPRIM ist in jedem Modus identisch — keine Randomisierung nötig
+  return { fragen: KPRIM_FRAGEN };
+}
+function computeSolutions_1_6(p) {
+  return { fragen: p.fragen.map(f => f.aussagen.map(a => a.korrekt)) };
+}
+
+function renderAufgabe_1_6() {
+  const s = state.uebungen[1].aufgaben[6];
+  const sub = getSub(s); if (!sub) { document.getElementById('aufgabeView').innerHTML = `<div style="padding:40px;text-align:center;color:var(--muted);">Keine Daten.</div>`; return; }
+  const p = sub.params;
+  const { modeBadge, timerHtml, trainingActions } = buildAufgabeChrome(s, 1, 6);
+  const view = document.getElementById('aufgabeView');
+  const isDoneLook = (s.mode === 'original' && (s.timerExpired || sub.allCorrect || s.trainingUebung))
+                  || (s.mode === 'training' && sub.allCorrect);
+  view.className = 'aufgabe-view ' + (isDoneLook ? 'done' : '');
+
+  let teileHtml = '';
+  p.fragen.forEach((f, i) => {
+    const qNr = i + 1;
+    let aussagenHtml = '';
+    f.aussagen.forEach((a, j) => {
+      const letter = String.fromCharCode(97 + j); // a, b, c, d
+      aussagenHtml += `
+        <div class="kprim-row">
+          <div class="kprim-letter">${letter})</div>
+          <div class="kprim-text">${a.text}</div>
+          <div class="kprim-radios">
+            <label><input type="radio" name="q${qNr}-${j}" value="W"> W</label>
+            <label><input type="radio" name="q${qNr}-${j}" value="F"> F</label>
+          </div>
+        </div>`;
+    });
+    teileHtml += `
+      <div class="teil" id="teil-1-6-${qNr}">
+        <div class="teil-label">${f.titel}</div>
+        <div class="teil-text" style="margin-bottom:6px;">Kreuzen Sie für jede Aussage <strong>W</strong>ahr oder <strong>F</strong>alsch an. Die Frage gilt nur als gelöst, wenn <em>alle vier</em> Aussagen korrekt bewertet sind.</div>
+        ${aussagenHtml}
+        <div style="margin-top:12px;">
+          <button class="check-btn" onclick="checkTeil_1_6(${qNr})">Prüfen</button>
+          <span class="answer-feedback" id="fb-1-6-${qNr}"></span>
+        </div>
+        <div class="teil-loesung" id="loes-1-6-${qNr}"></div>
+      </div>`;
+  });
+
+  view.innerHTML = `
+    <div class="aufgabe-topbar"><div><h2>Aufgabe 6: Verständnis-Check (KPRIM)${modeBadge}</h2></div>${timerHtml}</div>
+    <div class="aufgabe-body">
+      <div class="scenario">
+        <p><strong>Format:</strong> 5 Fragen zu den Themen der Aufgaben 1–5. Je Frage vier Aussagen, die jeweils als <strong>W</strong>ahr oder <strong>F</strong>alsch zu markieren sind. Nur bei allen vier korrekten Antworten gilt die Frage als gelöst. Timer: 15 Minuten.</p>
+      </div>
+      ${teileHtml}
+    </div>
+  `;
+  finalizeAufgabeRender(s, sub, view, trainingActions, 5, 'regenerateTraining(1,6)', showAllLoesungen_1_6);
+}
+
+function checkTeil_1_6(qNr) {
+  const s = state.uebungen[1].aufgaben[6];
+  const sub = getSub(s); if (!sub) return;
+  const sol = sub.solutions.fragen[qNr - 1]; // Array mit 4 Booleans
+  let ok = true;
+  let fehlend = 0;
+  for (let j = 0; j < 4; j++) {
+    const chosen = document.querySelector(`input[name="q${qNr}-${j}"]:checked`);
+    if (!chosen) { ok = false; fehlend++; continue; }
+    const val = chosen.value === 'W';
+    if (val !== sol[j]) ok = false;
+  }
+
+  // Spezifisches Feedback für KPRIM (ohne die konkrete Lösung zu verraten):
+  // bei nicht vollständiger Beantwortung Hinweis, bei falscher Antwort klarer Text.
+  const fb = document.getElementById(`fb-1-6-${qNr}`);
+  if (ok) {
+    fb.textContent = '✓ Alle vier Aussagen korrekt bewertet!';
+    fb.className = 'answer-feedback ok';
+    document.getElementById(`teil-1-6-${qNr}`).classList.add('correct');
+    sub.teileCorrect[qNr] = true;
+  } else if (fehlend > 0) {
+    fb.textContent = `⚠ Noch ${fehlend} Aussage${fehlend === 1 ? '' : 'n'} unbeantwortet.`;
+    fb.className = 'answer-feedback nok';
+    sub.teileCorrect[qNr] = false;
+  } else {
+    fb.textContent = '✗ Mindestens eine Aussage ist falsch bewertet.';
+    fb.className = 'answer-feedback nok';
+    sub.teileCorrect[qNr] = false;
+  }
+
+  // allCorrect-Prüfung wie in finalizeCheck (für Status-Updates + saveState)
+  let allOk = true;
+  for (let i = 1; i <= 5; i++) if (!sub.teileCorrect[i]) { allOk = false; break; }
+  sub.allCorrect = allOk;
+  if (allOk) {
+    showAllLoesungen_1_6();
+    document.getElementById('aufgabeView').classList.add('done');
+  }
+  saveState();
+}
+
+function showAllLoesungen_1_6() {
+  const s = state.uebungen[1].aufgaben[6];
+  const sub = getSub(s); if (!sub) return;
+  const p = sub.params;
+  p.fragen.forEach((f, i) => {
+    const qNr = i + 1;
+    let aussagenHtml = '';
+    f.aussagen.forEach((a, j) => {
+      const letter = String.fromCharCode(97 + j);
+      const label = a.korrekt ? 'W' : 'F';
+      const color = a.korrekt ? 'rgb(var(--th-green))' : 'rgb(var(--th-rot))';
+      aussagenHtml += `<div class="step"><strong>${letter}) ${label}</strong> <span style="color:${color};"></span> — ${a.text}</div>`;
+    });
+    setLoes(`loes-1-6-${qNr}`, `
+      <div class="teil-loesung-label">LÖSUNG · ${f.titel.toUpperCase()}</div>
+      <div class="rechenweg">${aussagenHtml}</div>
+    `);
+  });
+}
+
+// Beim Seiten-Reload: Timer anhand des absoluten Endzeitpunkts wiederherstellen.
+// Tab-schließen verlängert damit NICHT mehr die Bearbeitungszeit.
+function restoreTimers() {
+  for (const uNr of Object.keys(state.uebungen)) {
+    const u = state.uebungen[uNr];
+    for (const aNr of Object.keys(u.aufgaben)) {
+      const s = u.aufgaben[aNr];
+      if (s.unlocked && !s.timerExpired && !s.trainingUebung && s.timerEndTime) {
+        const remaining = Math.max(0, Math.round((s.timerEndTime - Date.now()) / 1000));
+        s.timerRemaining = remaining;
+        if (remaining <= 0) {
+          // Zeit war während Offline-Phase abgelaufen
+          s.timerRunning = false;
+          s.timerExpired = true;
+          onTimerExpired(parseInt(uNr), parseInt(aNr));
+        } else {
+          s.timerRunning = false;
+          startTimer(parseInt(uNr), parseInt(aNr));
+        }
+      }
+    }
+  }
+}
+</script>
+</body>
+</html>
