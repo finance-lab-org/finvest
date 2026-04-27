@@ -1,0 +1,1795 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Übung I · Kapitalerhöhung & Bezugsrecht — TH Köln</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    /* TH Köln Farben */
+    --th-rot:       #C90C0F;
+    --th-orange:    #EA5B0C;
+    --th-violett:   #B82585;
+    --th-rot-soft:    #FBE7E7;
+    --th-orange-soft: #FFF3E9;
+    --th-violett-soft:#F7ECF3;
+
+    /* Neutrale Skala */
+    --bg:        #FAFAFA;
+    --card:      #FFFFFF;
+    --ink:       #1A1A1A;
+    --ink-soft:  #404040;
+    --ink-muted: #737373;
+    --ink-faint: #A3A3A3;
+    --rule:      #E5E5E5;
+    --rule-soft: #F0F0F0;
+
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 40px 32px 80px;
+  }
+
+  /* ───── HEADER ───── */
+  header.masthead {
+    border-bottom: 2px solid var(--th-rot);
+    padding-bottom: 28px;
+    margin-bottom: 40px;
+  }
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--th-rot);
+    margin-bottom: 12px;
+  }
+  h1.masthead-title {
+    font-weight: 700;
+    font-size: clamp(32px, 4vw, 44px);
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .masthead-sub {
+    font-size: 16px;
+    color: var(--ink-muted);
+    max-width: 720px;
+  }
+
+  /* ───── NAV ───── */
+  nav.toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 40px;
+    padding: 12px;
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+  }
+  nav.toc a {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    transition: all 0.15s;
+  }
+  nav.toc a:hover {
+    background: var(--th-orange-soft);
+    color: var(--th-orange);
+  }
+
+  /* ───── SECTIONS ───── */
+  section {
+    margin-bottom: 64px;
+    scroll-margin-top: 24px;
+  }
+  .section-head {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 12px;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--th-rot);
+    letter-spacing: 0.1em;
+  }
+  .section-title {
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .section-lead {
+    font-size: 15px;
+    color: var(--ink-muted);
+    max-width: 820px;
+    margin-bottom: 24px;
+    margin-top: -12px;
+  }
+
+  /* ───── CARDS ───── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+  }
+  .card-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--th-violett);
+    margin-bottom: 8px;
+  }
+  .card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+  @media (max-width: 900px) {
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  }
+
+  /* ───── KE-TYPEN TABS ───── */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 20px;
+  }
+  .tab-btn {
+    padding: 10px 16px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-muted);
+    transition: all 0.15s;
+    margin-bottom: -1px;
+  }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active {
+    color: var(--th-rot);
+    border-bottom-color: var(--th-rot);
+  }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .ke-type-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 24px;
+  }
+  @media (max-width: 800px) { .ke-type-grid { grid-template-columns: 1fr; } }
+
+  .ke-type-meta {
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin-top: 8px;
+    padding: 6px 10px;
+    background: var(--bg);
+    border-radius: 4px;
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ───── STEUERPULT ───── */
+  .control-panel {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-md);
+  }
+  .control-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 1100px) { .control-row { grid-template-columns: repeat(2, 1fr); } }
+
+  .control {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .control-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-muted);
+    font-weight: 500;
+  }
+  .control input[type="number"] {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 6px 10px;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    background: var(--th-orange-soft);
+    color: var(--ink);
+    width: 100%;
+  }
+  .control input[type="number"]:focus {
+    outline: 2px solid var(--th-orange);
+    outline-offset: -1px;
+  }
+
+  .preset-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .preset-label {
+    font-size: 11px;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-right: 6px;
+  }
+  .preset-btn {
+    padding: 5px 12px;
+    background: transparent;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    color: var(--ink-soft);
+    transition: all 0.15s;
+  }
+  .preset-btn:hover {
+    border-color: var(--th-violett);
+    color: var(--th-violett);
+  }
+
+  .mode-toggle {
+    display: inline-flex;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-left: auto;
+  }
+  .mode-toggle button {
+    padding: 5px 10px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    color: var(--ink-muted);
+  }
+  .mode-toggle button.active {
+    background: var(--th-rot);
+    color: white;
+  }
+
+  /* ───── KPI CARDS ───── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  @media (max-width: 1100px) { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 700px)  { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  .kpi {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--th-violett);
+    border-radius: 6px;
+    padding: 14px 16px;
+  }
+  .kpi-label {
+    font-size: 11px;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .kpi-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .kpi-unit {
+    font-size: 11px;
+    color: var(--ink-muted);
+    margin-left: 4px;
+    font-family: 'Inter', sans-serif;
+  }
+  .kpi.highlight {
+    border-left-color: var(--th-rot);
+    background: var(--th-rot-soft);
+  }
+  .kpi.highlight .kpi-value { color: var(--th-rot); }
+
+  /* ───── FORMEL-BOX ───── */
+  .formula-box {
+    background: var(--th-violett-soft);
+    border-left: 3px solid var(--th-violett);
+    padding: 12px 16px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    margin: 12px 0;
+    color: var(--ink);
+  }
+  .formula-box strong { color: var(--th-violett); }
+
+  /* ───── TABELLEN ───── */
+  .table-clean {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .table-clean th {
+    text-align: left;
+    font-weight: 500;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .table-clean td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .table-clean td.num {
+    font-family: 'JetBrains Mono', monospace;
+    text-align: right;
+    font-weight: 500;
+  }
+  .table-clean tr:last-child td { border-bottom: none; }
+  .table-clean tr.sum td {
+    border-top: 2px solid var(--ink);
+    font-weight: 600;
+  }
+
+  /* ───── PERSONA-KARTEN ───── */
+  .persona-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 1100px) { .persona-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px)  { .persona-grid { grid-template-columns: 1fr; } }
+
+  .persona {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .persona-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 10px;
+  }
+  .persona-name {
+    font-weight: 600;
+    font-size: 15px;
+  }
+  .persona-tag {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--th-violett);
+    font-weight: 600;
+  }
+  .persona-strategy {
+    font-size: 12px;
+    color: var(--ink-muted);
+    line-height: 1.4;
+  }
+  .persona-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    font-size: 13px;
+  }
+  .persona-row .lab {
+    color: var(--ink-muted);
+  }
+  .persona-row .val {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+  }
+  .persona-delta {
+    margin-top: 6px;
+    padding: 8px 10px;
+    background: var(--bg);
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+  }
+  .persona-delta.zero { background: var(--th-orange-soft); }
+  .persona-delta .val { font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+  .persona-delta.zero .val { color: var(--th-orange); }
+  .persona-delta.pos  .val { color: #2D6A3F; }
+  .persona-delta.neg  .val { color: var(--th-rot); }
+
+  .persona-input {
+    margin-top: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .persona-input label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-muted);
+  }
+  .persona-input input {
+    padding: 5px 8px;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    background: var(--th-orange-soft);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    width: 100%;
+  }
+
+  /* ───── BILANZ-DUO ───── */
+  .bilanz-duo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  @media (max-width: 800px) { .bilanz-duo { grid-template-columns: 1fr; } }
+
+  .bilanz {
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .bilanz-head {
+    background: var(--bg);
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .bilanz-head .title {
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .bilanz-head .when {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--th-rot);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .bilanz table { width: 100%; }
+  .bilanz table td {
+    padding: 6px 16px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .bilanz table td.num {
+    font-family: 'JetBrains Mono', monospace;
+    text-align: right;
+  }
+  .bilanz table tr.subhead td {
+    background: var(--bg);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--th-violett);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 6px 16px;
+  }
+  .bilanz table tr.sum td {
+    border-top: 2px solid var(--ink);
+    font-weight: 700;
+    background: var(--bg);
+  }
+  .bilanz table tr.delta td.num {
+    color: var(--th-rot);
+  }
+
+  /* ───── KLAUSUR-AUFGABE ───── */
+  .klausur-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  @media (max-width: 800px) { .klausur-grid { grid-template-columns: 1fr; } }
+
+  .klausur-step {
+    padding: 12px 16px;
+    border-left: 3px solid var(--th-violett);
+    background: var(--th-violett-soft);
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+  .klausur-step .step-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--th-violett);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .klausur-step .step-formula {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin: 4px 0;
+  }
+  .klausur-step .step-result {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  /* ───── HINWEIS-BOXEN ───── */
+  .note {
+    background: var(--th-orange-soft);
+    border-left: 3px solid var(--th-orange);
+    padding: 12px 16px;
+    border-radius: 4px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin: 16px 0;
+  }
+  .note strong { color: var(--th-orange); }
+
+  .legal-ref {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-muted);
+    background: var(--bg);
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--rule);
+    display: inline-block;
+  }
+
+  /* ───── CHARTS ───── */
+  .chart-wrap {
+    position: relative;
+    height: 280px;
+  }
+
+  /* ───── FOOTER ───── */
+  footer {
+    margin-top: 80px;
+    padding-top: 32px;
+    border-top: 1px solid var(--rule);
+    color: var(--ink-muted);
+    font-size: 12px;
+  }
+  footer .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 800px) { footer .footer-grid { grid-template-columns: 1fr; } }
+  footer h4 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  footer ul { list-style: none; }
+  footer li { padding: 2px 0; }
+
+  /* ───── UTILS ───── */
+  .num-mono { font-family: 'JetBrains Mono', monospace; font-weight: 500; }
+  .text-rot     { color: var(--th-rot); }
+  .text-orange  { color: var(--th-orange); }
+  .text-violett { color: var(--th-violett); }
+  .accent-bar {
+    width: 32px; height: 2px;
+    background: var(--th-rot);
+    margin-bottom: 12px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header class="masthead">
+  <div class="eyebrow">Übung I · Einlagen- und Beteiligungsfinanzierung</div>
+  <h1 class="masthead-title">Kapitalerhöhung &amp; Bezugsrecht</h1>
+  <p class="masthead-sub">
+    Interaktives Lernwerkzeug zur Vorlesung. Begleitend zur Excel-Musterlösung mit derselben
+    Fallstudie HYBRID-AG. Zahlenbeispiele, Mechanik, Aktionärsstrategien und Klausurmodus —
+    alles live durchspielbar.
+  </p>
+</header>
+
+<!-- ═══════════ NAV ═══════════ -->
+<nav class="toc">
+  <a href="#grundlagen">I · Grundlagen</a>
+  <a href="#arten">II · Arten der KE</a>
+  <a href="#mechanik">III · Mechanik &amp; Marktwirkung</a>
+  <a href="#strategien">IV · Aktionärs-Strategien</a>
+  <a href="#bilanz">V · Bilanzwirkung</a>
+  <a href="#ausschluss">VI · Bezugsrechtsausschluss</a>
+  <a href="#klausur">VII · Klausurmodus</a>
+</nav>
+
+<!-- ═══════════ I · GRUNDLAGEN ═══════════ -->
+<section id="grundlagen">
+  <div class="section-head">
+    <div class="section-num">I</div>
+    <div class="section-title">Grundlagen der Außenfinanzierung mit Eigenkapital</div>
+  </div>
+  <p class="section-lead">
+    Wenn ein Unternehmen Eigenkapital von außen aufnimmt, sprechen wir je nach Rechtsform
+    von Einlagen- oder Beteiligungsfinanzierung. Der Unterschied liegt nicht in der Wirkung,
+    sondern in der Form des Anteils und in der Möglichkeit, neue Eigenkapitalgeber an den
+    Kapitalmarkt zu bringen.
+  </p>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Einlagenfinanzierung</div>
+      <h3>Personengesellschaften &amp; GmbH</h3>
+      <p>
+        Bestehende oder neue Gesellschafter leisten zusätzliche Einlagen. Die Anteile sind
+        nicht emissionsfähig — sie werden privat zwischen den Gesellschaftern und der
+        Gesellschaft vereinbart.
+      </p>
+      <p style="margin-top:10px; color:var(--ink-muted); font-size:13px;">
+        Typische Rechtsformen: OHG, KG, GmbH. Anteile werden im Einzelvertrag oder im
+        Gesellschafterbeschluss übertragen.
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Beteiligungsfinanzierung</div>
+      <h3>Aktiengesellschaft</h3>
+      <p>
+        Die AG kann Eigenkapital über die Ausgabe neuer Aktien aufnehmen — entweder
+        börslich oder im Wege einer Privatplatzierung. Anteile sind standardisiert,
+        handelbar und an einem öffentlichen Markt bewertbar.
+      </p>
+      <p style="margin-top:10px; color:var(--ink-muted); font-size:13px;">
+        Geregelt in §§ 182 ff. AktG. Diese Übung fokussiert auf die ordentliche
+        Kapitalerhöhung der AG.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ II · ARTEN DER KE ═══════════ -->
+<section id="arten">
+  <div class="section-head">
+    <div class="section-num">II</div>
+    <div class="section-title">Vier Arten der Kapitalerhöhung</div>
+  </div>
+  <p class="section-lead">
+    Das Aktiengesetz kennt vier Erhöhungstypen. Drei davon verändern das tatsächlich
+    eingelegte Eigenkapital, einer ist eine reine Umbuchung aus den Rücklagen.
+  </p>
+
+  <div class="card">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="ordentlich">Ordentliche KE</button>
+      <button class="tab-btn" data-tab="bedingt">Bedingte KE</button>
+      <button class="tab-btn" data-tab="genehmigt">Genehmigte KE</button>
+      <button class="tab-btn" data-tab="gesellschaft">KE aus Gesellschaftsmitteln</button>
+    </div>
+
+    <div class="tab-content active" id="tab-ordentlich">
+      <div class="ke-type-grid">
+        <div>
+          <h3>Ordentliche Kapitalerhöhung</h3>
+          <p>
+            Die Hauptversammlung beschließt mit ¾-Mehrheit eine konkrete Erhöhung des
+            Grundkapitals. Es werden neue Aktien ausgegeben, Altaktionären steht ein
+            gesetzliches Bezugsrecht zu (§ 186 AktG), das vor der Verwässerung schützt.
+          </p>
+          <p style="margin-top:10px;">
+            Die jungen Aktien werden zu einem Ausgabekurs <strong>P<sub>j</sub></strong>
+            emittiert, der zwischen Nennwert und Börsenkurs <strong>P<sub>a</sub></strong>
+            liegen muss.
+          </p>
+          <span class="ke-type-meta">§§ 182 – 191 AktG</span>
+        </div>
+        <div class="card" style="background:var(--bg); border:1px dashed var(--rule);">
+          <div class="card-title">Wirkung</div>
+          <p style="font-size:13px;">
+            Tatsächlicher Mittelzufluss an die Gesellschaft (Cash auf der Aktiv-Seite).
+            Gezeichnetes Kapital steigt um Anzahl junger Aktien × Nennwert; die Differenz
+            zum Ausgabekurs (Agio) wird in die Kapitalrücklage eingestellt
+            (§ 272 II Nr. 1 HGB).
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-bedingt">
+      <div class="ke-type-grid">
+        <div>
+          <h3>Bedingte Kapitalerhöhung</h3>
+          <p>
+            Erhöhung nur, soweit von einem Bezugs- oder Umtauschrecht Gebrauch gemacht
+            wird. Klassische Anwendung: Ausgabe von Wandelanleihen, Mitarbeiteroptionen
+            oder Aktien für Unternehmenszusammenschlüsse.
+          </p>
+          <p style="margin-top:10px;">
+            Bedingung: Höchstens 50 % des Grundkapitals; bei Mitarbeiterprogrammen
+            10 % (§ 192 III AktG).
+          </p>
+          <span class="ke-type-meta">§§ 192 – 201 AktG</span>
+        </div>
+        <div class="card" style="background:var(--bg); border:1px dashed var(--rule);">
+          <div class="card-title">Wirkung</div>
+          <p style="font-size:13px;">
+            Erhöhung ist <em>bedingt</em> auf das Verhalten der Berechtigten — Mittelzufluss
+            erfolgt nur bei Ausübung. Bezugsrecht der Altaktionäre ist gesetzlich
+            ausgeschlossen.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-genehmigt">
+      <div class="ke-type-grid">
+        <div>
+          <h3>Genehmigtes Kapital</h3>
+          <p>
+            Die Hauptversammlung ermächtigt den Vorstand, innerhalb von höchstens fünf
+            Jahren das Grundkapital um bis zu 50 % zu erhöhen. Der Vorstand kann
+            flexibel auf Marktopportunitäten reagieren, ohne erneut die HV einberufen
+            zu müssen.
+          </p>
+          <p style="margin-top:10px;">
+            Sehr verbreitet bei börsennotierten AGs. Die Ermächtigung ist Standardbestandteil
+            der Tagesordnung jeder ordentlichen HV.
+          </p>
+          <span class="ke-type-meta">§§ 202 – 206 AktG</span>
+        </div>
+        <div class="card" style="background:var(--bg); border:1px dashed var(--rule);">
+          <div class="card-title">Wirkung</div>
+          <p style="font-size:13px;">
+            Bei Ausnutzung wirkt sie wie eine ordentliche KE (Mittelzufluss, Agio in die
+            Kapitalrücklage). Vorteil ist die Geschwindigkeit der Umsetzung, da der
+            HV-Beschluss bereits vorliegt.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-gesellschaft">
+      <div class="ke-type-grid">
+        <div>
+          <h3>KE aus Gesellschaftsmitteln</h3>
+          <p>
+            Reine Umbuchung: Kapital- oder Gewinnrücklagen werden in gezeichnetes
+            Kapital umgewandelt. Die Aktionäre erhalten <strong>Gratisaktien</strong>
+            entsprechend ihrer bisherigen Beteiligung (§ 212 AktG).
+          </p>
+          <p style="margin-top:10px;">
+            Es fließt <em>kein</em> neues Geld zu — die Aktiv-Seite der Bilanz bleibt
+            unverändert. Trotzdem sinkt der rechnerische Kurs, weil sich derselbe
+            Marktwert auf mehr Aktien verteilt.
+          </p>
+          <span class="ke-type-meta">§§ 207 – 220 AktG</span>
+        </div>
+        <div class="card" style="background:var(--bg); border:1px dashed var(--rule);">
+          <div class="card-title">Wirkung</div>
+          <p style="font-size:13px;">
+            Beteiligungsquote bleibt erhalten, Vermögen bleibt unverändert. Lediglich
+            der rechnerische Kurs sinkt: <strong class="num-mono">P<sub>n</sub> = P<sub>a</sub>
+            · a / (a + n)</strong> (Berichtigungskurs). Häufiger Effekt: optisch
+            günstigerer Kurs, höhere Stückzahl im Streubesitz.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:20px;">
+    <strong>Fokus dieser Übung:</strong> Im Folgenden geht es um die <em>ordentliche
+    Kapitalerhöhung</em> mit Bezugsrecht. Den Sonderfall der KE aus Gesellschaftsmitteln
+    können Sie in Sektion III über den Modus-Schalter zuschalten.
+  </div>
+</section>
+
+<!-- ═══════════ III · MECHANIK ═══════════ -->
+<section id="mechanik">
+  <div class="section-head">
+    <div class="section-num">III</div>
+    <div class="section-title">Mechanik &amp; Marktwirkung</div>
+  </div>
+  <p class="section-lead">
+    Variieren Sie die fünf Eingaben oben. Die KPIs darunter aktualisieren sich live —
+    inklusive Bezugsrecht, Mischkurs, Verwässerungseffekt und Marktwert-Bilanz. Die
+    Standardwerte entsprechen der Fallstudie HYBRID-AG aus der Excel-Musterlösung.
+  </p>
+
+  <div class="control-panel">
+    <div class="control-row">
+      <div class="control">
+        <label for="in-altaktien" class="control-label">Altaktien</label>
+        <input type="number" id="in-altaktien" value="10000000" step="100000" min="1">
+      </div>
+      <div class="control">
+        <label for="in-nennwert" class="control-label">Nennwert</label>
+        <input type="number" id="in-nennwert" value="10" step="1" min="1">
+      </div>
+      <div class="control">
+        <label for="in-pa" class="control-label">Börsenkurs P<sub>a</sub></label>
+        <input type="number" id="in-pa" value="48" step="1" min="1">
+      </div>
+      <div class="control" id="ctrl-pj">
+        <label for="in-pj" class="control-label">Ausgabekurs P<sub>j</sub></label>
+        <input type="number" id="in-pj" value="30" step="1" min="1">
+      </div>
+      <div class="control">
+        <label for="in-bv" class="control-label">Bezugsverhältnis (alt:neu)</label>
+        <input type="number" id="in-bv" value="2" step="1" min="1">
+      </div>
+    </div>
+
+    <div class="preset-row">
+      <span class="preset-label">Presets:</span>
+      <button class="preset-btn" data-preset="hybrid">HYBRID-AG (Standard)</button>
+      <button class="preset-btn" data-preset="hohes-disagio">Hohes Disagio</button>
+      <button class="preset-btn" data-preset="marktnah">Marktnaher Pj</button>
+      <button class="preset-btn" data-preset="kleine-ke">Kleine KE</button>
+      <button class="reset-btn" id="reset-btn"
+              style="border-color:var(--th-rot); color:var(--th-rot); font-weight:600; padding:6px 14px; background:transparent; border:1px solid; border-radius:4px; cursor:pointer; font-family:inherit; font-size:13px;">
+        ↺ Reset
+      </button>
+      <span class="mode-toggle" id="mode-toggle">
+        <button data-mode="effektiv" class="active">Ordentliche KE</button>
+        <button data-mode="nominell">KE aus Gesellschaftsmitteln</button>
+      </span>
+    </div>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-label">Junge Aktien</div>
+      <div class="kpi-value"><span id="kpi-anzjung">—</span><span class="kpi-unit">Stück</span></div></div>
+    <div class="kpi"><div class="kpi-label">Δ Gez. Kapital</div>
+      <div class="kpi-value"><span id="kpi-deltakap">—</span><span class="kpi-unit">EUR</span></div></div>
+    <div class="kpi"><div class="kpi-label" id="kpi-erloes-label">Emissionserlös</div>
+      <div class="kpi-value"><span id="kpi-erloes">—</span><span class="kpi-unit">EUR</span></div></div>
+    <div class="kpi highlight"><div class="kpi-label">Bezugsrecht BR</div>
+      <div class="kpi-value"><span id="kpi-br">—</span><span class="kpi-unit">EUR</span></div></div>
+    <div class="kpi highlight"><div class="kpi-label">Mischkurs P<sub>n</sub></div>
+      <div class="kpi-value"><span id="kpi-pn">—</span><span class="kpi-unit">EUR</span></div></div>
+    <div class="kpi"><div class="kpi-label">Verwässerung je Aktie</div>
+      <div class="kpi-value"><span id="kpi-verw">—</span><span class="kpi-unit">EUR</span></div>
+      <div style="font-size:11px; color:var(--ink-muted); margin-top:2px;">
+        entspricht <span id="kpi-verw-pct">—</span>
+      </div></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Formelwerk</div>
+      <h3 id="formel-headline">Bezugsrecht und Mischkurs</h3>
+      <!-- Effektive KE -->
+      <div id="formel-effektiv">
+        <div class="formula-box">
+          <strong>BR</strong> = (P<sub>a</sub> − P<sub>j</sub>) / (BV + 1)
+        </div>
+        <div class="formula-box">
+          <strong>P<sub>n</sub></strong> = P<sub>a</sub> − BR
+        </div>
+        <p style="font-size:13px; color:var(--ink-soft);">
+          Das Bezugsrecht kompensiert den Kursrückgang exakt: Pro Altaktie sinkt der
+          Marktwert um BR, im Gegenzug erhält der Altaktionär ein Bezugsrecht im
+          rechnerischen Wert von BR. Das Vermögen bleibt — bei rationaler Wahrnehmung —
+          unverändert.
+        </p>
+      </div>
+      <!-- KE aus Gesellschaftsmitteln -->
+      <div id="formel-nominell" style="display:none;">
+        <div class="formula-box">
+          <strong>P<sub>n</sub></strong> = P<sub>a</sub> · a / (a + n)
+        </div>
+        <div class="formula-box">
+          <strong>BR</strong> = 0&nbsp;&nbsp;<span style="color:var(--ink-muted); font-weight:400;">(kein handelbares Bezugsrecht)</span>
+        </div>
+        <p style="font-size:13px; color:var(--ink-soft);">
+          Bei einer Kapitalerhöhung aus Gesellschaftsmitteln werden die jungen Aktien
+          aus bestehenden Rücklagen geschaffen — kein Mittelzufluss, keine Auszahlung
+          des Aktionärs. Der Berichtigungskurs P<sub>n</sub> verteilt das unveränderte
+          Marktwert-Eigenkapital auf die größere Aktienzahl.
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Marktwert-Bilanz</div>
+      <h3>Eigenkapital vor / nach KE</h3>
+      <div class="chart-wrap"><canvas id="chart-mwert"></canvas></div>
+      <p id="mwert-erklaerung-eff" style="font-size:12px; color:var(--ink-muted); margin-top:8px;">
+        Marktwert nach KE = (Altaktien + junge Aktien) × P<sub>n</sub>. Dieser
+        Wert entspricht exakt dem Marktwert vor KE zuzüglich des Emissionserlöses —
+        ein zentraler Konsistenzcheck.
+      </p>
+      <p id="mwert-erklaerung-nom" style="font-size:12px; color:var(--ink-muted); margin-top:8px; display:none;">
+        Marktwert nach KE = (Altaktien + junge Aktien) × P<sub>n</sub>. Da kein Cash
+        zufließt, bleibt das gesamte Marktwert-Eigenkapital unverändert — die größere
+        Aktienzahl wird durch den niedrigeren Berichtigungskurs P<sub>n</sub> exakt
+        kompensiert.
+      </p>
+      <div id="mwert-check" style="font-family:'JetBrains Mono',monospace; font-size:12px; margin-top:6px; padding:8px 10px; border-radius:4px; background:var(--rule-soft);">
+        <span id="mwert-check-text">—</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>Plausibilität:</strong> Der Ausgabekurs P<sub>j</sub> muss mindestens dem
+    Nennwert entsprechen <span class="legal-ref">§ 9 I AktG</span> (Verbot der
+    Unter-Pari-Emission). Außerdem muss P<sub>j</sub> &lt; P<sub>a</sub> sein, damit das
+    Bezugsrecht überhaupt einen positiven Wert hat.
+  </div>
+</section>
+
+<!-- ═══════════ IV · STRATEGIEN ═══════════ -->
+<section id="strategien">
+  <div class="section-head">
+    <div class="section-num">IV</div>
+    <div class="section-title" id="strategien-title">Vier Aktionärs-Strategien</div>
+  </div>
+  <p class="section-lead" id="strategien-lead">
+    Ein Aktionär kann auf die Kapitalerhöhung unterschiedlich reagieren. Drei Strategien
+    sind vermögensneutral, eine erlaubt — bei freier Wahl der Stückzahl — bewusste
+    Abweichungen. Die Berechnung nutzt dieselbe Excel-Logik (Sheet 5).
+  </p>
+
+  <div class="card" style="margin-bottom:20px;">
+    <div class="control-row" style="grid-template-columns: 1fr 2fr;">
+      <div class="control">
+        <label for="in-aktionaer" class="control-label">Anzahl Altaktien des Aktionärs</label>
+        <input type="number" id="in-aktionaer" value="100000" step="1000" min="0">
+      </div>
+      <p style="font-size:12px; color:var(--ink-muted); align-self:end;">
+        Ändern Sie den Bestand — alle vier Strategie-Karten rechnen automatisch neu.
+        Die Eingabefelder in Strategie&nbsp;D sind frei wählbar.
+      </p>
+    </div>
+  </div>
+
+  <!-- Hinweis-Block: nur sichtbar im Modus „KE aus Gesellschaftsmitteln“ -->
+  <div id="strategien-nominell" class="card" style="display:none; border-left:4px solid var(--th-orange); background: var(--th-orange-soft);">
+    <div class="card-title" style="color:var(--th-orange);">Strategien entfallen bei Berichtigungs­aktien</div>
+    <h3>Modus: KE aus Gesellschaftsmitteln</h3>
+    <p style="font-size:14px; color:var(--ink-soft); margin-top:10px;">
+      Bei einer Kapitalerhöhung aus Gesellschaftsmitteln nach
+      <span class="legal-ref">§ 207 AktG</span> erhalten alle Aktionäre die jungen Aktien
+      <strong>automatisch und kostenlos</strong> im Verhältnis ihrer bisherigen Beteiligung
+      (sog. Berichtigungs- oder Gratisaktien). Es gibt
+      <strong>kein handelbares Bezugsrecht</strong> (BR = 0); ein Verkauf, eine
+      Opération Blanche oder ein gezielter Teilbezug sind nicht möglich. Die vier oben
+      gezeigten Strategien sind hier konzeptionell nicht anwendbar — das Vermögen des
+      Aktionärs bleibt in jedem Fall unverändert.
+    </p>
+    <table class="table-clean" style="margin-top:14px; max-width:560px;">
+      <tr class="subhead"><td>Aktionärs-Position</td><td class="num">vor KE</td><td class="num">nach KE</td></tr>
+      <tr><td>Aktienbestand</td>
+          <td class="num" id="nom-bestand-vor">—</td>
+          <td class="num" id="nom-bestand-nach">—</td></tr>
+      <tr><td>Kurs je Aktie</td>
+          <td class="num" id="nom-kurs-vor">—</td>
+          <td class="num" id="nom-kurs-nach">—</td></tr>
+      <tr class="sum"><td>Vermögen gesamt</td>
+          <td class="num" id="nom-verm-vor">—</td>
+          <td class="num" id="nom-verm-nach">—</td></tr>
+    </table>
+    <p style="font-size:12px; color:var(--ink-muted); margin-top:10px;">
+      Der Berichtigungskurs P<sub>n</sub> = P<sub>a</sub> · a / (a + n) sorgt dafür, dass
+      mehr Aktien zu einem niedrigeren Kurs exakt dasselbe Gesamtvermögen ergeben.
+    </p>
+  </div>
+
+  <div id="strategien-effektiv" class="persona-grid">
+    <div class="persona">
+      <div class="persona-head">
+        <span class="persona-name">A · Volle Ausübung</span>
+        <span class="persona-tag">Δ = 0</span>
+      </div>
+      <p class="persona-strategy">
+        Der Aktionär nutzt alle Bezugsrechte und zeichnet die maximal mögliche Anzahl
+        junger Aktien.
+      </p>
+      <div class="persona-row"><span class="lab">Bezogene junge Aktien</span><span class="val" id="pa-jung">—</span></div>
+      <div class="persona-row"><span class="lab">Auszahlung Bezug</span><span class="val" id="pa-out">—</span></div>
+      <div class="persona-row"><span class="lab">BR-Verkaufserlös</span><span class="val" id="pa-br">—</span></div>
+      <div class="persona-row"><span class="lab">Aktienbestand danach</span><span class="val" id="pa-bestand">—</span></div>
+      <div class="persona-delta zero"><span>Δ Vermögen</span><span class="val" id="pa-delta">—</span></div>
+    </div>
+
+    <div class="persona">
+      <div class="persona-head">
+        <span class="persona-name">B · Verzicht (BR-Verkauf)</span>
+        <span class="persona-tag">Δ = 0</span>
+      </div>
+      <p class="persona-strategy">
+        Der Aktionär verkauft alle Bezugsrechte am Markt; sein Aktienbestand bleibt
+        unverändert.
+      </p>
+      <div class="persona-row"><span class="lab">Bezogene junge Aktien</span><span class="val" id="pb-jung">—</span></div>
+      <div class="persona-row"><span class="lab">Auszahlung Bezug</span><span class="val" id="pb-out">—</span></div>
+      <div class="persona-row"><span class="lab">BR-Verkaufserlös</span><span class="val" id="pb-br">—</span></div>
+      <div class="persona-row"><span class="lab">Aktienbestand danach</span><span class="val" id="pb-bestand">—</span></div>
+      <div class="persona-delta zero"><span>Δ Vermögen</span><span class="val" id="pb-delta">—</span></div>
+    </div>
+
+    <div class="persona">
+      <div class="persona-head">
+        <span class="persona-name">C · Opération Blanche</span>
+        <span class="persona-tag">Δ = 0</span>
+      </div>
+      <p class="persona-strategy">
+        Der Aktionär bezieht so viele junge Aktien, wie er aus dem Verkaufserlös der
+        übrigen Bezugsrechte exakt finanzieren kann — ohne neues Eigenkapital
+        einzusetzen.
+      </p>
+      <div class="persona-row"><span class="lab">Bezogene junge Aktien</span><span class="val" id="pc-jung">—</span></div>
+      <div class="persona-row"><span class="lab">Auszahlung Bezug</span><span class="val" id="pc-out">—</span></div>
+      <div class="persona-row"><span class="lab">BR-Verkaufserlös</span><span class="val" id="pc-br">—</span></div>
+      <div class="persona-row"><span class="lab">Aktienbestand danach</span><span class="val" id="pc-bestand">—</span></div>
+      <div class="persona-delta zero"><span>Δ Vermögen</span><span class="val" id="pc-delta">—</span></div>
+    </div>
+
+    <div class="persona">
+      <div class="persona-head">
+        <span class="persona-name">D · Freie Teilausübung</span>
+        <span class="persona-tag" id="pd-tag">Δ = 0</span>
+      </div>
+      <p class="persona-strategy">
+        Der Aktionär entscheidet selbst, wie viele junge Aktien er beziehen will.
+        Restliche Bezugsrechte werden verkauft.
+      </p>
+      <div class="persona-input">
+        <label for="in-d-jung">Frei bezogene junge Aktien</label>
+        <input type="number" id="in-d-jung" value="20000" min="0">
+        <div id="d-warn" style="display:none; font-size:11px; color:var(--th-rot); margin-top:4px;">
+          Eingabe übersteigt die verfügbaren Bezugsrechte (max. <span id="d-max">—</span>).
+        </div>
+      </div>
+      <div class="persona-row"><span class="lab">Auszahlung Bezug</span><span class="val" id="pd-out">—</span></div>
+      <div class="persona-row"><span class="lab">BR-Verkaufserlös</span><span class="val" id="pd-br">—</span></div>
+      <div class="persona-row"><span class="lab">Aktienbestand danach</span><span class="val" id="pd-bestand">—</span></div>
+      <div class="persona-delta" id="pd-delta-row"><span>Δ Vermögen</span><span class="val" id="pd-delta">—</span></div>
+    </div>
+  </div>
+
+  <div class="note" id="strategien-note">
+    <strong>Wichtig:</strong> Die Berechnung blendet Bruchteils-Bezugsrechte
+    (Spitzenproblem), Transaktionskosten und Steuern auf den BR-Verkaufserlös aus —
+    in der Praxis kann dadurch insbesondere Strategie B leichte Vermögensverluste
+    erzeugen. Außerdem wird unterstellt, dass die jungen Aktien voll
+    dividendenberechtigt sind.
+  </div>
+</section>
+
+<!-- ═══════════ V · BILANZWIRKUNG ═══════════ -->
+<section id="bilanz">
+  <div class="section-head">
+    <div class="section-num">V</div>
+    <div class="section-title">Bilanzwirkung am Beispiel HYBRID-AG</div>
+  </div>
+  <p class="section-lead">
+    Die Bilanz vor und nach der ordentlichen Kapitalerhöhung — mit den vollständigen
+    HYBRID-AG-Werten aus der Excel-Musterlösung. Drei Positionen ändern sich:
+    Umlaufvermögen (+ Emissionserlös), gezeichnetes Kapital (+ Δ Gez. Kap.) und
+    Kapitalrücklage (+ Agio).
+  </p>
+
+  <div id="bilanz-deviation-badge" style="display:none; margin-bottom:14px; padding:10px 14px; border-radius:4px; background:rgba(234,91,12,0.10); border-left:3px solid var(--th-orange); font-size:13px; color:var(--ink-soft);">
+    ⚠ <strong>Bilanz fixiert auf Fallstudie HYBRID-AG.</strong>
+    Deine aktuellen Steuerpult-Eingaben weichen von der Standard-Ausgangslage ab —
+    die Bilanz vor KE bleibt aber bewusst auf den HYBRID-AG-Werten (10 Mio Altaktien,
+    Nennwert 10 EUR, Pa = 48 EUR), damit die Buchungslogik nachvollziehbar bleibt.
+    Der Δ-Block reagiert auf deine Eingaben.
+  </div>
+
+  <div class="bilanz-duo">
+    <div class="bilanz">
+      <div class="bilanz-head">
+        <span class="title">Bilanz HYBRID-AG</span>
+        <span class="when">vor KE</span>
+      </div>
+      <table>
+        <tr class="subhead"><td>Aktiva</td><td class="num">Mio EUR</td></tr>
+        <tr><td>Anlagevermögen</td><td class="num">150,00</td></tr>
+        <tr><td>Umlaufvermögen</td><td class="num" id="bz-uv-vor">120,00</td></tr>
+        <tr class="sum"><td>Summe Aktiva</td><td class="num" id="bz-akt-vor">270,00</td></tr>
+        <tr class="subhead"><td>Passiva</td><td class="num">Mio EUR</td></tr>
+        <tr><td>Gezeichnetes Kapital</td><td class="num" id="bz-gk-vor">100,00</td></tr>
+        <tr><td>Kapitalrücklage</td><td class="num" id="bz-kr-vor">80,00</td></tr>
+        <tr><td>Gewinnrücklagen</td><td class="num">40,00</td></tr>
+        <tr><td>Pensionsrückstellungen</td><td class="num">20,00</td></tr>
+        <tr><td>übrige Rückstellungen</td><td class="num">10,00</td></tr>
+        <tr><td>übrige Verbindlichkeiten</td><td class="num">20,00</td></tr>
+        <tr class="sum"><td>Summe Passiva</td><td class="num" id="bz-pass-vor">270,00</td></tr>
+      </table>
+    </div>
+
+    <div class="bilanz">
+      <div class="bilanz-head">
+        <span class="title">Bilanz HYBRID-AG</span>
+        <span class="when">nach KE</span>
+      </div>
+      <table>
+        <tr class="subhead"><td>Aktiva</td><td class="num">Mio EUR</td></tr>
+        <tr><td>Anlagevermögen</td><td class="num">150,00</td></tr>
+        <tr class="delta"><td>Umlaufvermögen <span style="color:var(--th-rot); font-size:11px;" id="lbl-uv">(+ Emissionserlös)</span></td><td class="num" id="bz-uv-nach">270,00</td></tr>
+        <tr class="sum"><td>Summe Aktiva</td><td class="num" id="bz-akt-nach">420,00</td></tr>
+        <tr class="subhead"><td>Passiva</td><td class="num">Mio EUR</td></tr>
+        <tr class="delta"><td>Gezeichnetes Kapital <span style="color:var(--th-rot); font-size:11px;" id="lbl-gk">(+ Δ Gez. Kap.)</span></td><td class="num" id="bz-gk-nach">150,00</td></tr>
+        <tr class="delta"><td>Kapitalrücklage <span style="color:var(--th-rot); font-size:11px;" id="lbl-kr">(+ Agio)</span></td><td class="num" id="bz-kr-nach">180,00</td></tr>
+        <tr><td>Gewinnrücklagen</td><td class="num">40,00</td></tr>
+        <tr><td>Pensionsrückstellungen</td><td class="num">20,00</td></tr>
+        <tr><td>übrige Rückstellungen</td><td class="num">10,00</td></tr>
+        <tr><td>übrige Verbindlichkeiten</td><td class="num">20,00</td></tr>
+        <tr class="sum"><td>Summe Passiva</td><td class="num" id="bz-pass-nach">420,00</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:20px;">
+    <strong>Annahmen:</strong> Die Bilanz vor KE ist als feste Ausgangslage HYBRID-AG
+    statisch hinterlegt (Blatt 1 der Excel); die KE-relevanten Positionen rechts
+    reagieren auf das Steuerpult. Buchung des Agios in die Kapitalrücklage gemäß
+    <span class="legal-ref">§ 272 II Nr. 1 HGB</span>. Bei einer KE aus
+    Gesellschaftsmitteln wird hier nur die Umbuchung aus der Kapitalrücklage gezeigt;
+    rechtlich können auch Gewinnrücklagen herangezogen werden
+    <span class="legal-ref">§ 207 AktG</span>.
+  </div>
+</section>
+
+<!-- ═══════════ VI · BEZUGSRECHTSAUSSCHLUSS ═══════════ -->
+<section id="ausschluss">
+  <div class="section-head">
+    <div class="section-num">VI</div>
+    <div class="section-title">Bezugsrechtsausschluss</div>
+  </div>
+  <p class="section-lead">
+    Das Bezugsrecht kann ausgeschlossen werden, wenn sachliche Gründe dies rechtfertigen.
+    Das Aktiengesetz unterscheidet zwei Ausschlussformen — den qualifizierten und den
+    vereinfachten Ausschluss.
+  </p>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Qualifizierter Ausschluss</div>
+      <h3>§ 186 III S. 1 AktG</h3>
+      <p>
+        Hauptversammlungsbeschluss mit ¾-Mehrheit erforderlich. Zusätzlich verlangt
+        die Rechtsprechung einen <em>sachlichen Grund</em>, der den Eingriff in die
+        Aktionärsrechte rechtfertigt — er muss geeignet, erforderlich und
+        verhältnismäßig sein.
+      </p>
+      <p style="margin-top:10px; font-size:13px; color:var(--ink-muted);">
+        Der Vorstand muss seine Begründung in einem schriftlichen Bericht vorlegen
+        <span class="legal-ref">§ 186 IV AktG</span>.
+      </p>
+      <p style="margin-top:10px; font-size:13px;">
+        Typische Anwendungsfälle: Sacheinlagen, Aktien für Mitarbeiter, Übernahme
+        eines Unternehmens gegen Aktien.
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Vereinfachter Ausschluss</div>
+      <h3>§ 186 III S. 4 AktG</h3>
+      <p>
+        Erleichterung für börsennotierte Gesellschaften: bis zu <strong>10 % des
+        Grundkapitals</strong> dürfen ohne sachliche Begründung ausgeschlossen werden,
+        wenn der Ausgabebetrag den Börsenkurs nicht wesentlich unterschreitet
+        (Faustregel ≤ 5 % Disagio).
+      </p>
+      <p style="margin-top:10px; font-size:13px; color:var(--th-orange);">
+        <strong>Aktuelle Rechtslage:</strong> Durch das Zukunftsfinanzierungsgesetz (ZuFinG,
+        in Kraft seit Dezember 2023) wurde die Schwelle auf <strong>20 %</strong>
+        angehoben. Bitte aktuelle Gesetzesfassung in der Vorlesung verifizieren.
+      </p>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:20px;">
+    <strong>Wirkung des Ausschlusses:</strong> Altaktionäre erleiden eine
+    Verwässerung ihres Anteils ohne kompensatorisches Bezugsrecht. Der Eingriff
+    in die Aktionärsrechte ist deshalb der zentrale Streitpunkt — und in der
+    Klausur ein beliebter Diskussionspunkt.
+  </div>
+</section>
+
+<!-- ═══════════ VII · KLAUSUR ═══════════ -->
+<section id="klausur">
+  <div class="section-head">
+    <div class="section-num">VII</div>
+    <div class="section-title">Klausurmodus · Rückwärtsrechnung</div>
+  </div>
+  <p class="section-lead">
+    In Klausuren sind oft nicht P<sub>a</sub> und P<sub>j</sub> direkt gegeben, sondern
+    abgeleitete Größen wie Mischkurs und Kursdifferenz. Aus diesen lassen sich die
+    Originalwerte rekonstruieren. Szenario analog Klausur SoSe 2025.
+  </p>
+
+  <div class="klausur-grid">
+    <div class="card">
+      <div class="card-title">Gegebene Werte</div>
+      <h3>Aufgabenstellung</h3>
+      <table class="table-clean" style="margin-top:12px;">
+        <tr><td><label for="kl-dgk">Δ Gezeichnetes Kapital</label></td><td class="num">
+          <input type="number" id="kl-dgk" value="3000000" step="100000" min="1" style="background:var(--th-orange-soft); border:1px solid var(--rule); padding:4px 8px; border-radius:4px; font-family:'JetBrains Mono',monospace; width:130px; text-align:right;"> EUR
+        </td></tr>
+        <tr><td><label for="kl-nw">Nennwert je Aktie</label></td><td class="num">
+          <input type="number" id="kl-nw" value="2" step="1" min="1" style="background:var(--th-orange-soft); border:1px solid var(--rule); padding:4px 8px; border-radius:4px; font-family:'JetBrains Mono',monospace; width:130px; text-align:right;"> EUR
+        </td></tr>
+        <tr><td><label for="kl-diff">Kursdifferenz P<sub>a</sub> − P<sub>j</sub></label></td><td class="num">
+          <input type="number" id="kl-diff" value="18" step="1" min="0" style="background:var(--th-orange-soft); border:1px solid var(--rule); padding:4px 8px; border-radius:4px; font-family:'JetBrains Mono',monospace; width:130px; text-align:right;"> EUR
+        </td></tr>
+        <tr><td><label for="kl-bv">Bezugsverhältnis</label></td><td class="num">
+          <input type="number" id="kl-bv" value="5" step="1" min="1" style="background:var(--th-orange-soft); border:1px solid var(--rule); padding:4px 8px; border-radius:4px; font-family:'JetBrains Mono',monospace; width:130px; text-align:right;">
+        </td></tr>
+        <tr><td><label for="kl-pn">Mischkurs P<sub>n</sub></label></td><td class="num">
+          <input type="number" id="kl-pn" value="27" step="1" min="0" style="background:var(--th-orange-soft); border:1px solid var(--rule); padding:4px 8px; border-radius:4px; font-family:'JetBrains Mono',monospace; width:130px; text-align:right;"> EUR
+        </td></tr>
+      </table>
+      <div class="note" style="margin-top:16px;">
+        Gesucht: Anzahl junger Aktien, Wert des Bezugsrechts, alter Börsenkurs P<sub>a</sub>
+        und Ausgabekurs P<sub>j</sub>.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Lösungsweg</div>
+      <h3>Schritt für Schritt</h3>
+
+      <div class="klausur-step">
+        <div class="step-num">(a) Anzahl junger Aktien</div>
+        <div class="step-formula">n = Δ Gez. Kap. / Nennwert</div>
+        <div class="step-result" id="kl-r-n">— Stück</div>
+      </div>
+
+      <div class="klausur-step">
+        <div class="step-num">(b) Wert Bezugsrecht</div>
+        <div class="step-formula">BR = Kursdifferenz / (BV + 1)</div>
+        <div class="step-result" id="kl-r-br">— EUR</div>
+      </div>
+
+      <div class="klausur-step">
+        <div class="step-num">(c) Altaktienkurs</div>
+        <div class="step-formula">P<sub>a</sub> = P<sub>n</sub> + BR</div>
+        <div class="step-result" id="kl-r-pa">— EUR</div>
+      </div>
+
+      <div class="klausur-step">
+        <div class="step-num">(d) Ausgabekurs</div>
+        <div class="step-formula">P<sub>j</sub> = P<sub>a</sub> − Kursdifferenz</div>
+        <div class="step-result" id="kl-r-pj">— EUR</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <h4>Modellannahmen</h4>
+      <ul>
+        <li>Keine Transaktionskosten (Bankgebühren, Spread)</li>
+        <li>Keine Kapitalertragsteuer auf BR-Verkaufserlös</li>
+        <li>Junge Aktien voll dividendenberechtigt</li>
+        <li>Spitzen-/Bruchteilsproblem ausgeblendet</li>
+        <li>Bilanzwerte vor KE statisch (HYBRID-AG-Fall)</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Begleitmaterial</h4>
+      <ul>
+        <li>Excel-Musterlösung: <code>Übung_I.xlsx</code></li>
+        <li>7 Sheets · identische Logik wie hier</li>
+        <li>Excel enthält zusätzlich <strong>Strategie E</strong> (Zukauf von BR) als Vertiefung</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Rechtliche Grundlagen</h4>
+      <ul>
+        <li>Ordentliche KE: §§ 182 ff. AktG</li>
+        <li>Kapitalrücklage: § 272 II Nr. 1 HGB</li>
+        <li>Bezugsrecht / Ausschluss: § 186 AktG</li>
+        <li>Unter-Pari-Verbot: § 9 I AktG</li>
+      </ul>
+    </div>
+  </div>
+  <div style="text-align:center; padding-top:16px; border-top:1px solid var(--rule);">
+    Prof. Dr. Marc Mehlhorn · TH Köln · Modul Finanz- und Investitionsmanagement · <a href="impressum.html" style="color:inherit; text-decoration:underline;">Impressum</a>
+  </div>
+</footer>
+
+</div><!-- /container -->
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// ZUSTAND
+// ═══════════════════════════════════════════════════════════════════
+const state = {
+  altaktien: 10_000_000,
+  nennwert: 10,
+  pa: 48,
+  pj: 30,
+  bv: 2,
+  aktionaer: 100_000,
+  d_jung: 20_000,
+  mode: 'effektiv',  // 'effektiv' = ordentliche KE, 'nominell' = aus Gesellschaftsmitteln
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// FORMATIERUNG
+// ═══════════════════════════════════════════════════════════════════
+const fmtInt = (x) => Math.round(x).toLocaleString('de-DE');
+const fmtNum = (x, dec=2) => x.toLocaleString('de-DE', {minimumFractionDigits:dec, maximumFractionDigits:dec});
+const fmtMio = (x) => (x / 1e6).toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+// ═══════════════════════════════════════════════════════════════════
+// CHARTS
+// ═══════════════════════════════════════════════════════════════════
+const TH_ROT = '#C90C0F', TH_ORANGE = '#EA5B0C', TH_VIOLETT = '#B82585';
+
+let chartMwert = null;
+if (typeof Chart !== 'undefined') {
+  try {
+    const ctxMwert = document.getElementById('chart-mwert').getContext('2d');
+    chartMwert = new Chart(ctxMwert, {
+      type: 'bar',
+      data: {
+        labels: ['vor KE', 'nach KE'],
+        datasets: [
+          { label: 'Marktwert Altaktien',   data: [0,0], backgroundColor: TH_VIOLETT, borderRadius: 3 },
+          { label: 'Marktwert junge Aktien', data: [0,0], backgroundColor: TH_ORANGE,  borderRadius: 3 },
+        ]
+      },
+      options: {
+        plugins: {
+          legend: { position: 'bottom', labels: { font: { family: 'Inter', size: 11 }, color: '#404040' } },
+          tooltip: { callbacks: { label: (c) => `${c.dataset.label}: ${fmtMio(c.raw)} Mio EUR` } }
+        },
+        scales: {
+          x: { stacked: true, grid: { display: false }, ticks: { font: { family: 'Inter', size: 13, weight: '500' }, color: '#1A1A1A' } },
+          y: { stacked: true, grid: { color: '#E5E5E5' }, ticks: {
+                 callback: (v) => Math.round(v / 1e6).toLocaleString('de-DE') + ' Mio',
+                 font: { family: 'JetBrains Mono', size: 12, weight: '500' },
+                 color: '#1A1A1A',
+                 padding: 6
+               } }
+        },
+        maintainAspectRatio: false,
+        responsive: true
+      }
+    });
+  } catch (e) {
+    console.warn('Chart konnte nicht initialisiert werden:', e);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// HAUPTBERECHNUNG
+// ═══════════════════════════════════════════════════════════════════
+function recompute() {
+  const { altaktien: a, nennwert: nw, pa, pj, bv, aktionaer, d_jung, mode } = state;
+
+  let anzJung, br, pn, deltaGezKap, emissionserloes, agioTotal;
+
+  if (mode === 'effektiv') {
+    anzJung = a / bv;
+    br = (pa - pj) / (bv + 1);
+    pn = pa - br;
+    deltaGezKap = anzJung * nw;
+    emissionserloes = anzJung * pj;
+    agioTotal = anzJung * (pj - nw);
+  } else {
+    // KE aus Gesellschaftsmitteln: Berichtigungskurs Pn = Pa · a / (a + n)
+    anzJung = a / bv;
+    br = 0;
+    pn = pa * a / (a + anzJung);
+    deltaGezKap = anzJung * nw;       // Umbuchung aus Rücklagen
+    emissionserloes = 0;              // kein Mittelzufluss!
+    agioTotal = 0;
+  }
+
+  const verwaesserung = pa - pn;
+
+  // KPIs — Anzahl junger Aktien wird ganzzahlig gerundet (Spitzenproblem)
+  document.getElementById('kpi-anzjung').textContent = fmtInt(anzJung);
+  document.getElementById('kpi-deltakap').textContent = fmtInt(deltaGezKap);
+  document.getElementById('kpi-erloes').textContent = fmtInt(emissionserloes);
+  document.getElementById('kpi-br').textContent = fmtNum(br, 2);
+  document.getElementById('kpi-pn').textContent = fmtNum(pn, 2);
+  document.getElementById('kpi-verw').textContent = fmtNum(verwaesserung, 2);
+  // Verwässerung in Prozent — der eigentliche Aha-Wert
+  const verwPct = (pa > 0) ? (verwaesserung / pa) * 100 : 0;
+  document.getElementById('kpi-verw-pct').textContent = fmtNum(verwPct, 2) + ' % vom Kurs vor KE';
+
+  // KPI-Label "Emissionserlös" je nach Modus umbenennen
+  document.getElementById('kpi-erloes-label').textContent =
+    (mode === 'effektiv') ? 'Emissionserlös' : 'Mittelzufluss';
+
+  // Pj-Eingabefeld im nominellen Modus deaktivieren (Gratisaktien haben keinen Ausgabekurs)
+  const pjInput = document.getElementById('in-pj');
+  const pjCtrl  = document.getElementById('ctrl-pj');
+  pjInput.disabled = (mode === 'nominell');
+  pjCtrl.style.opacity = (mode === 'nominell') ? '0.45' : '1';
+  pjCtrl.title = (mode === 'nominell')
+    ? 'Bei einer KE aus Gesellschaftsmitteln existiert kein Ausgabekurs (Gratisaktien).'
+    : '';
+
+  // Erklärtext unter dem Marktwert-Chart modus-abhängig
+  document.getElementById('mwert-erklaerung-eff').style.display = (mode === 'effektiv') ? 'block' : 'none';
+  document.getElementById('mwert-erklaerung-nom').style.display = (mode === 'nominell') ? 'block' : 'none';
+
+  // Formel-Boxen modus-abhängig anzeigen (effektive vs. nominelle Formeln)
+  document.getElementById('formel-effektiv').style.display = (mode === 'effektiv') ? 'block' : 'none';
+  document.getElementById('formel-nominell').style.display = (mode === 'nominell') ? 'block' : 'none';
+  document.getElementById('formel-headline').textContent =
+    (mode === 'effektiv') ? 'Bezugsrecht und Mischkurs' : 'Berichtigungskurs (Gratisaktien)';
+
+  // Strategien-Sektion: nur im effektiven Modus sinnvoll
+  const isEff = (mode === 'effektiv');
+  document.getElementById('strategien-effektiv').style.display = isEff ? 'grid' : 'none';
+  document.getElementById('strategien-note').style.display     = isEff ? 'block' : 'none';
+  document.getElementById('strategien-nominell').style.display = isEff ? 'none' : 'block';
+  document.getElementById('strategien-title').textContent =
+    isEff ? 'Vier Aktionärs-Strategien' : 'Aktionärs-Sicht bei Berichtigungsaktien';
+  document.getElementById('strategien-lead').textContent = isEff
+    ? 'Ein Aktionär kann auf die Kapitalerhöhung unterschiedlich reagieren. Drei Strategien sind vermögensneutral, eine erlaubt — bei freier Wahl der Stückzahl — bewusste Abweichungen. Die Berechnung nutzt dieselbe Excel-Logik (Sheet 5).'
+    : 'Bei einer Kapitalerhöhung aus Gesellschaftsmitteln entfällt jede Wahlmöglichkeit — der Aktionär erhält die jungen Aktien automatisch. Die folgende Mini-Tabelle zeigt seine Vermögensposition vor und nach der KE.';
+
+  // Bilanz-Badge: einblenden, sobald Steuerpult-Werte von der HYBRID-AG-Defaults abweichen
+  const isHybrid = (a === 10_000_000 && nw === 10 && pa === 48 && pj === 30 && bv === 2);
+  document.getElementById('bilanz-deviation-badge').style.display = isHybrid ? 'none' : 'block';
+
+  // Bilanz — Vor-KE-Werte sind feste HYBRID-AG-Ausgangslage (Excel Blatt 1).
+  // Sie reagieren bewusst NICHT auf Eingaben im Steuerpult, weil sonst die
+  // Bilanzsumme auf der Passiv-Seite kippen würde.
+  const uvVor = 120;
+  const gkVor = 100;                // Mio EUR — fix, nicht aus a·nw
+  const krVor = 80;
+  const aktVor = 150 + uvVor;
+  const passVor = gkVor + krVor + 40 + 20 + 10 + 20;
+
+  let uvNach, gkNach, krNach;
+  if (mode === 'effektiv') {
+    uvNach = uvVor + emissionserloes / 1e6;
+    gkNach = gkVor + deltaGezKap / 1e6;
+    krNach = krVor + agioTotal / 1e6;
+  } else {
+    // Umbuchung: gez. Kap steigt, Kapitalrücklage sinkt entsprechend, Aktiv-Seite unverändert
+    uvNach = uvVor;
+    gkNach = gkVor + deltaGezKap / 1e6;
+    krNach = krVor - deltaGezKap / 1e6;
+  }
+  const aktNach = 150 + uvNach;
+  const passNach = gkNach + krNach + 40 + 20 + 10 + 20;
+
+  // Bilanz-Delta-Beschriftungen: Modus-abhängig
+  if (mode === 'effektiv') {
+    document.getElementById('lbl-uv').textContent = '(+ Emissionserlös)';
+    document.getElementById('lbl-gk').textContent = '(+ Δ Gez. Kap.)';
+    document.getElementById('lbl-kr').textContent = '(+ Agio)';
+  } else {
+    document.getElementById('lbl-uv').textContent = '(unverändert)';
+    document.getElementById('lbl-gk').textContent = '(+ Umbuchung aus KR)';
+    document.getElementById('lbl-kr').textContent = '(− Umbuchung in GK)';
+  }
+
+  document.getElementById('bz-uv-vor').textContent = fmtNum(uvVor);
+  document.getElementById('bz-gk-vor').textContent = fmtNum(gkVor);
+  document.getElementById('bz-kr-vor').textContent = fmtNum(krVor);
+  document.getElementById('bz-akt-vor').textContent = fmtNum(aktVor);
+  document.getElementById('bz-pass-vor').textContent = fmtNum(passVor);
+  document.getElementById('bz-uv-nach').textContent = fmtNum(uvNach);
+  document.getElementById('bz-gk-nach').textContent = fmtNum(gkNach);
+  document.getElementById('bz-kr-nach').textContent = fmtNum(krNach);
+  document.getElementById('bz-akt-nach').textContent = fmtNum(aktNach);
+  document.getElementById('bz-pass-nach').textContent = fmtNum(passNach);
+
+  // Marktwert-Chart
+  const mwVor = a * pa;
+  const mwNachAlt = a * pn;
+  const mwNachJung = anzJung * pn;  // Marktwert der jungen Aktien zu Pn
+  if (chartMwert) {
+    chartMwert.data.datasets[0].data = [mwVor, mwNachAlt];
+    chartMwert.data.datasets[1].data = [0, mwNachJung];
+    chartMwert.update('none');
+  }
+
+  // Sichtbarer Konsistenzcheck: Marktwert nach = Marktwert vor + Emissionserlös
+  const mwertCheckEl = document.getElementById('mwert-check');
+  const mwertTextEl  = document.getElementById('mwert-check-text');
+  const linkeSeite  = mwNachAlt + mwNachJung;
+  const rechteSeite = mwVor + emissionserloes;
+  const diff = Math.abs(linkeSeite - rechteSeite);
+  const ok = diff < 1;  // 1 EUR Toleranz bei Mio-Beträgen
+  if (mode === 'effektiv') {
+    mwertTextEl.innerHTML = ok
+      ? `✓ Konsistenz erfüllt: ${fmtMio(linkeSeite)} Mio = ${fmtMio(mwVor)} Mio + ${fmtMio(emissionserloes)} Mio`
+      : `✗ Differenz: ${fmtMio(diff)} Mio`;
+  } else {
+    // im nominellen Modus: Marktwert bleibt gleich, weil kein Cash zufließt
+    const ok2 = Math.abs(linkeSeite - mwVor) < 1;
+    mwertTextEl.innerHTML = ok2
+      ? `✓ Marktwert unverändert (Gesellschaftsmittel-KE): ${fmtMio(linkeSeite)} Mio`
+      : `✗ Abweichung: ${fmtMio(Math.abs(linkeSeite - mwVor))} Mio`;
+  }
+  mwertCheckEl.style.background = ((mode === 'effektiv' && ok) || (mode === 'nominell' && Math.abs(linkeSeite - mwVor) < 1))
+    ? 'rgba(184,37,133,0.08)'   // TH-violett-soft = erfüllt
+    : 'rgba(201,12,15,0.08)';   // TH-rot-soft = verletzt
+  mwertCheckEl.style.color = ((mode === 'effektiv' && ok) || (mode === 'nominell' && Math.abs(linkeSeite - mwVor) < 1))
+    ? 'var(--th-violett)'
+    : 'var(--th-rot)';
+
+  // Aktionärs-Strategien
+  const k = aktionaer;
+
+  // Mini-Tabelle für den nominellen Modus (Berichtigungsaktien)
+  // Vermögen bleibt exakt unverändert: k·Pa = (k + k/bv)·Pn
+  const nomBestNach = k + k / bv;
+  const nomVermVor  = k * pa;
+  const nomVermNach = nomBestNach * pn;
+  document.getElementById('nom-bestand-vor').textContent  = fmtInt(k);
+  document.getElementById('nom-bestand-nach').textContent = fmtInt(nomBestNach);
+  document.getElementById('nom-kurs-vor').textContent     = fmtNum(pa, 2) + ' EUR';
+  document.getElementById('nom-kurs-nach').textContent    = fmtNum(pn, 2) + ' EUR';
+  document.getElementById('nom-verm-vor').textContent     = fmtInt(nomVermVor)  + ' EUR';
+  document.getElementById('nom-verm-nach').textContent    = fmtInt(nomVermNach) + ' EUR';
+
+  // A: volle Ausübung
+  const aJung = k / bv;
+  const aOut  = -aJung * pj;
+  const aBR   = 0;
+  const aBest = k + aJung;
+  const aDel  = (aBest * pn - k * pa) + aOut + aBR;
+  setPersona('pa', aJung, aOut, aBR, aBest, aDel);
+  // B: Verzicht
+  const bJung = 0;
+  const bOut  = 0;
+  const bBR   = k * br;
+  const bBest = k;
+  const bDel  = (bBest * pn - k * pa) + bOut + bBR;
+  setPersona('pb', bJung, bOut, bBR, bBest, bDel);
+  // C: Operation Blanche  — bezogene = k · BR / (Pj + BV·BR)
+  const cJung = (mode === 'effektiv' && (pj + bv * br) > 0) ? k * br / (pj + bv * br) : 0;
+  const cOut  = -cJung * pj;
+  const cBR   = (k - cJung * bv) * br;
+  const cBest = k + cJung;
+  const cDel  = (cBest * pn - k * pa) + cOut + cBR;
+  setPersona('pc', cJung, cOut, cBR, cBest, cDel);
+  // D: Freie Wahl — Begrenzung auf max. k/bv (mehr Bezugsrechte hat der Aktionär nicht)
+  const dMax  = Math.floor(k / bv);
+  const dWish = Math.max(0, d_jung);
+  const dJung = Math.min(dWish, dMax);
+  const dOut  = -dJung * pj;
+  const dBR   = Math.max(0, k - dJung * bv) * br;
+  const dBest = k + dJung;
+  const dDel  = (dBest * pn - k * pa) + dOut + dBR;
+  setPersona('pd', dJung, dOut, dBR, dBest, dDel, true);
+  // Warnhinweis bei Überschreitung
+  const dInput = document.getElementById('in-d-jung');
+  const dWarn  = document.getElementById('d-warn');
+  dInput.max = dMax;
+  document.getElementById('d-max').textContent = fmtInt(dMax);
+  if (dWish > dMax) {
+    dWarn.style.display = 'block';
+    dInput.style.borderColor = 'var(--th-rot)';
+  } else {
+    dWarn.style.display = 'none';
+    dInput.style.borderColor = '';
+  }
+
+  // Klausur
+  recomputeKlausur();
+}
+
+function setPersona(prefix, jung, out, brErl, bestand, delta, isFree=false) {
+  document.getElementById(prefix + '-jung').textContent = fmtNum(jung, 0);
+  document.getElementById(prefix + '-out').textContent  = fmtNum(out, 2) + ' EUR';
+  document.getElementById(prefix + '-br').textContent   = fmtNum(brErl, 2) + ' EUR';
+  document.getElementById(prefix + '-bestand').textContent = fmtNum(bestand, 0);
+  document.getElementById(prefix + '-delta').textContent   = fmtNum(delta, 2) + ' EUR';
+  if (isFree) {
+    const row = document.getElementById('pd-delta-row');
+    const tag = document.getElementById('pd-tag');
+    row.classList.remove('zero', 'pos', 'neg');
+    if (Math.abs(delta) < 0.01) {
+      row.classList.add('zero'); tag.textContent = 'Δ = 0';
+      tag.style.color = 'var(--th-violett)';
+    } else if (delta > 0) {
+      row.classList.add('pos'); tag.textContent = 'Δ > 0';
+      tag.style.color = '#2D6A3F';
+    } else {
+      row.classList.add('neg'); tag.textContent = 'Δ < 0';
+      tag.style.color = 'var(--th-rot)';
+    }
+  }
+}
+
+function recomputeKlausur() {
+  const dgk  = +document.getElementById('kl-dgk').value;
+  const nw   = +document.getElementById('kl-nw').value;
+  const diff = +document.getElementById('kl-diff').value;
+  const bv   = +document.getElementById('kl-bv').value;
+  const pn   = +document.getElementById('kl-pn').value;
+  const n  = dgk / nw;
+  const br = diff / (bv + 1);
+  const pa = pn + br;
+  const pj = pa - diff;
+  document.getElementById('kl-r-n').textContent  = fmtInt(n) + ' Stück';
+  document.getElementById('kl-r-br').textContent = fmtNum(br, 2) + ' EUR';
+  document.getElementById('kl-r-pa').textContent = fmtNum(pa, 2) + ' EUR';
+  document.getElementById('kl-r-pj').textContent = fmtNum(pj, 2) + ' EUR';
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// EVENTS
+// ═══════════════════════════════════════════════════════════════════
+// inputMap mit Mindestwerten:
+//   - Felder, die als Divisor/Nenner auftreten (altaktien, bv) oder Preise sind
+//     (pa, pj, nennwert), dürfen nicht 0 werden → fallen auf 1 zurück, solange das
+//     Feld leer ist. Sobald der Nutzer eine neue Zahl tippt, ersetzt sie den Default.
+//   - aktionaer und d_jung dürfen 0 sein (entspricht „kein Aktienbestand").
+const inputMap = {
+  'in-altaktien': { key: 'altaktien', min: 1 },
+  'in-nennwert' : { key: 'nennwert',  min: 1 },
+  'in-pa'       : { key: 'pa',        min: 1 },
+  'in-pj'       : { key: 'pj',        min: 1 },
+  'in-bv'       : { key: 'bv',        min: 1 },
+  'in-aktionaer': { key: 'aktionaer', min: 0 },
+  'in-d-jung'   : { key: 'd_jung',    min: 0 },
+};
+Object.keys(inputMap).forEach(id => {
+  const el = document.getElementById(id);
+  const { key, min } = inputMap[id];
+  el.addEventListener('input', () => {
+    const raw = parseFloat(el.value);
+    // Bei leerem Feld oder NaN: Mindestwert verwenden, damit die Mathematik
+    // (Division, Multiplikation) nicht NaN/Infinity erzeugt.
+    state[key] = (isNaN(raw) || raw < min) ? min : raw;
+    recompute();
+  });
+});
+['kl-dgk','kl-nw','kl-diff','kl-bv','kl-pn'].forEach(id => {
+  document.getElementById(id).addEventListener('input', recomputeKlausur);
+});
+
+// Tabs
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+// Mode-Toggle (Steuerpult)
+document.querySelectorAll('#mode-toggle button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#mode-toggle button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.mode = btn.dataset.mode;
+    recompute();
+  });
+});
+
+// Presets
+const presets = {
+  'hybrid':         { altaktien: 10_000_000, nennwert: 10, pa: 48, pj: 30, bv: 2 },
+  'hohes-disagio':  { altaktien: 10_000_000, nennwert: 10, pa: 60, pj: 15, bv: 4 },
+  'marktnah':       { altaktien: 10_000_000, nennwert: 10, pa: 48, pj: 45, bv: 2 },
+  'kleine-ke':      { altaktien: 10_000_000, nennwert: 10, pa: 48, pj: 30, bv: 10 },
+};
+document.querySelectorAll('.preset-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const p = presets[btn.dataset.preset];
+    Object.assign(state, p);
+    Object.entries({
+      'in-altaktien': 'altaktien',
+      'in-nennwert' : 'nennwert',
+      'in-pa'       : 'pa',
+      'in-pj'       : 'pj',
+      'in-bv'       : 'bv',
+    }).forEach(([id, key]) => { document.getElementById(id).value = state[key]; });
+    recompute();
+  });
+});
+
+// Reset-Button: setzt alles auf den HYBRID-AG-Ausgangszustand zurück,
+// inkl. Modus, Aktionärs-Eingaben und Strategie-D-Wert.
+// Da der Button NICHT mehr die Klasse .preset-btn trägt, läuft der allgemeine
+// Preset-Loop nicht über ihn — kein stopImmediatePropagation/Capture-Hack nötig.
+document.getElementById('reset-btn').addEventListener('click', () => {
+  Object.assign(state, presets['hybrid']);
+  state.aktionaer = 100_000;
+  state.d_jung    = 20_000;
+  state.mode      = 'effektiv';
+  document.getElementById('in-altaktien').value = state.altaktien;
+  document.getElementById('in-nennwert').value  = state.nennwert;
+  document.getElementById('in-pa').value        = state.pa;
+  document.getElementById('in-pj').value        = state.pj;
+  document.getElementById('in-bv').value        = state.bv;
+  document.getElementById('in-aktionaer').value = state.aktionaer;
+  document.getElementById('in-d-jung').value    = state.d_jung;
+  // Mode-Toggle-Buttons visuell zurücksetzen
+  document.querySelectorAll('#mode-toggle button').forEach(b => {
+    b.classList.toggle('active', b.dataset.mode === 'effektiv');
+  });
+  recompute();
+});
+
+// Init
+recompute();
+</script>
+</body>
+</html>
