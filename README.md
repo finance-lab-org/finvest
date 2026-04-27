@@ -11,6 +11,7 @@ Sammlung interaktiver Lernwerkzeuge zur Vorlesung **Finanz- und Investitionsmana
 | Datei | Thema |
 |---|---|
 | [`uebung_I.html`](uebung_I.html) | Übung I · Einlagen- und Beteiligungsfinanzierung — Kapitalerhöhung, Bezugsrecht, Mischkurs, Aktionärs-Strategien, Klausurmodus |
+| [`uebung_I_bezugsrechtehandel.html`](uebung_I_bezugsrechtehandel.html) | Übung I · Vertiefung — Bezugsrechtehandel: drei Szenarien (effizient / BR unterbewertet / BR überbewertet) mit Arbitrage-Diskussion |
 
 Einstiegspunkt: [`index.html`](index.html)
 
