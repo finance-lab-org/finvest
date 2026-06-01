@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Übung II · Effektivzins per Strahlensatz — Interpolations-Trainer · TH Köln</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --th-rot:       #C90C0F;
+    --th-orange:    #EA5B0C;
+    --th-violett:   #B82585;
+    --th-gruen:     #2D6A3F;
+    --th-rot-soft:    #FBE7E7;
+    --th-orange-soft: #FFF3E9;
+    --th-violett-soft:#F7ECF3;
+    --th-gruen-soft:  #E7F0EA;
+
+    --bg:        #FAFAFA;
+    --card:      #FFFFFF;
+    --ink:       #1A1A1A;
+    --ink-soft:  #404040;
+    --ink-muted: #737373;
+    --ink-faint: #A3A3A3;
+    --rule:      #E5E5E5;
+    --rule-soft: #F0F0F0;
+
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container { max-width: 1320px; margin: 0 auto; padding: 40px 32px 80px; }
+
+  /* HEADER */
+  header.masthead {
+    border-bottom: 2px solid var(--th-rot);
+    padding-bottom: 28px;
+    margin-bottom: 32px;
+  }
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--th-rot);
+    margin-bottom: 12px;
+  }
+  h1.masthead-title {
+    font-weight: 700;
+    font-size: clamp(28px, 3.5vw, 40px);
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .masthead-sub {
+    font-size: 16px;
+    color: var(--ink-muted);
+    max-width: 820px;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .btn {
+    background: var(--th-rot);
+    color: white;
+    border: none;
+    padding: 11px 20px;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .btn:hover { background: #A30A0D; }
+  .btn.secondary {
+    background: transparent;
+    color: var(--th-rot);
+    border: 1px solid var(--th-rot);
+  }
+  .btn.secondary:hover { background: var(--th-rot-soft); }
+  .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.04em;
+  }
+  .badge.geber  { background: var(--th-violett-soft); color: var(--th-violett); }
+  .badge.nehmer { background: var(--th-orange-soft);  color: var(--th-orange); }
+  .score {
+    margin-left: auto;
+    font-size: 13px;
+    color: var(--ink-muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .score strong { color: var(--ink); }
+
+  /* LAYOUT */
+  .work-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 24px;
+    align-items: start;
+  }
+  @media (max-width: 980px) { .work-grid { grid-template-columns: 1fr; } }
+
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    box-shadow: var(--shadow-sm);
+    padding: 8px;
+  }
+  .panel.sticky { position: sticky; top: 20px; }
+  @media (max-width: 980px) { .panel.sticky { position: static; } }
+
+  .plot-wrap { width: 100%; }
+  svg.plot { width: 100%; height: auto; display: block; }
+
+  /* WIZARD */
+  .wizard {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    box-shadow: var(--shadow-sm);
+    padding: 24px 26px;
+  }
+  .step-indicator {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 18px;
+  }
+  .step-dot {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--rule);
+  }
+  .step-dot.active { background: var(--th-rot); }
+  .step-dot.done   { background: var(--th-gruen); }
+
+  .q-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 8px;
+  }
+  .q-title {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.35;
+    margin-bottom: 8px;
+  }
+  .q-hint {
+    font-size: 13px;
+    color: var(--ink-muted);
+    margin-bottom: 18px;
+  }
+
+  .opt-list { display: flex; flex-direction: column; gap: 10px; }
+  .opt {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 13px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: border-color 0.12s ease, background 0.12s ease;
+    background: var(--card);
+    text-align: left;
+    font-family: inherit;
+    width: 100%;
+  }
+  .opt:hover:not(:disabled) { border-color: var(--ink-faint); }
+  .opt .opt-key {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-muted);
+    background: var(--rule-soft);
+    border-radius: 4px;
+    width: 24px; height: 24px;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .opt .opt-body { flex: 1; }
+  .opt .opt-mono { font-family: 'JetBrains Mono', monospace; }
+  .opt.correct {
+    border-color: var(--th-gruen);
+    background: var(--th-gruen-soft);
+  }
+  .opt.correct .opt-key { background: var(--th-gruen); color: #fff; }
+  .opt.wrong {
+    border-color: var(--th-rot);
+    background: var(--th-rot-soft);
+  }
+  .opt.wrong .opt-key { background: var(--th-rot); color: #fff; }
+  .opt:disabled { cursor: default; opacity: 1; }
+
+  /* dropdown segment-table */
+  .seg-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+  .seg-table td { padding: 9px 8px; border-bottom: 1px solid var(--rule-soft); vertical-align: middle; }
+  .seg-table td.seg-letter {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 16px;
+    width: 56px;
+  }
+  .seg-table td.seg-letter .swatch {
+    display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: middle;
+  }
+  select.seg-select {
+    width: 100%;
+    padding: 13px 12px;
+    border: 1px solid var(--rule);
+    border-radius: 5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    background: var(--card);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  select.seg-select.ok    { border-color: var(--th-gruen); background: var(--th-gruen-soft); }
+  select.seg-select.bad   { border-color: var(--th-rot);   background: var(--th-rot-soft); }
+
+  .feedback {
+    margin-top: 16px;
+    padding: 13px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1.5;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.ok  { background: var(--th-gruen-soft); border-left: 3px solid var(--th-gruen); color: var(--ink-soft); }
+  .feedback.ok strong { color: var(--th-gruen); }
+  .feedback.err { background: var(--th-rot-soft);  border-left: 3px solid var(--th-rot);  color: var(--ink-soft); }
+  .feedback.err strong { color: var(--th-rot); }
+
+  .actions { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+
+  .values-box {
+    background: var(--rule-soft);
+    border-radius: 6px;
+    padding: 13px 16px;
+    margin-bottom: 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .values-box .vrow { display: flex; justify-content: space-between; }
+  .values-box .vk { color: var(--ink-muted); }
+  .values-box .vv { font-weight: 600; }
+
+  .resolution {
+    background: var(--th-gruen-soft);
+    border: 1px solid var(--th-gruen);
+    border-radius: 8px;
+    padding: 20px 24px;
+  }
+  .resolution h3 { font-size: 18px; margin-bottom: 12px; color: var(--th-gruen); }
+  .resolution .rrow {
+    display: flex; justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace; font-size: 14px;
+    padding: 5px 0; border-bottom: 1px solid rgba(45,106,63,0.15);
+  }
+  .resolution .rrow:last-of-type { border-bottom: none; }
+  .resolution .rrow .rk { color: var(--ink-soft); }
+  .resolution .rrow .rv { font-weight: 600; }
+  .resolution p { font-size: 13px; color: var(--ink-soft); margin-top: 12px; }
+
+  /* FOOTER */
+  footer {
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 13px;
+    color: var(--ink-muted);
+  }
+  footer .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    margin-bottom: 22px;
+  }
+  @media (max-width: 800px) { footer .footer-grid { grid-template-columns: 1fr; } }
+  footer h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+  footer ul { list-style: none; padding-left: 0; }
+  footer li { padding: 3px 0; }
+  footer code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: var(--rule-soft);
+    padding: 1px 4px;
+    border-radius: 3px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<header class="masthead">
+  <div class="eyebrow">TH Köln · Finanz- und Investitionsmanagement (Bachelor) · Übung II</div>
+  <h1 class="masthead-title">Effektivzins per Strahlensatz — Interpolations-Trainer</h1>
+  <p class="masthead-sub">
+    Bestimmen Sie den Effektivzins Schritt für Schritt direkt am Kapitalwertverlauf —
+    die Konstruktion entsteht durch Ihre richtigen Antworten.
+  </p>
+</header>
+
+<div class="topbar">
+  <button class="btn" id="btn-new">Neuen Kapitalwertverlauf erzeugen</button>
+  <span class="badge" id="perspective-badge">—</span>
+</div>
+
+<div class="work-grid">
+  <div class="panel sticky">
+    <div class="plot-wrap" id="plot-wrap"></div>
+  </div>
+  <div class="wizard" id="wizard"></div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <h4>Methode</h4>
+      <ul><li>Strahlensatz: a / b = c / d</li></ul>
+    </div>
+    <div>
+      <h4>î</h4>
+      <ul><li>linear interpolierter Effektivzins</li></ul>
+    </div>
+    <div>
+      <h4>i*</h4>
+      <ul><li>echter interner Zinsfuß</li></ul>
+    </div>
+  </div>
+  <div style="text-align:center; padding-top:16px; border-top:1px solid var(--rule);">
+    Prof. Dr. Marc Mehlhorn · TH Köln · Modul Finanz- und Investitionsmanagement · <a href="impressum.html" style="color:inherit; text-decoration:underline;">Impressum</a>
+  </div>
+</footer>
+
+</div><!-- /container -->
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   MATHEMATIK
+   ═══════════════════════════════════════════════════════════════════ */
+function npv(cf, i) {
+  let s = 0;
+  for (let t = 0; t < cf.length; t++) s += cf[t] / Math.pow(1 + i, t);
+  return s;
+}
+// Interner Zinsfuß per Bisektion (genau eine Nullstelle bei normalem Kredit).
+function ikv(cf) {
+  let lo = -0.5, hi = 5.0;
+  let flo = npv(cf, lo), fhi = npv(cf, hi);
+  if (flo * fhi > 0) return null;
+  for (let k = 0; k < 300; k++) {
+    const mid = (lo + hi) / 2, fm = npv(cf, mid);
+    if (Math.abs(fm) < 1e-13) return mid;
+    if (flo * fm < 0) { hi = mid; fhi = fm; } else { lo = mid; flo = fm; }
+  }
+  return (lo + hi) / 2;
+}
+const r4 = (x) => Math.round(x * 1e4) / 1e4;
+const fmtKW  = (x) => x.toLocaleString('de-DE', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+const fmtPct = (x) => x.toLocaleString('de-DE', { minimumFractionDigits: 4, maximumFractionDigits: 4 }) + ' %';
+const fmtPct0 = (x) => x.toLocaleString('de-DE', { maximumFractionDigits: 0 }) + ' %';
+
+// Lineare Interpolation aus den (gerundeten) Barwerten — universell gültig.
+function interpolate(i1, i2, kw1, kw2) {
+  return i1 - kw1 * (i2 - i1) / (kw2 - kw1);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SZENARIO-GENERIERUNG
+   Erzeugt einen endfälligen Kredit, leitet den echten IKV ab, bracketet
+   ganzzahlig und berechnet die (gerundeten) Barwerte. Perspektive zufällig.
+   ═══════════════════════════════════════════════════════════════════ */
+function shuffle(arr, rng) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function generateScenario(rng) {
+  rng = rng || Math.random;
+  for (let guard = 0; guard < 5000; guard++) {
+    const T   = 2 + Math.floor(rng() * 7);        // 2..8 Jahre
+    const rn  = 0.03 + rng() * 0.12;              // Nominalzins 3 %..15 %
+    const dis = 0.01 + rng() * 0.085;             // Disagio/Gebühren 1 %..9,5 %
+    const N   = 100;
+    const A   = N * (1 - dis);                    // Auszahlung
+    // Endfälliger Kredit, Sicht des Kreditgebers (Auszahlung negativ, Rückflüsse positiv)
+    const cfLender = [-A];
+    for (let t = 1; t <= T; t++) cfLender.push(t < T ? rn * N : rn * N + N);
+    const rate = ikv(cfLender);
+    if (rate === null) continue;
+    const pct  = rate * 100;
+    const frac = pct - Math.floor(pct);
+    if (frac < 0.30 || frac > 0.70) continue;     // visuelle Balance
+    if (pct < 4.5 || pct > 22) continue;          // Raum für Distraktoren
+    const k0 = Math.floor(pct);
+    const i1 = k0 / 100, i2 = (k0 + 1) / 100;
+
+    const perspective = rng() < 0.5 ? 'geber' : 'nehmer';
+    const cf = perspective === 'geber' ? cfLender : cfLender.map(x => -x);
+
+    const kw1 = r4(npv(cf, i1));
+    const kw2 = r4(npv(cf, i2));
+    // Sicherheit: korrekte Vorzeichen (geber: +,−  |  nehmer: −,+)
+    if (perspective === 'geber'  && !(kw1 > 0 && kw2 < 0)) continue;
+    if (perspective === 'nehmer' && !(kw1 < 0 && kw2 > 0)) continue;
+    if (Math.abs(kw1) < 0.02 || Math.abs(kw2) < 0.02) continue;
+
+    const iHat = interpolate(i1, i2, kw1, kw2);   // aus gerundeten Werten
+    if (iHat <= i1 || iHat >= i2) continue;        // muss im Intervall liegen
+
+    // Kandidaten-Intervalle für Schritt 1
+    const pool = [];
+    for (let k = Math.max(1, k0 - 5); k <= k0 + 5; k++) if (k !== k0) pool.push(k);
+    const distK = shuffle(pool, rng).slice(0, 3);
+    const candKs = shuffle([k0, ...distK], rng);
+    const candidates = candKs.map(k => ({ k, lo: k, hi: k + 1, correct: k === k0 }));
+
+    return {
+      perspective, cf, T, rn, dis,
+      ikvTrue: rate, i1, i2, kw1, kw2, iHat,
+      i1pct: k0, i2pct: k0 + 1,
+      candidates,
+    };
+  }
+  return null; // sollte nie passieren
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   OPTIONEN FÜR DIE QUIZ-SCHRITTE
+   ═══════════════════════════════════════════════════════════════════ */
+// Schritt 3 — Strecken-Bedeutungen (6 Optionen)
+function segmentOptions(sc) {
+  return [
+    { id: 'd',   text: 'i₂ − i₁' },
+    { id: 'b',   text: '|KW(i₁)| + |KW(i₂)|' },
+    { id: 'kw2', text: '|KW(i₂)|' },
+    { id: 'kw1', text: '|KW(i₁)|' },
+    { id: 'c_geber',  text: 'i₂ − î' },
+    { id: 'c_nehmer', text: 'î − i₁' },
+  ];
+}
+function segmentSolution(sc) {
+  if (sc.perspective === 'geber') {
+    return { a: 'kw2', b: 'b', c: 'c_geber', d: 'd' };
+  } else {
+    return { a: 'kw1', b: 'b', c: 'c_nehmer', d: 'd' };
+  }
+}
+
+// Schritt 4 — Formel-Optionen (4 Stück, 1 korrekt)
+function formulaOptions(sc, rng) {
+  const correct = sc.perspective === 'geber'
+    ? 'î = i₂ − (a / b) · d'
+    : 'î = i₁ + (a / b) · d';
+  const distractPool = sc.perspective === 'geber'
+    ? ['î = i₁ + (a / b) · d', 'î = i₂ − (b / a) · d', 'î = i₂ + (a / b) · d', 'î = i₁ − (a / b) · d']
+    : ['î = i₂ − (a / b) · d', 'î = i₁ + (b / a) · d', 'î = i₁ − (a / b) · d', 'î = i₂ + (a / b) · d'];
+  const distract = shuffle(distractPool, rng).slice(0, 3);
+  const opts = shuffle([{ text: correct, correct: true },
+                        ...distract.map(t => ({ text: t, correct: false }))], rng);
+  return opts;
+}
+
+// Schritt 6 — î-Wert (4 Stück, 1 korrekt)
+function valueOptions(sc, rng) {
+  const I1 = sc.i1pct, I2 = sc.i2pct, D = I2 - I1;          // = 1
+  const a  = Math.abs(sc.perspective === 'geber' ? sc.kw2 : sc.kw1);
+  const b  = Math.abs(sc.kw1) + Math.abs(sc.kw2);
+  const correctPct = r4(sc.iHat * 100);
+
+  // Plausible Fehlrechnungen
+  const cand = new Set();
+  const push = (v) => {
+    if (v === null || isNaN(v)) return;
+    const rv = r4(v);
+    if (rv <= I1 + 0.001 || rv >= I2 - 0.001) return;        // muss im Intervall liegen
+    if (Math.abs(rv - correctPct) < 0.04) return;            // klar verschieden vom richtigen Wert
+    cand.add(rv);
+  };
+  if (sc.perspective === 'geber') {
+    push(I1 + (a / b) * D);          // falsche Basis/Seite (wie Nehmer gerechnet)
+    push(I2 - (b / a) * D >  I1 ? I2 - (b / a) * D : null);
+  } else {
+    push(I2 - (a / b) * D);          // falsche Basis/Seite
+    push(I1 + (b / a) * D <  I2 ? I1 + (b / a) * D : null);
+  }
+  push(I1 + 0.5 * D);                // Mittelpunkt
+  push(correctPct + 0.27);
+  push(correctPct - 0.27);
+  push(correctPct + 0.15);
+  push(correctPct - 0.15);
+
+  const distract = shuffle([...cand], rng).slice(0, 3);
+  // Fallback, falls zu wenige
+  let extra = 0.1;
+  while (distract.length < 3) {
+    const v = r4(correctPct + extra);
+    if (v > I1 + 0.001 && v < I2 - 0.001 && Math.abs(v - correctPct) > 0.04 && !distract.includes(v)) distract.push(v);
+    extra += 0.13; if (extra > 0.95) break;
+  }
+  const opts = shuffle([{ v: correctPct, correct: true },
+                        ...distract.slice(0, 3).map(v => ({ v, correct: false }))], rng);
+  return opts;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SVG-RENDERING
+   ═══════════════════════════════════════════════════════════════════ */
+const VB_W = 760, VB_H = 470;
+const PLOT_L = 92, PLOT_R = 690, PLOT_T = 54, PLOT_B = 372;
+
+const SVG_NS = 'http://www.w3.org/2000/svg';
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// Baut den SVG-String für einen gegebenen Reveal-Status.
+//   view: 'overview' | 'construction'
+//   reveal: { points, secant, brackets, bracketLabels, iHat, iStar }
+function renderSVG(sc, view, reveal) {
+  reveal = reveal || {};
+  let dom; // i-Domain
+  if (view === 'overview') {
+    const ks = sc.candidates.map(c => c.lo).concat(sc.candidates.map(c => c.hi));
+    const lo = Math.min(...ks), hi = Math.max(...ks);
+    const pad = (hi - lo) * 0.08 + 0.4;
+    dom = { iMin: (lo - pad) / 100, iMax: (hi + pad) / 100 };
+  } else {
+    const w = sc.i2 - sc.i1;
+    if (sc.perspective === 'geber') dom = { iMin: sc.i1 - 0.55 * w, iMax: sc.i2 + 0.70 * w };
+    else                            dom = { iMin: sc.i1 - 0.70 * w, iMax: sc.i2 + 0.55 * w };
+  }
+
+  // KW-Range aus der Kurve über die sichtbare i-Domäne
+  let kwLo = 0, kwHi = 0;
+  const samples = 160;
+  const curvePts = [];
+  for (let s = 0; s <= samples; s++) {
+    const i = dom.iMin + (dom.iMax - dom.iMin) * s / samples;
+    const v = npv(sc.cf, i);
+    curvePts.push({ i, v });
+    if (v < kwLo) kwLo = v;
+    if (v > kwHi) kwHi = v;
+  }
+  // In der Konstruktion: Range auf die beiden Punkte fokussieren (Kurve wird geclippt)
+  if (view === 'construction') {
+    kwHi = Math.max(sc.kw1, sc.kw2, 0);
+    kwLo = Math.min(sc.kw1, sc.kw2, 0);
+  }
+  const span = (kwHi - kwLo) || 1;
+  const kwMax = kwHi + span * 0.28;
+  const kwMin = kwLo - span * 0.28;
+
+  const X = (i)  => PLOT_L + (i - dom.iMin) / (dom.iMax - dom.iMin) * (PLOT_R - PLOT_L);
+  const Y = (kw) => PLOT_B - (kw - kwMin) / (kwMax - kwMin) * (PLOT_B - PLOT_T);
+
+  const parts = [];
+  parts.push(`<svg class="plot" viewBox="0 0 ${VB_W} ${VB_H}" xmlns="${SVG_NS}" font-family="Inter, sans-serif">`);
+  parts.push(`<defs><clipPath id="plotclip"><rect x="${PLOT_L-1}" y="${PLOT_T-30}" width="${PLOT_R-PLOT_L+2}" height="${PLOT_B-PLOT_T+30}"/></clipPath></defs>`);
+
+  // Achsen
+  const y0 = Y(0);
+  parts.push(`<line x1="${PLOT_L}" y1="${PLOT_T-20}" x2="${PLOT_L}" y2="${PLOT_B+8}" stroke="#1A1A1A" stroke-width="1.5"/>`);
+  parts.push(`<polygon points="${PLOT_L-4},${PLOT_T-20} ${PLOT_L+4},${PLOT_T-20} ${PLOT_L},${PLOT_T-28}" fill="#1A1A1A"/>`);
+  parts.push(`<line x1="${PLOT_L-8}" y1="${y0}" x2="${PLOT_R+12}" y2="${y0}" stroke="#1A1A1A" stroke-width="1.5"/>`);
+  parts.push(`<polygon points="${PLOT_R+12},${y0-4} ${PLOT_R+12},${y0+4} ${PLOT_R+20},${y0}" fill="#1A1A1A"/>`);
+  parts.push(`<text x="${PLOT_L-6}" y="${PLOT_T-30}" font-size="14" font-weight="600" text-anchor="start" fill="#1A1A1A">Barwert</text>`);
+  parts.push(`<text x="${PLOT_R+18}" y="${y0+22}" font-size="15" font-style="italic" text-anchor="end" fill="#1A1A1A">i</text>`);
+  parts.push(`<text x="${PLOT_L-10}" y="${y0+4}" font-size="12" text-anchor="end" font-family="JetBrains Mono, monospace" fill="#737373">0</text>`);
+
+  // Kurve (geclippt)
+  let d = '';
+  curvePts.forEach((p, idx) => { d += (idx === 0 ? 'M' : 'L') + X(p.i).toFixed(2) + ' ' + Y(p.v).toFixed(2) + ' '; });
+  parts.push(`<path d="${d}" fill="none" stroke="#1A1A1A" stroke-width="2.2" clip-path="url(#plotclip)"/>`);
+
+  /* ---------- OVERVIEW: Kandidaten-Bänder (nur wenn showBands) ---------- */
+  if (view === 'overview') {
+    if (reveal.showBands) {
+      sc.candidates.forEach((c, idx) => {
+        const xa = X(c.lo / 100), xb = X(c.hi / 100);
+        parts.push(`<rect x="${xa.toFixed(1)}" y="${PLOT_T-20}" width="${(xb-xa).toFixed(1)}" height="${(PLOT_B-PLOT_T+20).toFixed(1)}" fill="${idx%2?'rgba(184,37,133,0.05)':'rgba(234,91,12,0.05)'}" stroke="#B0B0B0" stroke-width="0.8" stroke-dasharray="3 3"/>`);
+        parts.push(`<text x="${((xa+xb)/2).toFixed(1)}" y="${PLOT_B+24}" font-size="12" font-weight="600" text-anchor="middle" font-family="JetBrains Mono, monospace" fill="#404040">${c.lo}–${c.hi}%</text>`);
+      });
+    }
+    parts.push('</svg>');
+    return parts.join('');
+  }
+
+  /* ---------- CONSTRUCTION ---------- */
+  const x1 = X(sc.i1), x2 = X(sc.i2);
+  const yk1 = Y(sc.kw1), yk2 = Y(sc.kw2);
+  const xHat = X(sc.iHat);
+  const negAtI2 = sc.perspective === 'geber';   // negativer Barwert beim Kreditgeber bei i2
+
+  // Tickmarken i1, i2 auf der Achse + Labels
+  [['i₁', sc.i1pct, x1], ['i₂', sc.i2pct, x2]].forEach(([lbl, pct, xx]) => {
+    parts.push(`<line x1="${xx}" y1="${y0-4}" x2="${xx}" y2="${y0+4}" stroke="#1A1A1A" stroke-width="1.5"/>`);
+    parts.push(`<text x="${xx}" y="${y0+(negAtI2? (xx===x2?-10:20) : (xx===x1?-10:20))}" font-size="12" text-anchor="middle" font-family="JetBrains Mono, monospace" fill="#404040">${pct}%</text>`);
+  });
+
+  if (reveal.points) {
+    // gepunktete Hilfslinien von Achse zu den Punkten
+    parts.push(`<line x1="${x1}" y1="${y0}" x2="${x1}" y2="${yk1}" stroke="#737373" stroke-width="1" stroke-dasharray="3 3"/>`);
+    parts.push(`<line x1="${x2}" y1="${y0}" x2="${x2}" y2="${yk2}" stroke="#737373" stroke-width="1" stroke-dasharray="3 3"/>`);
+    // KW-Marker auf der y-Achse
+    parts.push(`<line x1="${PLOT_L-4}" y1="${yk1}" x2="${PLOT_L+4}" y2="${yk1}" stroke="#1A1A1A" stroke-width="1.5"/>`);
+    parts.push(`<line x1="${PLOT_L-4}" y1="${yk2}" x2="${PLOT_L+4}" y2="${yk2}" stroke="#1A1A1A" stroke-width="1.5"/>`);
+    parts.push(`<text x="${PLOT_L-10}" y="${yk1+4}" font-size="11" text-anchor="end" font-family="JetBrains Mono, monospace" fill="#1A1A1A">${(sc.kw1>=0?'+':'')}${fmtKW(sc.kw1)}</text>`);
+    parts.push(`<text x="${PLOT_L-10}" y="${yk2+4}" font-size="11" text-anchor="end" font-family="JetBrains Mono, monospace" fill="#1A1A1A">${(sc.kw2>=0?'+':'')}${fmtKW(sc.kw2)}</text>`);
+    parts.push(`<line x1="${PLOT_L}" y1="${yk1}" x2="${x1}" y2="${yk1}" stroke="#737373" stroke-width="0.8" stroke-dasharray="2 3"/>`);
+    parts.push(`<line x1="${PLOT_L}" y1="${yk2}" x2="${x2}" y2="${yk2}" stroke="#737373" stroke-width="0.8" stroke-dasharray="2 3"/>`);
+    // Punkte
+    parts.push(`<circle cx="${x1}" cy="${yk1}" r="4.5" fill="#1A1A1A"/>`);
+    parts.push(`<circle cx="${x2}" cy="${yk2}" r="4.5" fill="#1A1A1A"/>`);
+  }
+
+  if (reveal.secant) {
+    // Sekante durch beide Punkte, verlängert bis knapp über/unter
+    const m = (yk2 - yk1) / (x2 - x1);
+    const ext = (sc.i2 - sc.i1) * 0.5;
+    const xA = X(sc.i1 - ext), xB = X(sc.i2 + ext);
+    const yA = yk1 + m * (xA - x1), yB = yk1 + m * (xB - x1);
+    parts.push(`<line x1="${xA.toFixed(1)}" y1="${yA.toFixed(1)}" x2="${xB.toFixed(1)}" y2="${yB.toFixed(1)}" stroke="#B82585" stroke-width="2" clip-path="url(#plotclip)"/>`);
+    // Schnittpunkt der Sekante mit der Nulllinie = î
+    parts.push(`<circle cx="${xHat.toFixed(1)}" cy="${y0}" r="4" fill="#C90C0F"/>`);
+  }
+
+  // Klammern a, b, c, d
+  if (reveal.brackets) {
+    const lab = reveal.bracketLabels || {};
+    const SW = { a: '#C90C0F', b: '#1A1A1A', c: '#EA5B0C', d: '#2D6A3F' };
+    // d: horizontal i1→i2 (unten)
+    const yd = PLOT_B + 30;
+    parts.push(hBracket(x1, x2, yd, 'd', lab.d, SW.d));
+    // c: horizontal î→(neg-i)  (etwas über d)
+    const yc = PLOT_B + 12;
+    if (negAtI2) parts.push(hBracket(xHat, x2, yc, 'c', lab.c, SW.c));
+    else         parts.push(hBracket(x1, xHat, yc, 'c', lab.c, SW.c));
+    // a + b: vertikal an der Seite des negativen Punktes; Labels zeigen nach außen
+    if (negAtI2) {
+      const xa = x2 + 12, xb = x2 + 30;
+      parts.push(vBracket(y0, yk2, xa, 'a', lab.a, SW.a, 'right'));   // a = 0 → kw2 (negativ)
+      parts.push(vBracket(yk1, yk2, xb, 'b', lab.b, SW.b, 'right'));  // b = kw1 → kw2 (Spanne)
+    } else {
+      const xa = x1 - 12, xb = x1 - 30;
+      parts.push(vBracket(y0, yk1, xa, 'a', lab.a, SW.a, 'left'));    // a = 0 → kw1 (negativ)
+      parts.push(vBracket(yk2, yk1, xb, 'b', lab.b, SW.b, 'left'));   // b = kw2 → kw1 (Spanne)
+    }
+  }
+
+  // î / i* Markierung
+  if (reveal.iHat) {
+    parts.push(`<line x1="${xHat}" y1="${y0}" x2="${xHat}" y2="${y0-46}" stroke="#C90C0F" stroke-width="1.4" stroke-dasharray="3 3"/>`);
+    const txt = reveal.iHatValue ? `î = ${fmtPct(sc.iHat*100)}` : 'î = ?';
+    parts.push(`<text x="${xHat}" y="${y0-52}" font-size="13" font-weight="700" text-anchor="middle" fill="#C90C0F">${txt}</text>`);
+  }
+  if (reveal.iStar) {
+    const xStar = X(sc.ikvTrue);
+    parts.push(`<circle cx="${xStar.toFixed(1)}" cy="${y0}" r="4" fill="#2D6A3F"/>`);
+    parts.push(`<line x1="${xStar}" y1="${y0}" x2="${xStar}" y2="${y0+38}" stroke="#2D6A3F" stroke-width="1.2" stroke-dasharray="3 3"/>`);
+    parts.push(`<text x="${xStar}" y="${y0+52}" font-size="12" font-weight="700" text-anchor="middle" fill="#2D6A3F">i* = ${fmtPct(sc.ikvTrue*100)}</text>`);
+  }
+
+  parts.push('</svg>');
+  return parts.join('');
+}
+
+// vertikale Klammer von y_a nach y_b an x-Position px.
+// side='right': Klammer öffnet nach links, Label rechts (für rechtsseitige Brackets).
+// side='left' : Klammer öffnet nach rechts, Label links (für linksseitige Brackets).
+function vBracket(ya, yb, px, letter, meaning, color, side) {
+  side = side || 'right';
+  const tick = 6;
+  const yTop = Math.min(ya, yb), yBot = Math.max(ya, yb);
+  const ymid = (ya + yb) / 2;
+  const tx = side === 'right' ? -tick : tick;   // Tick-Richtung
+  let s = `<path d="M${px+tx} ${yTop} L${px} ${yTop} L${px} ${yBot} L${px+tx} ${yBot}" fill="none" stroke="${color}" stroke-width="1.4"/>`;
+  if (side === 'right') {
+    s += `<text x="${px+6}" y="${ymid+4}" font-size="14" font-weight="700" fill="${color}" font-family="JetBrains Mono, monospace">${letter}</text>`;
+    if (meaning) s += `<text x="${px+20}" y="${ymid+4}" font-size="11" fill="#404040">= ${esc(meaning)}</text>`;
+  } else {
+    s += `<text x="${px-6}" y="${ymid+4}" font-size="14" font-weight="700" text-anchor="end" fill="${color}" font-family="JetBrains Mono, monospace">${letter}</text>`;
+    if (meaning) s += `<text x="${px-20}" y="${ymid+4}" font-size="11" text-anchor="end" fill="#404040">= ${esc(meaning)}</text>`;
+  }
+  return s;
+}
+// horizontale Klammer von x_a nach x_b auf Höhe py; label darunter
+function hBracket(xa, xb, py, letter, meaning, color) {
+  const tick = 6;
+  const xLeft = Math.min(xa, xb), xRight = Math.max(xa, xb);
+  const xmid = (xa + xb) / 2;
+  let s = `<path d="M${xLeft} ${py-tick} L${xLeft} ${py} L${xRight} ${py} L${xRight} ${py-tick}" fill="none" stroke="${color}" stroke-width="1.4"/>`;
+  s += `<text x="${xmid}" y="${py+15}" font-size="14" font-weight="700" text-anchor="middle" fill="${color}" font-family="JetBrains Mono, monospace">${letter}</text>`;
+  if (meaning) s += `<text x="${xmid}" y="${py+29}" font-size="11" text-anchor="middle" fill="#404040">${esc(meaning)}</text>`;
+  return s;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ZUSTAND & WIZARD
+   ═══════════════════════════════════════════════════════════════════ */
+let SC = null;
+let stepIndex = 0;       // 0..5
+let cleanSolve = true;   // keine Fehlversuche im aktuellen Szenario
+let perspectiveRevealed = false;
+let formulaOpts = null, valueOpts = null, segSolutionCache = null;
+
+const STEPS = ['perspective', 'interval', 'segments', 'formula', 'compute', 'done'];
+
+function startScenario() {
+  SC = generateScenario();
+  stepIndex = 0;
+  cleanSolve = true;
+  perspectiveRevealed = false;
+  formulaOpts = null; valueOpts = null;
+  segSolutionCache = segmentSolution(SC);
+  updateTopbar();
+  renderStep();
+}
+
+function updateTopbar() {
+  const badge = document.getElementById('perspective-badge');
+  if (!SC || !perspectiveRevealed) { badge.textContent = 'Sicht: ?'; badge.className = 'badge'; }
+  else if (SC.perspective === 'geber') { badge.textContent = 'Sicht: Kreditgeber'; badge.className = 'badge geber'; }
+  else { badge.textContent = 'Sicht: Kreditnehmer'; badge.className = 'badge nehmer'; }
+}
+
+function svgReveal() {
+  // Welcher Graphik-Zustand passt zum aktuellen Schritt?
+  if (stepIndex === 0) return { view: 'overview', reveal: { showBands: false } };   // Perspektive: nur die Kurve
+  if (stepIndex === 1) return { view: 'overview', reveal: { showBands: true } };    // Intervall: Kurve + Bänder
+  if (stepIndex === 2) return { view: 'construction', reveal: { points: true, secant: true, brackets: true, bracketLabels: null } }; // Strecken
+  if (stepIndex === 3) {
+    const lab = bracketMeaningLabels();
+    return { view: 'construction', reveal: { points: true, secant: true, brackets: true, bracketLabels: lab } }; // Formel
+  }
+  if (stepIndex === 4) {
+    const lab = bracketMeaningLabels();
+    return { view: 'construction', reveal: { points: true, secant: true, brackets: true, bracketLabels: lab, iHat: true, iHatValue: false } }; // Rechnen
+  }
+  // done
+  const lab = bracketMeaningLabels();
+  return { view: 'construction', reveal: { points: true, secant: true, brackets: true, bracketLabels: lab, iHat: true, iHatValue: true, iStar: true } };
+}
+
+function bracketMeaningLabels() {
+  const opts = segmentOptions(SC);
+  const map = {}; opts.forEach(o => map[o.id] = o.text);
+  const sol = segSolutionCache;
+  return { a: map[sol.a], b: map[sol.b], c: map[sol.c], d: map[sol.d] };
+}
+
+function drawPlot() {
+  const { view, reveal } = svgReveal();
+  document.getElementById('plot-wrap').innerHTML = renderSVG(SC, view, reveal);
+}
+
+function stepDots() {
+  let s = '<div class="step-indicator">';
+  for (let i = 0; i < 5; i++) {
+    const cls = i < stepIndex ? 'done' : (i === stepIndex ? 'active' : '');
+    s += `<div class="step-dot ${cls}"></div>`;
+  }
+  return s + '</div>';
+}
+
+function renderStep() {
+  drawPlot();
+  const w = document.getElementById('wizard');
+  const step = STEPS[stepIndex];
+  if (step === 'perspective')   w.innerHTML = viewPerspective();
+  else if (step === 'interval') w.innerHTML = viewInterval();
+  else if (step === 'segments') w.innerHTML = viewSegments();
+  else if (step === 'formula')  w.innerHTML = viewFormula();
+  else if (step === 'compute')  w.innerHTML = viewCompute();
+  else                          w.innerHTML = viewDone();
+  attachHandlers(step);
+}
+
+/* ---------- Schritt 1: Perspektive ---------- */
+function viewPerspective() {
+  return stepDots() + `
+    <div class="q-eyebrow">Schritt 1 von 5 · Sicht bestimmen</div>
+    <div class="q-title">Aus wessen Sicht ist dieser Kapitalwertverlauf dargestellt?</div>
+    <div class="q-hint">Achten Sie auf die Richtung der Kurve: Fällt der Barwert mit steigendem Zins, oder steigt er?</div>
+    <div class="opt-list" id="opts">
+      <button class="opt" data-persp="geber">
+        <span class="opt-key">A</span>
+        <span class="opt-body">Sicht des <strong>Kreditgebers</strong> — der Barwert fällt mit steigendem Zins</span>
+      </button>
+      <button class="opt" data-persp="nehmer">
+        <span class="opt-key">B</span>
+        <span class="opt-body">Sicht des <strong>Kreditnehmers</strong> — der Barwert steigt mit steigendem Zins</span>
+      </button>
+    </div>
+    <div class="feedback" id="fb"></div>`;
+}
+
+/* ---------- Schritt 2: Intervall ---------- */
+function viewInterval() {
+  const opts = SC.candidates.map((c, idx) =>
+    `<button class="opt" data-lo="${c.lo}">
+       <span class="opt-key">${String.fromCharCode(65+idx)}</span>
+       <span class="opt-body opt-mono">${c.lo} % – ${c.hi} %</span>
+     </button>`).join('');
+  return stepDots() + `
+    <div class="q-eyebrow">Schritt 2 von 5 · Intervall finden</div>
+    <div class="q-title">Zwischen welchen beiden Zinssätzen ist eine lineare Interpolation sinnvoll?</div>
+    <div class="q-hint">Schauen Sie auf den Kapitalwertverlauf: Wo wechselt der Barwert das Vorzeichen — wo schneidet die Kurve also die Nulllinie?</div>
+    <div class="opt-list" id="opts">${opts}</div>
+    <div class="feedback" id="fb"></div>`;
+}
+
+/* ---------- Schritt 3: Strecken ---------- */
+function viewSegments() {
+  const opts = segmentOptions(SC);
+  const optHtml = (selId) => '<option value="">— wählen —</option>' +
+    opts.map(o => `<option value="${o.id}">${o.text}</option>`).join('');
+  const colors = { a:'#C90C0F', b:'#1A1A1A', c:'#EA5B0C', d:'#2D6A3F' };
+  const row = (L) => `
+    <tr>
+      <td class="seg-letter"><span class="swatch" style="background:${colors[L]}"></span>${L}</td>
+      <td><select class="seg-select" id="sel-${L}">${optHtml(L)}</select></td>
+    </tr>`;
+  return stepDots() + `
+    <div class="q-eyebrow">Schritt 3 von 5 · Strecken zuordnen</div>
+    <div class="q-title">Welche Bedeutung haben die Strecken a, b, c und d?</div>
+    <div class="q-hint">Die farbigen Klammern in der Grafik markieren die vier Strecken. Ordnen Sie jeder ihre Länge zu. Tipp: Strecke a sitzt immer am Punkt mit dem negativen Barwert.</div>
+    <table class="seg-table">${row('a')}${row('b')}${row('c')}${row('d')}</table>
+    <div class="actions"><button class="btn" id="check-seg">Zuordnung prüfen</button></div>
+    <div class="feedback" id="fb"></div>`;
+}
+
+/* ---------- Schritt 4: Formel ---------- */
+function viewFormula() {
+  if (!formulaOpts) formulaOpts = formulaOptions(SC, Math.random);
+  const opts = formulaOpts.map((o, idx) =>
+    `<button class="opt" data-idx="${idx}">
+       <span class="opt-key">${String.fromCharCode(65+idx)}</span>
+       <span class="opt-body opt-mono">${o.text}</span>
+     </button>`).join('');
+  return stepDots() + `
+    <div class="q-eyebrow">Schritt 4 von 5 · Formel wählen</div>
+    <div class="q-title">Welche Formel ergibt sich aus dem Strahlensatz a / b = c / d?</div>
+    <div class="q-hint">Lösen Sie a / b = c / d nach î auf — achten Sie darauf, von welchem Probezinssatz aus gemessen wird.</div>
+    <div class="opt-list" id="opts">${opts}</div>
+    <div class="feedback" id="fb"></div>`;
+}
+
+/* ---------- Schritt 5: Rechnen ---------- */
+function viewCompute() {
+  if (!valueOpts) valueOpts = valueOptions(SC, Math.random);
+  const a = Math.abs(SC.perspective === 'geber' ? SC.kw2 : SC.kw1);
+  const b = Math.abs(SC.kw1) + Math.abs(SC.kw2);
+  const valuesBox = `
+    <div class="values-box">
+      <div class="vrow"><span class="vk">i₁ = ${SC.i1pct} %, &nbsp; KW(i₁)</span><span class="vv">${(SC.kw1>=0?'+':'')}${fmtKW(SC.kw1)}</span></div>
+      <div class="vrow"><span class="vk">i₂ = ${SC.i2pct} %, &nbsp; KW(i₂)</span><span class="vv">${(SC.kw2>=0?'+':'')}${fmtKW(SC.kw2)}</span></div>
+      <div class="vrow"><span class="vk">a</span><span class="vv">${fmtKW(a)}</span></div>
+      <div class="vrow"><span class="vk">b</span><span class="vv">${fmtKW(b)}</span></div>
+      <div class="vrow"><span class="vk">d</span><span class="vv">${SC.i2pct - SC.i1pct} %-Punkt</span></div>
+    </div>`;
+  const opts = valueOpts.map((o, idx) =>
+    `<button class="opt" data-idx="${idx}">
+       <span class="opt-key">${String.fromCharCode(65+idx)}</span>
+       <span class="opt-body opt-mono">î = ${fmtPct(o.v)}</span>
+     </button>`).join('');
+  return stepDots() + `
+    <div class="q-eyebrow">Schritt 5 von 5 · î berechnen</div>
+    <div class="q-title">Berechnen Sie den interpolierten Effektivzins î.</div>
+    <div class="q-hint">Setzen Sie die Werte in Ihre Formel ein. Welches Ergebnis ist korrekt?</div>
+    ${valuesBox}
+    <div class="opt-list" id="opts">${opts}</div>
+    <div class="feedback" id="fb"></div>`;
+}
+
+/* ---------- Auflösung ---------- */
+function viewDone() {
+  const err = Math.abs(SC.iHat - SC.ikvTrue) * 100;
+  return stepDots() + `
+    <div class="resolution">
+      <h3>✓ Gelöst!</h3>
+      <div class="rrow"><span class="rk">Interpolierter Effektivzins î</span><span class="rv" style="color:#C90C0F">${fmtPct(SC.iHat*100)}</span></div>
+      <div class="rrow"><span class="rk">Echter interner Zinsfuß i*</span><span class="rv" style="color:#2D6A3F">${fmtPct(SC.ikvTrue*100)}</span></div>
+      <div class="rrow"><span class="rk">Abweichung</span><span class="rv">${fmtPct(err)}-Punkte</span></div>
+      <p>Die lineare Interpolation liefert mit î eine sehr gute Näherung für den echten internen Zinsfuß i*.
+      Je enger die beiden Probezinssätze um die Nullstelle liegen, desto kleiner wird die Abweichung.</p>
+    </div>
+    <div class="actions">
+      <button class="btn" id="next-scenario">Nächsten Kapitalwertverlauf erzeugen</button>
+    </div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   HANDLER & VALIDIERUNG
+   ═══════════════════════════════════════════════════════════════════ */
+function showFeedback(ok, html) {
+  const fb = document.getElementById('fb');
+  if (!fb) return;
+  fb.className = 'feedback show ' + (ok ? 'ok' : 'err');
+  fb.innerHTML = html;
+}
+function markWrong() { if (cleanSolve) cleanSolve = false; }
+
+// Statt automatischem Weiterspringen: „Weiter"-Button, damit das Feedback gelesen
+// werden kann. Erst der Klick lädt den nächsten Schritt.
+function showContinue(nextStep) {
+  const fb = document.getElementById('fb');
+  if (!fb) return;
+  const btn = document.createElement('button');
+  btn.className = 'btn';
+  btn.style.marginTop = '16px';
+  btn.textContent = 'Weiter →';
+  btn.addEventListener('click', () => { stepIndex = nextStep; renderStep(); });
+  fb.insertAdjacentElement('afterend', btn);
+  btn.focus();
+}
+
+function attachHandlers(step) {
+  if (step === 'perspective') {
+    document.querySelectorAll('#opts .opt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const pick = btn.dataset.persp;
+        if (pick === SC.perspective) {
+          perspectiveRevealed = true; updateTopbar();
+          btn.classList.add('correct');
+          document.querySelectorAll('#opts .opt').forEach(b => b.disabled = true);
+          const txt = SC.perspective === 'geber'
+            ? 'Die Kurve fällt mit steigendem Zins — der Kapitalwert des Kreditgebers (Auszahlung jetzt, Rückflüsse später) sinkt, je höher der Kalkulationszins.'
+            : 'Die Kurve steigt mit steigendem Zins — spiegelbildlich zum Kreditgeber, denn der Kreditnehmer erhält jetzt Geld und zahlt es später zurück.';
+          showFeedback(true, `<strong>Richtig.</strong> ${txt}`);
+          showContinue(1);
+        } else {
+          btn.classList.add('wrong'); btn.disabled = true; markWrong();
+          showFeedback(false, `<strong>Nicht ganz.</strong> Eine <em>fallende</em> Kurve gehört zum Kreditgeber, eine <em>steigende</em> zum Kreditnehmer. Schauen Sie nochmal auf die Kurvenrichtung.`);
+        }
+      });
+    });
+  }
+
+  else if (step === 'interval') {
+    document.querySelectorAll('#opts .opt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const lo = parseInt(btn.dataset.lo, 10);
+        const cand = SC.candidates.find(c => c.lo === lo);
+        if (cand.correct) {
+          btn.classList.add('correct');
+          document.querySelectorAll('#opts .opt').forEach(b => b.disabled = true);
+          showFeedback(true, `<strong>Richtig.</strong> Zwischen ${SC.i1pct} % und ${SC.i2pct} % wechselt der Barwert das Vorzeichen — nur hier schneidet die Kurve die Nulllinie. Genau dort ist eine lineare Interpolation sinnvoll.`);
+          showContinue(2);
+        } else {
+          btn.classList.add('wrong'); btn.disabled = true; markWrong();
+          const kwLo = npv(SC.cf, lo/100), kwHi = npv(SC.cf, (lo+1)/100);
+          const sign = kwLo > 0 ? 'beide positiv' : 'beide negativ';
+          showFeedback(false, `<strong>Nicht ganz.</strong> Bei ${lo} %–${lo+1} % sind die Barwerte ${sign} — die Kurve schneidet die Null hier nicht. Eine Interpolation wäre Extrapolation. Suchen Sie den Vorzeichenwechsel.`);
+        }
+      });
+    });
+  }
+
+  else if (step === 'segments') {
+    document.getElementById('check-seg').addEventListener('click', () => {
+      const sol = segSolutionCache;
+      let allOk = true;
+      ['a','b','c','d'].forEach(L => {
+        const sel = document.getElementById('sel-' + L);
+        const val = sel.value;
+        if (val === sol[L]) { sel.classList.add('ok'); sel.classList.remove('bad'); }
+        else { sel.classList.add('bad'); sel.classList.remove('ok'); allOk = false; }
+      });
+      if (allOk) {
+        document.querySelectorAll('.seg-select').forEach(s => s.disabled = true);
+        const cb = document.getElementById('check-seg'); if (cb) cb.disabled = true;
+        showFeedback(true, `<strong>Perfekt zugeordnet.</strong> a sitzt am Punkt mit negativem Barwert, b ist die gesamte vertikale Spanne, c die waagerechte Strecke bis î, d das volle Zinsintervall.`);
+        showContinue(3);
+      } else {
+        markWrong();
+        showFeedback(false, `<strong>Noch nicht alle richtig.</strong> Die rot markierten Zuordnungen stimmen noch nicht. Denken Sie daran: a ist die senkrechte Strecke vom Nullpunkt zum <em>negativen</em> Barwert, b die ganze Spanne zwischen beiden Punkten.`);
+      }
+    });
+  }
+
+  else if (step === 'formula') {
+    document.querySelectorAll('#opts .opt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.idx, 10);
+        if (formulaOpts[idx].correct) {
+          btn.classList.add('correct');
+          document.querySelectorAll('#opts .opt').forEach(b => b.disabled = true);
+          const base = SC.perspective === 'geber' ? 'i₂ (rechter Punkt, negativer Barwert)' : 'i₁ (linker Punkt, negativer Barwert)';
+          showFeedback(true, `<strong>Richtig.</strong> Aus a/b = c/d folgt durch Auflösen nach î genau diese Formel — gemessen wird von ${base} aus.`);
+          showContinue(4);
+        } else {
+          btn.classList.add('wrong'); btn.disabled = true; markWrong();
+          showFeedback(false, `<strong>Nicht ganz.</strong> Achten Sie auf zwei Dinge: a steht im Zähler (nicht b), und î wird vom Probezinssatz am negativen Barwert aus gemessen.`);
+        }
+      });
+    });
+  }
+
+  else if (step === 'compute') {
+    document.querySelectorAll('#opts .opt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.idx, 10);
+        if (valueOpts[idx].correct) {
+          btn.classList.add('correct');
+          document.querySelectorAll('#opts .opt').forEach(b => b.disabled = true);
+          showFeedback(true, `<strong>Richtig gerechnet.</strong> î = ${fmtPct(SC.iHat*100)}.`);
+          showContinue(5);
+        } else {
+          btn.classList.add('wrong'); btn.disabled = true; markWrong();
+          showFeedback(false, `<strong>Nicht ganz.</strong> Setzen Sie a, b und d sorgfältig in die Formel ein und prüfen Sie, von welchem Probezinssatz aus Sie messen.`);
+        }
+      });
+    });
+  }
+
+  else if (step === 'done') {
+    document.getElementById('next-scenario').addEventListener('click', startScenario);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   BOOT
+   ═══════════════════════════════════════════════════════════════════ */
+document.getElementById('btn-new').addEventListener('click', startScenario);
+startScenario();
+</script>
+
+</body>
+</html>

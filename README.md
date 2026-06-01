@@ -12,6 +12,7 @@ Sammlung interaktiver Lernwerkzeuge zur Vorlesung **Finanz- und Investitionsmana
 |---|---|
 | [`uebung_I.html`](uebung_I.html) | Übung I · Einlagen- und Beteiligungsfinanzierung — Kapitalerhöhung, Bezugsrecht, Mischkurs, Aktionärs-Strategien, Klausurmodus |
 | [`uebung_I_bezugsrechtehandel.html`](uebung_I_bezugsrechtehandel.html) | Übung I · Vertiefung — Bezugsrechtehandel: drei Szenarien (effizient / BR unterbewertet / BR überbewertet) mit Arbitrage-Diskussion |
+| [`uebung_II_kreditfinanzierung.html`](uebung_II_kreditfinanzierung.html) | Übung II · Kreditfinanzierung — Effektivzins per Strahlensatz: geführter Interpolations-Trainer mit prozedural erzeugten Kapitalwertverläufen (Kreditgeber-/Kreditnehmersicht) |
 
 Einstiegspunkt: [`index.html`](index.html)
 
