@@ -490,6 +490,32 @@
   }
   .erklaerung .effizient strong { color: var(--th-violett); }
 
+  /* TRADE-KONTO (Arbitrage Schritt für Schritt) */
+  .erklaerung .bv-note {
+    font-size: 13px; color: var(--ink-soft); margin: 8px 0 12px;
+    background: rgba(0,0,0,0.035); border-radius: 4px; padding: 9px 13px; line-height: 1.5;
+  }
+  .erklaerung .bv-note strong { color: var(--th-orange); }
+  table.ledger { width: 100%; border-collapse: collapse; font-size: 13px; margin: 8px 0 12px; background: var(--card); border-radius: 6px; overflow: hidden; }
+  table.ledger th {
+    text-align: right; padding: 8px 12px; font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-muted);
+    background: var(--rule-soft); border-bottom: 1px solid var(--rule);
+  }
+  table.ledger th:first-child { text-align: left; }
+  table.ledger td { padding: 9px 12px; border-bottom: 1px solid var(--rule-soft); vertical-align: top; }
+  table.ledger td:nth-child(n+2) { text-align: right; font-family: 'JetBrains Mono', monospace; white-space: nowrap; }
+  table.ledger tr:last-child td { border-bottom: none; }
+  table.ledger tr.total td { border-top: 2px solid var(--ink); font-weight: 700; padding-top: 10px; }
+  table.ledger .cash-neg { color: var(--th-rot); }
+  table.ledger .cash-pos { color: var(--th-gruen); }
+  .erklaerung .ledger-note { font-size: 11px; color: var(--ink-muted); font-style: italic; margin: -4px 0 10px; line-height: 1.45; }
+  .erklaerung .origin-formula {
+    display: inline-block; margin-top: 8px; font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; font-weight: 600; color: var(--th-gruen);
+    background: var(--card); border: 1px solid var(--th-gruen); border-radius: 4px; padding: 7px 12px;
+  }
+
   /* FOOTER */
   footer {
     margin-top: 64px;
@@ -533,7 +559,7 @@
   <h1 class="masthead-title">Bezugsrechtehandel — Theorie und Praxis</h1>
   <p class="masthead-sub">
     Während der Bezugsfrist sollten Aktienkurs und Bezugsrecht im Gleichschritt laufen.
-    Drei Szenarien zeigen, was passieren kann — und welche Arbitrage-Möglichkeiten sich
+    Vier Szenarien zeigen, was passieren kann — und welche Arbitrage-Möglichkeiten sich
     aus Abweichungen ergeben.
   </p>
 </header>
@@ -683,7 +709,7 @@
     <div class="section-title">Vier Szenarien des Bezugsrechtehandels</div>
   </div>
   <p class="section-lead">
-    Die <strong style="color:var(--th-rot);">Aktienkurs-Linie</strong> ist in allen drei
+    Die <strong style="color:var(--th-rot);">Aktienkurs-Linie</strong> ist in allen vier
     Szenarien identisch — sie schwankt um den Mischkurs P<sub>n</sub> = 42 EUR. Das
     <strong style="color:var(--th-violett);">theoretische Bezugsrecht</strong> folgt der Aktie
     automatisch, denn BR<sub>theor</sub> = (Aktienkurs − P<sub>j</sub>) / BV. Der
@@ -780,6 +806,8 @@
 </div><!-- /container -->
 
 <script>
+(function () {
+'use strict';
 // ═══════════════════════════════════════════════════════════════════
 // DATEN — deterministisch, identisch in jedem Aufruf (Hörsaal-tauglich)
 // ═══════════════════════════════════════════════════════════════════
@@ -1021,16 +1049,32 @@ const ERKLAERUNGEN = {
       <li><strong>Liquiditätsproblem:</strong> Zu wenig Käufer am BR-Markt — vielleicht haben viele Privatanleger ihre BR auf den Markt geworfen, ohne dass institutionelle Käufer einspringen.</li>
     </ul>
     <div class="arbitrage">
-      <strong>Arbitrage-Strategie:</strong> Markt-BR günstig kaufen, dann ausüben.
-      Bezugskosten für 1 junge Aktie = P<sub>j</sub> + 2·BR<sub>Markt</sub>
-      = 30 + 2·5,50 = <strong>41,00 EUR</strong>. Sofortiger Verkauf am Markt zu
-      <strong>42,20 EUR</strong>. <strong>Profit: 1,20 EUR pro junge Aktie.</strong>
+      <strong>So entsteht ein sicherer Gewinn (Beispiel Tag 8):</strong>
+      <p class="bv-note">Das Bezugsrecht ist <strong>zu billig</strong>: Markt 5,50 EUR statt fair 6,10 EUR.
+      Bezugsverhältnis 2 : 1 → man braucht <strong>2 Bezugsrechte</strong> und zahlt den
+      Ausgabekurs P<sub>j</sub> = 30 EUR, um <strong>1 junge Aktie</strong> zu beziehen.</p>
+      <table class="ledger">
+        <thead><tr><th>Schritt des Trades</th><th>Zahlung</th><th>Konto&shy;stand</th></tr></thead>
+        <tbody>
+          <tr><td>① 2 Bezugsrechte am Markt kaufen (2 × 5,50)</td><td class="cash-neg">−11,00</td><td class="cash-neg">−11,00</td></tr>
+          <tr><td>② Ausüben: 1 junge Aktie zum Ausgabekurs P<sub>j</sub> zeichnen</td><td class="cash-neg">−30,00</td><td class="cash-neg">−41,00</td></tr>
+          <tr><td>③ Junge Aktie verkaufen (Kurs 42,20)</td><td class="cash-pos">+42,20</td><td class="cash-pos">+1,20</td></tr>
+          <tr class="total"><td>Gewinn je junge Aktie</td><td></td><td class="cash-pos">+1,20 EUR</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-bottom:4px;"><strong>Woher kommt der Gewinn?</strong> Fair wären 2 × 6,10 = 12,20 EUR
+      für die beiden Bezugsrechte — Sie zahlen aber nur 11,00 EUR. Genau diese Ersparnis ist Ihr Gewinn:</p>
+      <span class="origin-formula">Gewinn = Fehlbewertung × Bezugsverhältnis = 0,60 × 2 = 1,20 EUR</span>
     </div>
     <div class="reality">
-      <strong>Realitätscheck:</strong> In der Praxis fressen Geld-Brief-Spread,
-      Bankgebühren und Kapitalertragsteuer den Profit oft auf. Bei großen Volumina
-      (institutionelle Anleger) lohnt es sich trotzdem — daher schließen sich solche
-      Anomalien meist innerhalb von Stunden bis Tagen.
+      <strong>Realitätscheck:</strong> Die jungen Aktien werden erst nach Eintragung der
+      Kapitalerhöhung ins Depot eingebucht — an Tag 8 kann man sie noch nicht verkaufen.
+      Den Kurs von 42,20 EUR sichert man sich daher per <strong>Leerverkauf der bereits
+      gehandelten Aktie</strong> und liefert die später bezogene junge Aktie zur Glattstellung
+      nach; das wirtschaftliche Ergebnis entspricht der Rechnung oben. Zusätzlich fressen
+      Geld-Brief-Spread, Bankgebühren und Kapitalertragsteuer den Profit oft auf — bei großen
+      Volumina lohnt es sich trotzdem, daher schließen sich solche Anomalien meist innerhalb
+      von Stunden bis Tagen.
     </div>
   `,
   C: `
@@ -1045,45 +1089,30 @@ const ERKLAERUNGEN = {
       <li><strong>Spekulation:</strong> Hedge Funds oder Privatanleger spekulieren auf einen weiter steigenden Aktienkurs und treiben die BR-Nachfrage hoch.</li>
     </ul>
     <div class="arbitrage">
-      <strong>Arbitrage-Strategie:</strong> Statt die Bezugsrechte auszuüben,
-      verkauft der Aktionär sie am Markt zum überhöhten Preis.
-      <p style="margin:10px 0 6px 0; font-weight:600;">Vergleich der beiden Strategien für 2 BR (= Anspruch auf 1 junge Aktie):</p>
-      <div style="overflow-x:auto;">
-        <table style="width:100%; border-collapse:collapse; font-size:13px; margin-top:6px;">
-          <thead>
-            <tr style="background:rgba(0,0,0,0.04); color:var(--ink-muted); font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:0.08em;">
-              <th style="text-align:left; padding:6px 8px;">Strategie</th>
-              <th style="text-align:right; padding:6px 8px;">Δ Cash</th>
-              <th style="text-align:right; padding:6px 8px;">Δ Aktien-Wert</th>
-              <th style="text-align:right; padding:6px 8px;">Netto-Effekt</th>
-            </tr>
-          </thead>
-          <tbody style="font-family:'JetBrains Mono',monospace;">
-            <tr><td style="padding:6px 8px;">Ausüben</td>
-                <td style="text-align:right; padding:6px 8px;">−30,00 EUR</td>
-                <td style="text-align:right; padding:6px 8px;">+42,20 EUR</td>
-                <td style="text-align:right; padding:6px 8px;"><strong>+12,20 EUR</strong></td></tr>
-            <tr><td style="padding:6px 8px;">Verkaufen</td>
-                <td style="text-align:right; padding:6px 8px;">+13,40 EUR</td>
-                <td style="text-align:right; padding:6px 8px;">0,00 EUR</td>
-                <td style="text-align:right; padding:6px 8px;"><strong>+13,40 EUR</strong></td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p style="font-size:11px; color:var(--ink-muted); margin-top:6px; font-style:italic;">
-        Δ Aktien-Wert = Wert der zusätzlich gezeichneten Aktie (Pn = 42,20 EUR) bzw. 0 EUR ohne Zeichnung.
-      </p>
-      <p style="margin-top:10px;">Die Verkaufsstrategie bringt <strong>1,20 EUR mehr Netto-Effekt</strong>
-      als die Ausübung — exakt 2 × der Anomalie-Differenz von 0,60 EUR. Der Aktionär hatte die
-      2 BR ohnehin in seinem Bestand; die Differenz zwischen den beiden Strategien ist der
-      eigentliche Arbitrage-Wert der Überbewertung.</p>
+      <strong>Hier lohnt sich Verkaufen statt Ausüben (Beispiel Tag 8):</strong>
+      <p class="bv-note">Das Bezugsrecht ist <strong>zu teuer</strong>: Markt 6,70 EUR statt fair 6,10 EUR.
+      Als Altaktionär halten Sie <strong>2 Bezugsrechte</strong> (Bezugsverhältnis 2 : 1) — damit können Sie
+      entweder 1 junge Aktie beziehen oder die beiden Bezugsrechte am Markt verkaufen.</p>
+      <table class="ledger">
+        <thead><tr><th>Was Sie mit den 2 Bezugsrechten tun</th><th>Ergebnis</th></tr></thead>
+        <tbody>
+          <tr><td>① Ausüben: Aktie (42,20) zum Ausgabekurs P<sub>j</sub> (30,00) beziehen</td><td class="cash-pos">+12,20</td></tr>
+          <tr><td>② Verkaufen: 2 Bezugsrechte am Markt (2 × 6,70)</td><td class="cash-pos">+13,40</td></tr>
+          <tr class="total"><td>Vorteil des Verkaufens</td><td class="cash-pos">+1,20 EUR</td></tr>
+        </tbody>
+      </table>
+      <p class="ledger-note">① Wert der Bezugsrechte = Aktienwert 42,20 − Ausgabekurs 30,00 = 12,20 EUR. &nbsp;② reiner Verkaufserlös am Markt.</p>
+      <p style="margin-bottom:4px;"><strong>Woher kommt der Vorteil?</strong> Beim Ausüben sind Ihre Bezugsrechte effektiv
+      nur den fairen Wert wert (2 × 6,10 = 12,20 EUR). Beim Verkaufen kassieren Sie den überhöhten Marktpreis (2 × 6,70 = 13,40 EUR):</p>
+      <span class="origin-formula">Vorteil = Fehlbewertung × Bezugsverhältnis = 0,60 × 2 = 1,20 EUR</span>
     </div>
     <div class="reality">
-      <strong>Realitätscheck:</strong> Diese Vorteilsrechnung gilt für jeden
-      Altaktionär, der sowieso zwischen Ausüben und Verkaufen wählen muss.
-      Ein externer Arbitrageur könnte BR leerverkaufen und nach Normalisierung
-      des Marktes günstig zurückkaufen — das setzt aber einen liquiden
-      BR-Leihmarkt voraus, den es bei kleinen Kapitalerhöhungen oft nicht gibt.
+      <strong>Realitätscheck:</strong> Diese Vorteilsrechnung gilt für jeden Altaktionär,
+      der ohnehin zwischen Ausüben und Verkaufen wählen muss — für ihn ist der Verkauf der
+      einfache, sichere Weg. Ein <em>externer</em> Arbitrageur hat es dagegen schwer: Bezugsrechte
+      leerzuverkaufen ist in der kurzen 14-Tage-Frist praktisch kaum möglich, weil ein liquider
+      Leihmarkt für Bezugsrechte fehlt. Eine Überbewertung nutzt daher fast ausschließlich der
+      Altaktionär aus.
     </div>
   `,
   D: `
@@ -1102,19 +1131,31 @@ const ERKLAERUNGEN = {
       nicht schnell genug, der Preis fällt deutlich unter den theoretischen Wert.
     </p>
     <div class="arbitrage">
-      <strong>Arbitrage-Strategie:</strong> Wer am letzten Tag noch reagieren kann,
-      kauft Markt-BR günstig zu <strong>3,50 EUR</strong> auf, übt sofort aus und
-      bezieht eine junge Aktie für 2·3,50 + 30 = <strong>37,00 EUR</strong>.
-      Verkauf am Markt zu Tagespreis <strong>42,00 EUR</strong> ergibt
-      <strong>5,00 EUR Profit pro junge Aktie</strong> — bei großen Volumina ein
-      lohnendes Geschäft.
+      <strong>So lässt sich der Verfall ausnutzen (letzter Tag, Tag 14):</strong>
+      <p class="bv-note">Durch den Panikverkauf ist das Bezugsrecht <strong>weit zu billig</strong>:
+      Markt 3,50 EUR statt fair 6,00 EUR. Bezugsverhältnis 2 : 1 → 2 Bezugsrechte + Ausgabekurs
+      P<sub>j</sub> = 30 EUR ergeben 1 junge Aktie.</p>
+      <table class="ledger">
+        <thead><tr><th>Schritt des Trades</th><th>Zahlung</th><th>Konto&shy;stand</th></tr></thead>
+        <tbody>
+          <tr><td>① 2 panisch verkaufte Bezugsrechte aufkaufen (2 × 3,50)</td><td class="cash-neg">−7,00</td><td class="cash-neg">−7,00</td></tr>
+          <tr><td>② Ausüben: 1 junge Aktie zum Ausgabekurs P<sub>j</sub> zeichnen</td><td class="cash-neg">−30,00</td><td class="cash-neg">−37,00</td></tr>
+          <tr><td>③ Junge Aktie am Markt verkaufen (Kurs 42,00)</td><td class="cash-pos">+42,00</td><td class="cash-pos">+5,00</td></tr>
+          <tr class="total"><td>Gewinn je junge Aktie</td><td></td><td class="cash-pos">+5,00 EUR</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-bottom:4px;"><strong>Woher kommt der Gewinn?</strong> Fair wären 2 × 6,00 = 12,00 EUR
+      für zwei Bezugsrechte — durch den Panikverkauf zahlen Sie nur 7,00 EUR:</p>
+      <span class="origin-formula">Gewinn = Fehlbewertung × Bezugsverhältnis = 2,50 × 2 = 5,00 EUR</span>
     </div>
     <div class="reality">
       <strong>Realitätscheck:</strong> Der Verfallseffekt ist real und wiederholt
       empirisch beobachtbar — er ist gewissermaßen die <em>verlässlichste</em> Anomalie
       im Bezugsrechtehandel. Wer ihn ausnutzen will, braucht aber Zugang zum
       Bezugsrechte-Sekundärmarkt, schnelle Settlement-Ketten und genug Kapital, um
-      die kurzen Zeitfenster zu nutzen. Privatanleger lernen daraus: <strong>nicht
+      die kurzen Zeitfenster zu nutzen. Auch hier gilt: Die bezogene junge Aktie ist erst nach
+      Eintragung der Kapitalerhöhung lieferbar, der Verkaufskurs wird daher — wie in Szenario B —
+      per Leerverkauf der Aktie gesichert. Privatanleger lernen daraus: <strong>nicht
       bis zum letzten Tag warten</strong> — wer verkaufen will, sollte das früh
       in der Frist tun.
     </div>
@@ -1124,7 +1165,9 @@ const ERKLAERUNGEN = {
 function setScenario(scenario) {
   // Tabs visuell umschalten
   document.querySelectorAll('.scenario-tab').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.scenario === scenario);
+    const on = btn.dataset.scenario === scenario;
+    btn.classList.toggle('active', on);
+    btn.setAttribute('aria-pressed', String(on));
   });
 
   // Markt-BR-Linie aktualisieren
@@ -1156,8 +1199,7 @@ function setScenario(scenario) {
 
   // Anomalie-Tabelle befüllen
   const tbody = document.getElementById('anom-body');
-  tbody.innerHTML = '';
-  anomDays.forEach(i => {
+  tbody.innerHTML = anomDays.map(i => {
     const diff = marktBR[i] - brTheor[i];
     // diff < 0 → Markt-BR liegt UNTER theoretischem Wert (rot, "diff-under")
     // diff > 0 → Markt-BR liegt ÜBER theoretischem Wert (grün, "diff-over")
@@ -1166,7 +1208,7 @@ function setScenario(scenario) {
     const diffLabel = (Math.abs(diff) < 0.001)
       ? '— · keine Abweichung'
       : (diff < 0 ? '−' : '+') + fmtNum(Math.abs(diff)) + ' EUR';
-    tbody.innerHTML += `
+    return `
       <tr>
         <td class="tag-col">Tag ${i + 1}</td>
         <td>${fmtNum(aktie[i])} EUR</td>
@@ -1175,7 +1217,7 @@ function setScenario(scenario) {
         <td class="${diffClass}">${diffLabel}</td>
       </tr>
     `;
-  });
+  }).join('');
 }
 
 // Event-Handler für Tabs
@@ -1248,7 +1290,9 @@ const STEPS = {
 
 function setStep(step) {
   document.querySelectorAll('.step-btn').forEach(btn => {
-    btn.classList.toggle('active', +btn.dataset.step === step);
+    const on = +btn.dataset.step === step;
+    btn.classList.toggle('active', on);
+    btn.setAttribute('aria-pressed', String(on));
   });
   document.getElementById('step-display').innerHTML = STEPS[step];
 }
@@ -1256,6 +1300,7 @@ document.querySelectorAll('.step-btn').forEach(btn => {
   btn.addEventListener('click', () => setStep(+btn.dataset.step));
 });
 setStep(1);
+})();
 </script>
 
 </body>

@@ -129,6 +129,7 @@
   }
   @media (max-width: 1024px) { .explorer { grid-template-columns: 1fr; } }
   .exp-col { display: flex; flex-direction: column; gap: 16px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 
   .panel {
     background: var(--card);
@@ -363,6 +364,8 @@
   <a href="#s6"><span class="n">06</span>Auswahl</a>
 </nav>
 
+<div id="sr-live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
 <!-- ════════════ SEKTION 1 ════════════ -->
 <section class="section" id="s1">
   <div class="section-head"><span class="section-num">01</span><span class="section-title">Kapitalwert verstehen</span></div>
@@ -467,6 +470,8 @@
     Bei der Wahl zwischen zwei Projekten kann der interne Zinsfuß in die Irre führen. Bei <em>Dominanz</em> liegt eine Kurve überall über der anderen.
     <em>Ohne Dominanz</em> schneiden sich die Kapitalwertkurven beim kritischen Zins i_krit — dem internen Zinsfuß der Differenzinvestition.
     Welches Projekt vorteilhaft ist, hängt dann davon ab, wo der Kalkulationszins liegt.
+    Sauber ist dieser Vergleich über die Differenzinvestition allerdings nur, wenn beide Projekte
+    <strong>dieselbe Laufzeit und dasselbe Risiko</strong> (also denselben Kalkulationszins) aufweisen.
     <span class="demo-hint">Zum Entdecken: Schalten Sie zwischen Dominanz / ohne Dominanz um und ziehen Sie i über i_krit hinweg — das Urteil kippt.</span>
   </p>
   <div class="explorer">
@@ -478,6 +483,14 @@
   </div>
   <div class="quiz-zone" id="s6-quiz"></div>
 </section>
+
+<div style="margin-top:48px; padding:16px 20px; background:var(--rule-soft); border-radius:8px; font-size:12.5px; color:var(--ink-muted); line-height:1.6;">
+  <strong style="color:var(--ink-soft);">Modellannahmen &amp; Grenzen.</strong> Dieses Tool rechnet in einer idealisierten Welt:
+  sicherer, vollkommener Kapitalmarkt, ein einheitlicher Kalkulationszins für alle Perioden, keine Transaktionskosten.
+  In der Praxis verändern <strong>Steuern</strong> die Zahlungsströme (teils sogar deren Vorzeichen) und <strong>Inflation</strong>
+  trennt den Nominal- vom Realzins. Für das Verständnis der Methodik der dynamischen Investitionsrechnung sind diese Effekte
+  hier bewusst ausgeklammert.
+</div>
 
 <footer>
   Prof. Dr. Marc Mehlhorn · TH Köln · Modul Finanz- und Investitionsmanagement · <a href="impressum.html">Impressum</a>
@@ -541,6 +554,7 @@ function fmtNum(x, dec) {
 function fmtPct(x, dec) { dec = dec == null ? 2 : dec; return fmtNum(x, dec) + ' %'; }
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function el(id){ return document.getElementById(id); }
+function announce(msg){ const r = el('sr-live'); if (r) r.textContent = msg; }
 
 /* ═══════════════════════════════════════════════════════════════════
    QUIZ-ENGINE  (MC-Mehrfachauswahl + KPRIM)
@@ -825,6 +839,7 @@ function s1Render() {
   el('s1-viz').innerHTML = barTimeline(cf, s1.i);
   el('s1-viz2').innerHTML = npvCurveSVG([{ cf, color: '#C90C0F', label: 'K₀(i)' }], { iMin: 0, iMax: 0.25, currentI: s1.i });
   const k0 = npv(cf, s1.i);
+  announce(`Kapitalwert ${fmtEUR(k0, 0)} bei Kalkulationszins ${fmtNum(s1.i * 100, 1)} Prozent`);
   const undisc = cf.reduce((a, b) => a + b, 0);
   el('s1-read').innerHTML = `
     <div class="big ${k0 >= 0 ? 'pos' : 'neg'}">${k0 >= 0 ? '+' : ''}${fmtEUR(k0, 0)}</div>
@@ -929,6 +944,7 @@ function s2Render() {
   } else {
     el('s2-viz2').innerHTML = npvCurveSVG([{ fn: (x) => -s2.a0 + s2.e / x, zeros: [s2.e / s2.a0], color: '#C90C0F', label: 'K₀(i)' }], { iMin: 0.03, iMax: 0.25, currentI: s2.i });
   }
+  announce(`Kapitalwert ${fmtEUR(k0, 0)} bei ${fmtNum(s2.i * 100, 1)} Prozent, ${s2.mode === 'ewig' ? 'ewige' : 'endliche'} Rente`);
   const fb = s2.mode === 'endlich'
     ? `<div class="formula-box"><span class="fk">K₀ = −a₀ + e · RBF(i; T)</span><br>RBF(${fmtNum(s2.i * 100, 1)} %; ${s2.T}) = ${fmtNum(rbf(s2.i, s2.T), 4)}</div>`
     : `<div class="formula-box"><span class="fk">K₀ = −a₀ + e / i</span><br>i_IZF = e / a₀ = ${fmtPct(iIZF * 100, 2)}</div>`;
@@ -1016,6 +1032,7 @@ const s3 = { a0: 300000, z: [180000, 180000], i: 0.10 };
 function s3Render() {
   const cf = [-s3.a0, ...s3.z];
   const k0 = npv(cf, s3.i);
+  announce(`Mehrkonsum ${fmtEUR(k0, 0)} bei ${fmtNum(s3.i * 100, 1)} Prozent`);
   const loan = s3.a0 + k0;           // = Barwert der künftigen Rückflüsse
   const T = s3.z.length;
   const netT0 = Math.abs(k0) < 0.005 ? 0 : k0;
@@ -1151,6 +1168,7 @@ function s4VizSVG() {
 function s4Render() {
   const { T, k0, endwert, ann } = s4Faces();
   el('s4-viz').innerHTML = s4VizSVG();
+  announce(`Kapitalwert ${fmtEUR(k0, 0)}, Endwert ${fmtEUR(endwert, 0)}, Annuität ${fmtEUR(ann, 0)}`);
   el('s4-read').innerHTML = `
     <div class="formula-box">
       <span class="fk">Endwert</span> = K₀ · (1+i)ᵀ = K₀ · ${fmtNum(Math.pow(1 + s4.i, T), 4)}<br>
@@ -1246,6 +1264,7 @@ function s5Render() {
     { iMin: 0, iMax, currentI: s5.i });
   let k0now = npv(cf, s5.i);
   if (Math.abs(k0now) < 0.5) k0now = 0;
+  announce(`Kapitalwert ${fmtEUR(k0now, 0)} bei ${fmtNum(s5.i * 100, 1)} Prozent`);
   let rootsHtml = roots.length
     ? roots.map(r => fmtPct(r * 100, 2)).join(' &nbsp;und&nbsp; ')
     : '— (keine im Bereich 0–30 %)';
@@ -1327,6 +1346,7 @@ function s6Render() {
   if (s6.mode === 'ohne') series.push({ cf: diff, color: '#B82585', label: 'B − A', dash: true, noZero: true });
   el('s6-viz').innerHTML = npvCurveSVG(series, { iMin: 0, iMax: 0.18, currentI: s6.i, crit: crit });
   const kA = npv(A, s6.i), kB = npv(B, s6.i);
+  announce(`Bei ${fmtNum(s6.i * 100, 1)} Prozent: ${(kA < 0 && kB < 0) ? 'Unterlassen ist vorteilhaft' : (kA > kB ? 'Projekt A ist vorteilhafter' : (kB > kA ? 'Projekt B ist vorteilhafter' : 'beide gleichwertig'))}`);
   // Verdikt
   let vcls, vtxt;
   const both = kA < 0 && kB < 0;
