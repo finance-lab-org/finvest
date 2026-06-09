@@ -371,12 +371,12 @@
   <div class="section-head"><span class="section-num">01</span><span class="section-title">Kapitalwert verstehen</span></div>
   <p class="section-intro">
     Der Kapitalwert K₀ ist die Summe aller mit dem Kalkulationszinsfuß i auf t = 0 diskontierten Zahlungen.
-    Verändern Sie die Zahlungsreihe und den Kalkulationszins und beobachten Sie, wie jede Zahlung beim Abzinsen schrumpft.
+    Verändern Sie die Zahlungsreihe und den Kalkulationszins und beobachten Sie, wie jede künftige Zahlung beim Abzinsen schrumpft (bei i &gt; 0).
     <span class="demo-hint">Zum Entdecken: Schieben Sie den i-Regler — wie wandert K₀? Und was passiert bei i = 0 %?</span>
   </p>
   <div class="explorer">
     <div class="exp-col">
-      <div class="panel exp-viz"><div id="s1-viz"></div><div class="viz-cap">Helle Balken = Nominalzahlung zₜ · volle Balken = Barwert zₜ/(1+i)ᵗ. Der Kapitalwert ist die Summe aller Barwerte.</div></div>
+      <div class="panel exp-viz"><div id="s1-viz"></div><div class="viz-cap">Helle Balken = Nominalzahlung zₜ (unabgezinster Betrag) · volle Balken = Barwert zₜ/(1+i)ᵗ. Der Kapitalwert ist die Summe aller Barwerte.</div></div>
       <div class="panel exp-viz"><div id="s1-viz2"></div><div class="viz-cap">Kapitalwertfunktion K₀(i): Der Punkt wandert mit dem Regler. Die Nullstelle ist der interne Zinsfuß.</div></div>
     </div>
     <div class="exp-col">
@@ -887,8 +887,8 @@ const s1Quizzes = [
     q: 'Experimentieren Sie mit dem Kalkulationszins und den Zahlungen. Welche Aussagen sind richtig?',
     options: [
       { t: 'Erhöht man den Kalkulationszins i, sinkt der Kapitalwert (bei einer Normalinvestition).', correct: true },
-      { t: 'Je weiter eine Einzahlung in der Zukunft liegt, desto kleiner ist ihr Barwert.', correct: true },
-      { t: 'Der Kapitalwert ist die Summe der Zahlungen ganz ohne Abzinsung.', correct: false },
+      { t: 'Je weiter eine Einzahlung in der Zukunft liegt, desto kleiner ist ihr Barwert (bei i > 0).', correct: true },
+      { t: 'Der Kapitalwert ist immer (unabhängig vom Zins) die Summe der Zahlungen ohne Abzinsung.', correct: false },
       { t: 'Die Anschaffungsauszahlung a₀ geht unabgezinst (mit Faktor 1) in t = 0 ein.', correct: true },
       { t: 'Bei i = 0 % unterscheiden sich Kapitalwert und nicht abgezinste Zahlungssumme.', correct: false }
     ],
@@ -897,7 +897,7 @@ const s1Quizzes = [
     q: 'Was sagt das Vorzeichen des Kapitalwerts aus?',
     options: [
       { t: 'K₀ > 0: Die Investition ist vorteilhaft.', correct: true },
-      { t: 'K₀ = 0: Die Investition ist gerade noch vorteilhaft — gleichwertig zur Kapitalmarktanlage.', correct: true },
+      { t: 'K₀ = 0: Die Investition ist gerade noch akzeptabel (indifferent) — gleichwertig zur Kapitalmarktanlage.', correct: true },
       { t: 'K₀ < 0: Die Investition macht in jedem einzelnen Jahr Verlust.', correct: false },
       { t: 'Ein höherer Kalkulationszins kann eine vorteilhafte Investition unvorteilhaft werden lassen.', correct: true }
     ],
@@ -905,10 +905,10 @@ const s1Quizzes = [
   { type: 'kprim',
     q: 'Beobachten Sie die Nominal- und Barwertbalken im Explorer und beurteilen Sie:',
     statements: [
-      { t: 'Der Barwert einer Zahlung ist stets kleiner als ihr Nominalwert, solange i > 0 ist.', correct: true },
+      { t: 'Der Barwert einer künftigen Zahlung ist dem Betrag nach kleiner als ihr Nominalwert (unabgezinster Betrag), solange i > 0 ist.', correct: true },
       { t: 'Bei i = 0 sind Barwert und Nominalwert jeder Zahlung gleich.', correct: true },
-      { t: 'Eine spätere Zahlung wird stärker abgezinst als eine frühere gleicher Höhe.', correct: true },
-      { t: 'Der Kapitalwert steigt, wenn man den Kalkulationszins erhöht.', correct: false }
+      { t: 'Eine spätere Zahlung wird stärker abgezinst als eine frühere gleicher Höhe (bei i > 0).', correct: true },
+      { t: 'Der Kapitalwert steigt, wenn man den Kalkulationszins erhöht (bei einer Normalinvestition).', correct: false }
     ] },
   { type: 'kprim',
     q: 'Allgemeine Aussagen zum Kapitalwert:',
@@ -916,7 +916,7 @@ const s1Quizzes = [
       { t: 'z₀ entspricht der negativen Anschaffungsauszahlung, also −a₀.', correct: true },
       { t: 'Der Kapitalwert bezieht alle Zahlungen auf den Zeitpunkt t = 0.', correct: true },
       { t: 'Zwei Investitionen mit gleicher Zahlungssumme haben immer denselben Kapitalwert.', correct: false },
-      { t: 'Verschiebt man eine Einzahlung weiter in die Zukunft, sinkt der Kapitalwert.', correct: true }
+      { t: 'Verschiebt man eine Einzahlung weiter in die Zukunft, sinkt der Kapitalwert (bei i > 0).', correct: true }
     ],
     expl: 'Nicht die Summe, sondern auch der zeitliche Anfall der Zahlungen bestimmt den Kapitalwert.' }
 ];
@@ -1019,7 +1019,7 @@ const s2Quizzes = [
     q: 'Endliche vs. ewige Rente:',
     statements: [
       { t: 'Bei sehr großer Laufzeit unterscheiden sich endliche und ewige Rente nur noch wenig.', correct: true },
-      { t: 'Der Rentenbarwertfaktor wächst mit T, aber mit immer kleineren Zuwächsen.', correct: true },
+      { t: 'Der Rentenbarwertfaktor wächst mit T, aber mit immer kleineren Zuwächsen (bei i > 0).', correct: true },
       { t: 'Eine ewige Rente lässt sich nicht bewerten, weil sie nie endet.', correct: false },
       { t: 'Der Barwert konstanter Einzahlungen sinkt, wenn der Kalkulationszins steigt.', correct: true }
     ] }
@@ -1105,7 +1105,7 @@ const s3Quizzes = [
     q: 'Beobachten Sie das Vergleichskonto. Welche Aussagen stimmen?',
     options: [
       { t: 'Am Ende der Laufzeit ist die Restschuld genau null.', correct: true },
-      { t: 'Erhöht man i, sinkt der mögliche Mehrkonsum K₀.', correct: true },
+      { t: 'Erhöht man i, sinkt der mögliche Mehrkonsum K₀ (bei einer Normalinvestition).', correct: true },
       { t: 'Der Mehrkonsum K₀ wird erst am Laufzeitende verfügbar.', correct: false },
       { t: 'Ist K₀ < 0, reichen die Rückflüsse nicht, um a₀ zum Kalkulationszins zu finanzieren.', correct: true }
     ],
@@ -1191,7 +1191,7 @@ function s4BuildControls() {
         <button data-v="ann">Annuität</button>
       </div></div>
     <div class="ctrl"><label>Kalkulationszins i <span class="val" id="s4-ival">${fmtNum(s4.i * 100, 1)} %</span></label>
-      <input type="range" id="s4-i" min="1" max="25" step="0.5" value="${s4.i * 100}"></div>
+      <input type="range" id="s4-i" min="0" max="25" step="0.5" value="${s4.i * 100}"></div>
     <div class="ctrl"><label>Anschaffungsauszahlung a₀</label>
       <input type="number" class="num-in" id="s4-a0" value="${s4.a0}" step="10000" min="0"></div>
     <div class="ctrl"><label>Einzahlungen zₜ</label><div class="cf-grid" id="s4-cf"></div>
