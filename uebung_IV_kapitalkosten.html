@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kontrollfragen · Kapitalkosten &amp; Kapitalstruktur — TH Köln</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --th-rot:       #C90C0F;
+    --th-violett:   #B82585;
+    --th-gruen:     #2D6A3F;
+    --th-blau:      #1F5673;
+    --th-rot-soft:    #FBE7E7;
+    --th-violett-soft:#F7ECF3;
+    --th-gruen-soft:  #E7F0EA;
+    --th-blau-soft:   #E8F0F4;
+    --th-orange:    #EA5B0C;
+    --th-orange-soft: #FFF3E9;
+
+    --bg:        #FAFAFA;
+    --card:      #FFFFFF;
+    --ink:       #1A1A1A;
+    --ink-soft:  #404040;
+    --ink-muted: #737373;
+    --ink-faint: #A3A3A3;
+    --rule:      #E5E5E5;
+    --rule-soft: #F0F0F0;
+
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container { max-width: 920px; margin: 0 auto; padding: 40px 32px 80px; }
+
+  header.masthead {
+    border-bottom: 2px solid var(--th-rot);
+    padding-bottom: 28px;
+    margin-bottom: 0;
+  }
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--th-rot);
+    margin-bottom: 12px;
+  }
+  h1.masthead-title {
+    font-weight: 700;
+    font-size: clamp(26px, 3.5vw, 36px);
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .masthead-sub { font-size: 16px; color: var(--ink-muted); max-width: 760px; }
+
+  nav.secnav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(250,250,250,0.92);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 36px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 10px 0;
+  }
+  nav.secnav a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-muted);
+    text-decoration: none;
+    padding: 6px 11px;
+    border-radius: 5px;
+    transition: background 0.12s ease, color 0.12s ease;
+    white-space: nowrap;
+  }
+  nav.secnav a:hover { background: var(--th-rot-soft); color: var(--th-rot); }
+  nav.secnav a .n { color: var(--th-rot); font-weight: 600; margin-right: 5px; }
+
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+  section.section { margin-bottom: 40px; scroll-margin-top: 64px; }
+  .quiz-zone { display: flex; flex-direction: column; gap: 12px; }
+
+  .kf-head {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-muted); margin: 8px 0 4px;
+    display: flex; align-items: center; gap: 9px;
+  }
+  .kf-head::before { content: ''; width: 16px; height: 2px; background: var(--th-violett); }
+
+  details.kf-item {
+    background: var(--card); border: 1px solid var(--rule); border-radius: 8px;
+    box-shadow: var(--shadow-sm); overflow: hidden;
+  }
+  details.kf-item > summary {
+    cursor: pointer; list-style: none; padding: 14px 18px; user-select: none;
+    font-size: 14px; font-weight: 600; color: var(--ink-soft);
+    display: flex; align-items: center; gap: 10px;
+  }
+  details.kf-item > summary::-webkit-details-marker { display: none; }
+  details.kf-item > summary::before {
+    content: '▸'; color: var(--th-violett); font-size: 12px; transition: transform 0.15s ease;
+  }
+  details.kf-item[open] > summary::before { transform: rotate(90deg); }
+  details.kf-item > summary:hover { background: var(--rule-soft); }
+  details.kf-item > summary .kf-tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600;
+    padding: 2px 9px; border-radius: 10px; margin-left: auto;
+  }
+  details.kf-item > summary .kf-tag.mc { background: var(--th-violett-soft); color: var(--th-violett); }
+  details.kf-item > summary .kf-tag.kprim { background: var(--th-blau-soft); color: var(--th-blau); }
+  details.kf-item .kf-body { padding: 4px 18px 18px; }
+
+  .quiz { background: transparent; border: none; box-shadow: none; padding: 0; }
+  .quiz-eyebrow {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--th-violett); margin-bottom: 8px;
+  }
+  .quiz.kprim .quiz-eyebrow { color: var(--th-blau); }
+  .quiz-q { font-size: 16px; font-weight: 600; line-height: 1.4; margin-bottom: 16px; }
+
+  .opt-list { display: flex; flex-direction: column; gap: 9px; }
+  .opt {
+    display: flex; align-items: center; gap: 12px;
+    border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px;
+    cursor: pointer; font-size: 14px; transition: border-color 0.12s, background 0.12s;
+    background: var(--card); text-align: left; font-family: inherit; width: 100%; line-height: 1.4;
+  }
+  .opt:hover:not(.locked) { border-color: var(--ink-faint); }
+  .opt .opt-check {
+    font-family: 'JetBrains Mono', monospace; font-size: 16px; color: var(--ink-faint);
+    flex-shrink: 0; width: 18px; text-align: center;
+  }
+  .opt.selected { border-color: var(--th-violett); background: var(--th-violett-soft); }
+  .opt.selected .opt-check { color: var(--th-violett); }
+  .opt .opt-body { flex: 1; }
+  .opt.correct { border-color: var(--th-gruen); background: var(--th-gruen-soft); }
+  .opt.correct .opt-check { color: var(--th-gruen); }
+  .opt.wrong { border-color: var(--th-rot); background: var(--th-rot-soft); }
+  .opt.wrong .opt-check { color: var(--th-rot); }
+  .opt.locked { cursor: default; }
+
+  table.kprim-tbl { width: 100%; border-collapse: collapse; }
+  table.kprim-tbl td { padding: 11px 8px; border-bottom: 1px solid var(--rule-soft); vertical-align: middle; font-size: 14px; line-height: 1.4; }
+  table.kprim-tbl td.st-text { padding-right: 16px; }
+  table.kprim-tbl td.st-rf { width: 168px; white-space: nowrap; }
+  .rf-btn {
+    font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer;
+    border: 1px solid var(--rule); background: var(--card); color: var(--ink-soft);
+    padding: 6px 12px; border-radius: 5px; transition: all 0.12s;
+  }
+  .rf-btn:first-child { border-radius: 5px 0 0 5px; }
+  .rf-btn:last-child { border-radius: 0 5px 5px 0; border-left: none; }
+  .rf-btn:hover:not(.locked) { background: var(--rule-soft); }
+  .rf-btn:focus-visible { outline: 2px solid var(--th-rot); outline-offset: 2px; }
+  .rf-btn.sel { background: var(--ink-soft); color: #fff; border-color: var(--ink-soft); }
+  .rf-btn.right { background: var(--th-gruen); color: #fff; border-color: var(--th-gruen); }
+  .rf-btn.wrongpick { background: var(--th-rot); color: #fff; border-color: var(--th-rot); }
+  .rf-btn.miss { box-shadow: inset 0 0 0 2px var(--th-gruen); color: var(--th-gruen); }
+
+  .btn {
+    background: var(--th-rot); color: white; border: none;
+    padding: 9px 16px; border-radius: 6px; font-family: inherit;
+    font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s ease;
+  }
+  .btn:hover { background: #A30A0D; }
+  .btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .btn.secondary { background: transparent; color: var(--th-rot); border: 1px solid var(--th-rot); padding: 8px 15px; }
+  .btn.secondary:hover { background: var(--th-rot-soft); }
+  .quiz .actions { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+
+  .feedback {
+    margin-top: 14px; padding: 12px 15px; border-radius: 6px; font-size: 13px; line-height: 1.5; display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.ok  { background: var(--th-gruen-soft); border-left: 3px solid var(--th-gruen); color: var(--ink-soft); }
+  .feedback.ok strong { color: var(--th-gruen); }
+  .feedback.err { background: var(--th-rot-soft); border-left: 3px solid var(--th-rot); color: var(--ink-soft); }
+  .feedback.err strong { color: var(--th-rot); }
+  .feedback.partial { background: var(--th-orange-soft); border-left: 3px solid var(--th-orange); color: var(--ink-soft); }
+  .feedback.partial strong { color: var(--th-orange); }
+
+  /* Modellannahmen-Hinweis */
+  .assumptions {
+    margin: 22px 0 0; padding: 12px 16px; max-width: 760px;
+    background: var(--th-blau-soft); border-left: 3px solid var(--th-blau);
+    border-radius: 0 6px 6px 0; font-size: 13px; color: var(--ink-soft); line-height: 1.5;
+  }
+  .assumptions strong { color: var(--th-blau); }
+  .noscript-msg {
+    margin: 22px 0; padding: 14px 16px; border-radius: 6px;
+    background: var(--th-rot-soft); border-left: 3px solid var(--th-rot); color: var(--ink-soft); font-size: 14px;
+  }
+
+  /* Symbol-Rückmeldung (zusätzlich zur Farbe) */
+  .feedback:focus { outline: 2px solid var(--ink-faint); outline-offset: 2px; }
+  .feedback .legend-mark { font-weight: 700; }
+  .kp-mark { font-size: 12.5px; font-weight: 600; margin-top: 6px; line-height: 1.4; }
+  .kp-mark.ok { color: var(--th-gruen); }
+  .kp-mark.no { color: var(--th-rot); }
+
+  /* Mobile */
+  @media (max-width: 640px) {
+    .container { padding: 24px 16px 56px; }
+    nav.secnav { position: static; overflow-x: auto; flex-wrap: nowrap; }
+    table.kprim-tbl, table.kprim-tbl tbody, table.kprim-tbl tr, table.kprim-tbl td { display: block; width: 100%; }
+    table.kprim-tbl tr { padding: 10px 0; border-bottom: 1px solid var(--rule-soft); }
+    table.kprim-tbl td { border-bottom: none; padding: 4px 0; }
+    table.kprim-tbl td.st-text { padding-right: 0; }
+    table.kprim-tbl td.st-rf { width: 100%; white-space: normal; }
+    .rf-btn { min-width: 110px; }
+  }
+
+  footer {
+    margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--rule);
+    font-size: 13px; color: var(--ink-muted); text-align: center;
+  }
+  footer a { color: inherit; text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<noscript>
+  <p class="noscript-msg">Dieser Selbsttest benötigt JavaScript. Bitte aktivieren Sie JavaScript in Ihrem Browser, um die Kontrollfragen anzuzeigen und auszuwerten.</p>
+</noscript>
+
+<header class="masthead">
+  <div class="eyebrow">TH Köln · Finanz- und Investitionsmanagement (Bachelor) · Übung IV</div>
+  <h1 class="masthead-title">Kontrollfragen zum Thema Kapitalkosten &amp; Kapitalstruktur</h1>
+  <p class="masthead-sub">
+    Fragen zum Leverage-Effekt, zu den Kapitalkosten und zu Modigliani/Miller — zum Selbsttest mit sofortiger
+    Auswertung. Jede Frage ist entweder Mehrfachauswahl (mehrere Antworten können richtig sein) oder KPRIM
+    (jede Aussage richtig oder falsch).
+  </p>
+</header>
+
+<div class="assumptions">
+  <strong>Modellannahmen.</strong> Vereinfachter Kapitalmarkt ohne Steuern, Insolvenz- und Transaktionskosten; der Fremdkapitalzins ist fest und wird sicher und vollständig bedient (Haftungs- und Ausfalleffekte bleiben ausgeblendet). Bei Kapitalkosten und Modigliani/Miller sind grundsätzlich Marktwerte maßgeblich — die einfachen Rechenbeispiele verwenden die jeweils gegebenen Kapitalbeträge.
+</div>
+
+<nav class="secnav">
+  <a href="#sec-g1"><span class="n">1</span>Aufteilungssatz &amp; Renditen</a>
+  <a href="#sec-g2"><span class="n">2</span>Leverage-Effekt &amp; Schwankungsbreite</a>
+  <a href="#sec-g3"><span class="n">3</span>Kapitalkosten &amp; Modigliani/Miller</a>
+  <a href="#sec-g4"><span class="n">4</span>Verschuldungsgrad &amp; Marktbewertung</a>
+</nav>
+
+<section class="section" id="sec-g1"><div class="quiz-zone" id="g1"></div></section>
+<section class="section" id="sec-g2"><div class="quiz-zone" id="g2"></div></section>
+<section class="section" id="sec-g3"><div class="quiz-zone" id="g3"></div></section>
+<section class="section" id="sec-g4"><div class="quiz-zone" id="g4"></div></section>
+
+<footer>
+  Prof. Dr. Marc Mehlhorn · TH Köln · Modul Finanz- und Investitionsmanagement · <a href="impressum.html">Impressum</a>
+</footer>
+
+</div><!-- /container -->
+
+<script>
+(function () {
+'use strict';
+function el(id) { return document.getElementById(id); }
+
+/* ═══════════════════════════════════════════════════════════════════
+   KONTROLLFRAGEN — thematisch gruppiert
+   ═══════════════════════════════════════════════════════════════════ */
+const GROUPS = [
+  {
+    id: 'g1', title: 'Aufteilungssatz & Renditen',
+    items: [
+      { type: 'mc',
+        q: 'Eine Investition mit Gesamtkapital GK = 100 wird teils mit Fremdkapital (Zinssatz i_FK) finanziert. Der unsichere Ertrag Y fällt in drei gleich wahrscheinlichen Umweltzuständen an: Y = 4 / 8 / 12 €. Es gilt der Aufteilungssatz Y = i_EK·EK + i_FK·FK (mit EK + FK = GK). Welche Aussagen sind richtig?',
+        options: [
+          { t: 'Die FK-Zinsen i_FK·FK sind ein fester Eurobetrag, der nicht vom Umweltzustand (also nicht von Y) abhängt.', correct: true },
+          { t: 'Was nach den FK-Zinsen vom Ertrag Y übrig bleibt, gehört vollständig den Eigentümern.', correct: true },
+          { t: 'Die Gesamtkapitalrendite i_GK (= r_GK) = Y/GK beträgt je Zustand 4 / 8 / 12 %; ihr Mittel über die drei gleich wahrscheinlichen Zustände ist die Kapitalkostenrate k = E(i_GK) = 8 %.', correct: true },
+          { t: 'Der Eigentümer-Anteil Y − i_FK·FK kann nie negativ werden.', correct: false },
+          { t: 'Die Formel für die gewichteten Kapitalkosten k und die Leverage-Formel für k_EK gehen durch Umstellen auseinander hervor — dieselbe Beziehung, einmal nach k, einmal nach k_EK aufgelöst.', correct: true }
+        ],
+        expl: 'Wird der Ertrag Y kleiner als die festen Zinsen i_FK·FK (z. B. bei i_FK = 6 % und FK = 75 → Zinsen 4,50 €, aber Y = 4 €), ist der Eigentümer-Anteil negativ — die Eigentümer tragen den Fehlbetrag. Genau diese Asymmetrie erzeugt den Leverage-Effekt.' },
+      { type: 'kprim',
+        q: 'Aufteilung in Euro (gegeben: GK = 100, i_FK = 6 %). Beurteilen Sie:',
+        statements: [
+          { t: 'Bei FK = 50 und Y = 8 erhält die Bank 3 EUR, die Eigentümer 5 EUR.', correct: true },
+          { t: 'Bei FK = 50 ist dann i_EK = 5 / 50 = 10 %.', correct: true },
+          { t: 'Bei FK = 75 und Y = 4 ist der Eigentümer-Anteil negativ (−0,50 EUR).', correct: true },
+          { t: 'Die FK-Zinsen steigen mit dem Umweltzustand (bei mehr Ertrag Y zahlt man der Bank mehr).', correct: false }
+        ],
+        expl: 'Die Zinsen i_FK·FK = 0,06·75 = 4,50 EUR sind fix — unabhängig von Y. Bei Y = 4 bleibt den Eigentümern 4 − 4,50 = −0,50 EUR. Bei FK = 50, Y = 8: Zinsen 3 EUR, Rest 5 EUR, i_EK = 5/50 = 10 %.' },
+      { type: 'kprim',
+        q: 'Renditen aus Y ableiten (gegeben: GK = 100, Y = 12, EK = 25, FK = 75, i_FK = 6 %):',
+        statements: [
+          { t: 'Die Gesamtkapitalrendite i_GK beträgt 12 %.', correct: true },
+          { t: 'Die FK-Zinsen betragen 6,00 EUR.', correct: false },
+          { t: 'Die Eigenkapitalrendite i_EK beträgt 30 %.', correct: true },
+          { t: 'Mit Y = 4 statt 12 (alles andere unverändert) wäre i_EK = −2 %.', correct: true }
+        ],
+        expl: 'FK-Zinsen = 0,06 · 75 = 4,50 EUR. i_EK = (12 − 4,50) / 25 = 30 %; mit Y = 4: (4 − 4,50) / 25 = −2 %.' },
+      { type: 'mc',
+        q: 'Leverage-Effekt: Verschuldung hebt die Eigenkapitalrendite, wenn die Gesamtkapitalrendite i_GK über dem Fremdkapitalzins i_FK liegt (Leverage-Chance), andernfalls senkt sie sie (Leverage-Risiko). Der Verschuldungsgrad ist V = FK/EK. Welche Aussagen sind richtig?',
+        options: [
+          { t: 'i_GK = 10 % und i_FK = 6 %: Es liegt eine Leverage-Chance vor.', correct: true },
+          { t: 'i_GK = 4 % und i_FK = 6 %: Es liegt ein Leverage-Risiko vor.', correct: true },
+          { t: 'Gilt in einem Umweltzustand i_GK = i_FK, so ist in diesem Zustand i_EK = i_GK — unabhängig vom Verschuldungsgrad V.', correct: true },
+          { t: 'Die Richtung des Leverage-Effekts — nach oben oder nach unten — wird durch die Höhe des Verschuldungsgrads V bestimmt.', correct: false },
+          { t: 'Liegt im Erwartungswert eine Leverage-Chance vor, kann die EK-Rendite in einzelnen Umweltzuständen trotzdem negativ sein.', correct: true }
+        ],
+        expl: 'Die Richtung bestimmt allein die Relation i_GK vs. i_FK — V skaliert nur die Stärke des Effekts (und bei V = 0 gibt es gar keinen Hebel). Beispiel (GK = 100, Y = 4 / 8 / 12 € gleich wahrscheinlich, i_FK = 6 %): E(i_GK) = 8 % > 6 %, trotzdem i_EK = −2 % im negativen Zustand (Y = 4) bei EK = 25 / FK = 75.' }
+    ]
+  },
+  {
+    id: 'g2', title: 'Leverage-Effekt & Schwankungsbreite',
+    items: [
+      { type: 'mc',
+        q: 'Gegeben: Gesamtkapital GK = 100 und ein Ertrag Y mit drei gleich wahrscheinlichen Umweltzuständen Y = 4 / 8 / 12 € (also i_GK = Y/GK = 4 / 8 / 12 %, E(i_GK) = 8 %); Fremdkapitalzins i_FK = 6 %; Verschuldungsgrad V = FK/EK. Welche Aussagen sind richtig?',
+        options: [
+          { t: 'Annahmegemäß hängt i_GK nur von Y und GK ab — die Finanzierung ändert i_GK nicht.', correct: true },
+          { t: 'Verschuldung (V > 0) erhöht die erwartete EK-Rendite genau dann, wenn E(i_GK) > i_FK.', correct: true },
+          { t: 'Verschuldung erhöht auch die Schwankungsbreite der GK-Rendite.', correct: false },
+          { t: 'Im Zustand „negativ" (i_GK = 4 % < i_FK = 6 %) senkt mehr Verschuldung die EK-Rendite dieses Zustands.', correct: true },
+          { t: 'Mit EK = 1 / FK = 99 ist die EK-Rendite sicher 206 %.', correct: false }
+        ],
+        expl: 'Das Business Risk (Streuung von i_GK) bleibt unverändert — der Hebel wirkt nur auf i_EK. 206 % ist der Erwartungswert, die Bandbreite reicht von −194 % bis +606 %.' },
+      { type: 'kprim',
+        q: 'Schwankungsbreite (Spannweite = größter − kleinster Wert): Es gilt SB i_EK = (1 + V) · SB i_GK mit dem Verschuldungsgrad V = FK/EK. Beurteilen Sie:',
+        statements: [
+          { t: 'Bei V = 1 ist die Schwankungsbreite der EK-Rendite doppelt so groß wie die der GK-Rendite.', correct: true },
+          { t: 'Bei reiner Eigenfinanzierung (V = 0) sind beide Schwankungsbreiten gleich groß.', correct: true },
+          { t: 'Die Schwankungsbreite der EK-Rendite wächst nur bei Leverage-Chance, nicht bei Leverage-Risiko.', correct: false },
+          { t: 'Soll die Schwankungsbreite der EK-Rendite viermal so groß sein wie die der GK-Rendite, muss der Verschuldungsgrad V = 3 betragen.', correct: true }
+        ],
+        expl: 'Der Faktor (1 + V) gilt unabhängig davon, ob i_GK über oder unter i_FK liegt — die Streuung wächst immer mit V.' }
+    ]
+  },
+  {
+    id: 'g3', title: 'Kapitalkosten & Modigliani/Miller',
+    items: [
+      { type: 'mc',
+        q: 'Die gewichteten (durchschnittlichen) Kapitalkosten k sind das mit den Kapitalquoten gewichtete Mittel aus Eigenkapitalkosten k_EK und Fremdkapitalkosten k_FK: k = k_EK · EK/(EK+FK) + k_FK · FK/(EK+FK). Welche Aussagen sind richtig?',
+        options: [
+          { t: 'k liegt stets zwischen k_FK und k_EK (es ist ein gewichtetes Mittel der beiden Kostensätze).', correct: true },
+          { t: 'Dasselbe k lässt sich auch als k = k_EK − (k_EK − k_FK) · FK/(EK+FK) schreiben — algebraisch identisch zum gewichteten Mittel.', correct: true },
+          { t: 'Sind k_EK und k_FK konstant (mit k_EK > k_FK), sinkt k mit steigender Fremdkapitalquote FK/(EK+FK).', correct: true },
+          { t: 'Aus dem sinkenden k unter der Annahme „k_EK konstant" folgt, dass es auch nach Modigliani/Miller (1958) eine optimale Kapitalstruktur mit 100 % Fremdkapital gibt.', correct: false }
+        ],
+        expl: 'Das sinkende k ist eine Folge der Annahme „k_EK konstant" — nach Modigliani/Miller steigt k_EK mit der Verschuldung, und der Schluss auf vollständige Fremdfinanzierung bricht zusammen.' },
+      { type: 'kprim',
+        q: 'Nach Modigliani/Miller (1958) — im idealisierten Kapitalmarkt ohne Steuern, Insolvenz- und Transaktionskosten und ohne Informationsasymmetrien — gilt:',
+        statements: [
+          { t: 'Der Marktwert eines Unternehmens ist unabhängig von der Kapitalstruktur.', correct: true },
+          { t: 'k_EK ist eine lineare Funktion des Verschuldungsgrads V = FK/EK (Steigung k − k_FK).', correct: true },
+          { t: 'k sinkt mit zunehmender Verschuldung.', correct: false },
+          { t: 'Das Irrelevanztheorem ist mit der Leverage-Formel k_EK = k + (k − k_FK) · FK/EK kompatibel.', correct: true }
+        ],
+        expl: 'Die Kapitalkosten k werden vom Geschäftsrisiko (Business Risk) bestimmt und sind von der Finanzierung unbeeinflusst: Setzt man das mit der Verschuldung steigende k_EK in das gewichtete Mittel k = k_EK · EK/(EK+FK) + k_FK · FK/(EK+FK) ein, bleibt k konstant (Irrelevanz).' },
+      { type: 'kprim',
+        q: 'Leverage-Formel k_EK = k + (k − k_FK) · V (Verschuldungsgrad V = FK/EK) anwenden — gegeben: k = 8 %, k_FK = 6 %:',
+        statements: [
+          { t: 'Bei V = 1 beträgt k_EK = 10 %.', correct: true },
+          { t: 'Bei V = 3 beträgt k_EK = 14 %.', correct: true },
+          { t: 'Steigt V um 1, steigt k_EK um (k − k_FK) = 2 Prozentpunkte.', correct: true },
+          { t: 'Bei V = 0 gilt k_EK = k_FK.', correct: false }
+        ],
+        expl: 'k_EK = 8 % + 2 % · V. Bei V = 0 (reine Eigenfinanzierung) gilt k_EK = k = 8 %, nicht k_FK.' },
+      { type: 'kprim',
+        q: 'Rückwärts rechnen mit der Leverage-Formel k_EK = k + (k − k_FK) · V (V = FK/EK; gegeben: k = 8 %, k_FK = 6 %):',
+        statements: [
+          { t: 'Soll k_EK = 12 % betragen, muss V = 2 sein.', correct: true },
+          { t: 'Soll k_EK = 16 % betragen, muss V = 4 sein.', correct: true },
+          { t: 'Aus k_EK = 9 % folgt V = 0,5.', correct: true },
+          { t: 'k_EK = 7 % ist mit diesen Werten für einen Verschuldungsgrad V ≥ 0 erreichbar.', correct: false }
+        ],
+        expl: 'Umstellen der Leverage-Formel: V = (k_EK − k) / (k − k_FK). Da k_EK bei V = 0 schon 8 % beträgt und mit V steigt, sind Werte unter 8 % nicht erreichbar.' }
+    ]
+  },
+  {
+    id: 'g4', title: 'Verschuldungsgrad & Marktbewertung',
+    items: [
+      { type: 'kprim',
+        q: 'Verschuldungsgrad V = FK/EK und Bilanz (Gesamtkapital GK = EK + FK). Beurteilen Sie:',
+        statements: [
+          { t: 'Bei GK = 300 und V = 2 beträgt das Fremdkapital FK = 200.', correct: true },
+          { t: 'V ist definiert als FK / EK — nicht als FK / GK.', correct: true },
+          { t: 'Eine FK-Quote (FK/GK) von 50 % entspricht V = 1.', correct: true },
+          { t: 'Verdoppelt sich die FK-Quote (FK/GK) von 25 % auf 50 %, verdoppelt sich auch V.', correct: false }
+        ],
+        expl: 'V springt dabei von 1/3 auf 1 — er verdreifacht sich. Quote und Verschuldungsgrad hängen nichtlinear zusammen: V = Quote/(1−Quote).' },
+      { type: 'mc',
+        q: 'Marktkapitalisierungsrate: Aktienkurs heute P₀ = 100 EUR, ewige Dividende D = 8 EUR. Welche Aussagen sind richtig?',
+        options: [
+          { t: 'Die Marktkapitalisierungsrate beträgt i_r = D / P₀ = 8 %.', correct: true },
+          { t: 'Fällt P₀ auf 80 EUR (D unverändert), steigt i_r auf 10 %.', correct: true },
+          { t: 'Im einperiodigen Fall gilt i_r = (D₁ + P₁ − P₀) / P₀.', correct: true },
+          { t: 'Auch im Fall der ewigen Dividende benötigt man den künftigen Kurs P₁.', correct: false }
+        ],
+        expl: 'Bei der ewigen Rente fällt P₁ heraus — es genügen D und P₀. Der Kurs ist der Ort, an dem der Markt die Renditeforderung durchsetzt.' }
+    ]
+  }
+];
+
+/* ═══════════════════════════════════════════════════════════════════
+   QUIZ-ENGINE  (MC-Mehrfachauswahl + KPRIM)
+   ═══════════════════════════════════════════════════════════════════ */
+function quizHTML(s, id, num) {
+  const inner = s.type === 'mc' ? mcHTML(s, id) : kprimHTML(s, id);
+  const tag = s.type === 'mc'
+    ? '<span class="kf-tag mc">Mehrfachauswahl</span>'
+    : '<span class="kf-tag kprim">KPRIM</span>';
+  return `<details class="kf-item"><summary>Kontrollfrage ${num}${tag}</summary><div class="kf-body">${inner}</div></details>`;
+}
+function mcHTML(s, id) {
+  const opts = s.options.map((o, i) =>
+    `<button class="opt mc" data-i="${i}" aria-pressed="false"><span class="opt-check">☐</span><span class="opt-body">${o.t}</span></button>`).join('');
+  return `<div class="quiz mc" id="${id}">
+    <div class="quiz-eyebrow">Mehrfachauswahl · mehrere Antworten können richtig sein</div>
+    <div class="quiz-q">${s.q}</div>
+    <div class="opt-list">${opts}</div>
+    <div class="actions"><button class="btn check">Auswerten</button><button class="btn secondary reset" style="display:none;">Zurücksetzen</button></div>
+    <div class="feedback" role="status" aria-live="polite" tabindex="-1"></div></div>`;
+}
+function kprimHTML(s, id) {
+  const rows = s.statements.map((st, i) =>
+    `<tr data-i="${i}">
+      <td class="st-text">${st.t}</td>
+      <td class="st-rf">
+        <button class="rf-btn" data-v="r" aria-pressed="false" aria-label="Aussage ${i + 1} als richtig bewerten">richtig</button><button class="rf-btn" data-v="f" aria-pressed="false" aria-label="Aussage ${i + 1} als falsch bewerten">falsch</button>
+      </td></tr>`).join('');
+  return `<div class="quiz kprim" id="${id}">
+    <div class="quiz-eyebrow">KPRIM · für jede Aussage richtig oder falsch entscheiden</div>
+    <div class="quiz-q">${s.q}</div>
+    <table class="kprim-tbl">${rows}</table>
+    <div class="actions"><button class="btn check">Auswerten</button><button class="btn secondary reset" style="display:none;">Zurücksetzen</button></div>
+    <div class="feedback" role="status" aria-live="polite" tabindex="-1"></div></div>`;
+}
+function wireQuiz(s, id) {
+  const root = el(id);
+  const fb = root.querySelector('.feedback');
+  const checkBtn = root.querySelector('.check');
+  const resetBtn = root.querySelector('.reset');
+
+  if (s.type === 'mc') {
+    const opts = [...root.querySelectorAll('.opt.mc')];
+    opts.forEach(o => o.addEventListener('click', () => {
+      if (o.classList.contains('locked')) return;
+      o.classList.toggle('selected');
+      const on = o.classList.contains('selected');
+      o.setAttribute('aria-pressed', String(on));
+      o.querySelector('.opt-check').textContent = on ? '☑' : '☐';
+    }));
+    checkBtn.addEventListener('click', () => {
+      if (!opts.some(o => o.classList.contains('selected'))) {
+        fb.className = 'feedback show partial';
+        fb.innerHTML = '<strong>Bitte wählen Sie zuerst mindestens eine Aussage aus.</strong>';
+        return;
+      }
+      let allRight = true, tp = 0, fp = 0, nCorrect = 0;
+      opts.forEach((o, i) => {
+        const sel = o.classList.contains('selected');
+        const corr = s.options[i].correct;
+        o.classList.add('locked');
+        o.disabled = true;
+        o.setAttribute('aria-label', s.options[i].t + (corr ? ' — diese Aussage ist richtig.' : ' — diese Aussage ist falsch.') + (sel === corr ? ' Von Ihnen korrekt eingeordnet.' : ' Von Ihnen falsch eingeordnet.'));
+        if (corr) { o.classList.add('correct'); nCorrect++; }
+        if (sel && !corr) o.classList.add('wrong');
+        o.querySelector('.opt-check').textContent = corr ? (sel ? '✓' : '○') : (sel ? '✗' : '☐');
+        if (sel === corr) { if (sel) tp++; } else { allRight = false; if (sel) fp++; }
+      });
+      fb.className = 'feedback show ' + (allRight ? 'ok' : 'err');
+      fb.innerHTML = (allRight
+        ? `<strong>Richtig.</strong> Alle ${opts.length} Aussagen korrekt eingeordnet (${nCorrect} richtige gefunden, ${opts.length - nCorrect} falsche vermieden).`
+        : `<strong>Noch nicht ganz.</strong> Richtige Aussagen gefunden: ${tp} von ${nCorrect}; fälschlich gewählte: ${fp}. Legende: <span class="legend-mark">✓</span> richtig erkannt, <span class="legend-mark">○</span> richtige Aussage nicht gewählt, <span class="legend-mark">✗</span> falsch gewählt.`)
+        + (s.expl ? ' ' + s.expl : '');
+      checkBtn.style.display = 'none'; resetBtn.style.display = '';
+      fb.focus();
+    });
+    resetBtn.addEventListener('click', () => {
+      opts.forEach(o => { o.classList.remove('locked','selected','correct','wrong'); o.disabled = false; o.setAttribute('aria-pressed','false'); o.removeAttribute('aria-label'); o.querySelector('.opt-check').textContent = '☐'; });
+      fb.className = 'feedback'; fb.innerHTML = ''; checkBtn.style.display = ''; resetBtn.style.display = 'none';
+    });
+  } else {
+    const rows = [...root.querySelectorAll('tr[data-i]')];
+    const picks = {};
+    rows.forEach(tr => {
+      const i = +tr.dataset.i;
+      tr.querySelectorAll('.rf-btn').forEach(b => b.addEventListener('click', () => {
+        if (b.classList.contains('locked')) return;
+        picks[i] = b.dataset.v;
+        tr.querySelectorAll('.rf-btn').forEach(x => { const on = x === b; x.classList.toggle('sel', on); x.setAttribute('aria-pressed', String(on)); });
+      }));
+    });
+    checkBtn.addEventListener('click', () => {
+      if (Object.keys(picks).length < s.statements.length) {
+        fb.className = 'feedback show partial';
+        fb.innerHTML = '<strong>Bitte zuerst jede Aussage bewerten.</strong>';
+        return;
+      }
+      let good = 0;
+      const details = [];
+      rows.forEach(tr => {
+        const i = +tr.dataset.i;
+        const corr = s.statements[i].correct ? 'r' : 'f';
+        const pick = picks[i];
+        const btns = tr.querySelectorAll('.rf-btn');
+        btns.forEach(b => {
+          b.classList.add('locked'); b.classList.remove('sel');
+          b.disabled = true;
+          if (b.dataset.v === pick) b.classList.add(pick === corr ? 'right' : 'wrongpick');
+          if (b.dataset.v === corr && pick !== corr) b.classList.add('miss');
+        });
+        if (pick === corr) good++;
+        const mark = document.createElement('div');
+        mark.className = 'kp-mark ' + (pick === corr ? 'ok' : 'no');
+        mark.textContent = pick === corr ? '✓ richtig bewertet' : '✗ falsch bewertet — richtig wäre: ' + (corr === 'r' ? 'richtig' : 'falsch');
+        tr.querySelector('.st-text').appendChild(mark);
+        details.push(`Aussage ${i + 1}: ${pick === corr ? 'korrekt bewertet' : 'falsch bewertet — die Aussage ist ' + (corr === 'r' ? 'richtig' : 'falsch')}`);
+      });
+      const n = s.statements.length;
+      let cls, verdict;
+      if (good === n) { cls = 'ok'; verdict = `<strong>Alle ${n} richtig — volle Punktzahl.</strong>`; }
+      else if (good === n - 1) { cls = 'partial'; verdict = `<strong>${good} von ${n} richtig — halbe Punktzahl.</strong> (KPRIM-Wertung: 4 Richtige = volle Punktzahl, 3 Richtige = halbe, weniger = 0 Punkte.)`; }
+      else { cls = 'err'; verdict = `<strong>${good} von ${n} richtig — nach KPRIM-Wertung 0 Punkte.</strong> (Erst 3 Richtige geben die halbe, 4 die volle Punktzahl.)`; }
+      fb.className = 'feedback show ' + cls;
+      fb.innerHTML = verdict + (s.expl ? ' ' + s.expl : '') + `<span class="sr-only"> Ergebnisdetails: ${details.join('; ')}.</span>`;
+      checkBtn.style.display = 'none'; resetBtn.style.display = '';
+      fb.focus();
+    });
+    resetBtn.addEventListener('click', () => {
+      for (const k in picks) delete picks[k];
+      rows.forEach(tr => tr.querySelectorAll('.rf-btn').forEach(b => { b.classList.remove('locked','sel','right','wrongpick','miss'); b.disabled = false; b.setAttribute('aria-pressed','false'); }));
+      root.querySelectorAll('.kp-mark').forEach(m => m.remove());
+      fb.className = 'feedback'; fb.innerHTML = ''; checkBtn.style.display = ''; resetBtn.style.display = 'none';
+    });
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   BOOT — Gruppen rendern, fortlaufend nummeriert
+   ═══════════════════════════════════════════════════════════════════ */
+let num = 0;
+GROUPS.forEach(g => {
+  const c = el(g.id);
+  const parts = [`<div class="kf-head">${g.title}</div>`];
+  g.items.forEach(s => { num++; s._id = g.id + '-q' + num; s._num = num; parts.push(quizHTML(s, s._id, s._num)); });
+  c.innerHTML = parts.join('');
+  g.items.forEach(s => wireQuiz(s, s._id));
+});
+})();
+</script>
+</body>
+</html>
