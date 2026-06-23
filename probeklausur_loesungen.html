@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Probeklausur · Lösungen &amp; Rechenwege — Finanz- und Investitionsmanagement · TH Köln</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --th-rot:#C90C0F;--th-orange:#EA5B0C;--th-violett:#B82585;--th-gruen:#2D6A3F;--th-blau:#1F5673;
+    --th-rot-soft:#FBE7E7;--th-orange-soft:#FFF3E9;--th-violett-soft:#F7ECF3;--th-gruen-soft:#E7F0EA;--th-blau-soft:#E8F0F4;
+    --bg:#FAFAFA;--card:#FFFFFF;--ink:#1A1A1A;--ink-soft:#404040;--ink-muted:#737373;--ink-faint:#A3A3A3;--rule:#E5E5E5;--rule-soft:#F0F0F0;
+    --shadow-sm:0 1px 2px rgba(0,0,0,0.04);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .container{max-width:1000px;margin:0 auto;padding:40px 32px 80px}
+
+  header.masthead{border-bottom:2px solid var(--th-rot);padding-bottom:28px}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--th-rot);margin-bottom:12px}
+  h1.masthead-title{font-weight:700;font-size:clamp(26px,3.5vw,36px);letter-spacing:-.02em;margin-bottom:8px}
+  .masthead-sub{font-size:16px;color:var(--ink-muted);max-width:820px}
+
+  nav.secnav{position:sticky;top:0;z-index:50;background:rgba(250,250,250,.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--rule);margin-bottom:32px;display:flex;flex-wrap:wrap;gap:4px;padding:10px 0}
+  nav.secnav a{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-muted);text-decoration:none;padding:6px 11px;border-radius:5px;transition:background .12s,color .12s;white-space:nowrap}
+  nav.secnav a:hover{background:var(--th-rot-soft);color:var(--th-rot)}
+  nav.secnav a .n{color:var(--th-rot);font-weight:600;margin-right:5px}
+
+  .hinweis{margin:0 0 30px;padding:12px 16px;max-width:820px;background:var(--th-blau-soft);border-left:3px solid var(--th-blau);border-radius:0 6px 6px 0;font-size:13.5px;color:var(--ink-soft);line-height:1.5}
+
+  section.aufgabe{margin-bottom:52px;scroll-margin-top:64px}
+  .a-head{border-bottom:1px solid var(--rule);padding-bottom:12px;margin-bottom:18px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  .a-num{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--th-rot);letter-spacing:.1em}
+  .a-title{font-size:21px;font-weight:600;letter-spacing:-.01em}
+  .a-punkte{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-muted);margin-left:auto}
+
+  .kontext{background:var(--card);border:1px solid var(--rule);border-radius:8px;box-shadow:var(--shadow-sm);padding:14px 18px;margin-bottom:22px}
+  .kontext .k-firma{font-weight:600;margin-bottom:6px}
+  .kontext .k-intro{font-size:13.5px;color:var(--ink-soft);line-height:1.55;margin-bottom:9px}
+  .kontext ul{margin:0;padding-left:20px}
+  .kontext li{font-size:13.5px;color:var(--ink-soft);line-height:1.6}
+  .kontext .k-instr{font-size:12.5px;color:var(--ink-muted);margin-top:9px;line-height:1.5;font-style:italic}
+  .kontext .k-note{font-size:12.5px;color:var(--ink-muted);margin-top:9px;line-height:1.5;border-top:1px dashed var(--rule);padding-top:8px}
+  .kontext .k-note b{color:var(--ink-soft)}
+
+  .frage{background:var(--card);border:1px solid var(--rule);border-radius:8px;box-shadow:var(--shadow-sm);padding:16px 18px;margin-bottom:14px}
+  .f-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+  .f-nr{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:14px;color:var(--ink)}
+  .f-punkte{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-muted)}
+  .f-typ{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:10px;margin-left:auto}
+  .f-typ.single{background:var(--th-violett-soft);color:var(--th-violett)}
+  .f-typ.mc{background:var(--th-blau-soft);color:var(--th-blau)}
+  .f-typ.kprim{background:var(--th-orange-soft);color:var(--th-orange)}
+  .f-typ.zuordnung{background:var(--th-gruen-soft);color:var(--th-gruen)}
+  .f-frage{font-size:15px;font-weight:500;line-height:1.45;margin-bottom:12px}
+
+  .loesung{background:var(--th-gruen-soft);border-left:3px solid var(--th-gruen);border-radius:0 6px 6px 0;padding:9px 13px;font-size:14px;color:var(--ink-soft);margin-bottom:4px}
+  .loesung b{color:var(--th-gruen)}
+  .loesung .val{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:15px;color:var(--th-gruen)}
+
+  .aussagen{display:flex;flex-direction:column;gap:7px;margin-bottom:4px}
+  .aussage{display:flex;gap:11px;align-items:flex-start;border:1px solid var(--rule-soft);border-radius:6px;padding:9px 12px;font-size:14px;line-height:1.4}
+  .badge{flex-shrink:0;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;padding:2px 9px;border-radius:10px;margin-top:1px;min-width:58px;text-align:center}
+  .badge.r{background:var(--th-gruen-soft);color:var(--th-gruen)}
+  .badge.f{background:var(--th-rot-soft);color:var(--th-rot)}
+  .aussage.r{border-color:#cfe5d6}
+  .aussage.f{border-color:#f1d6d6}
+  .mark{flex-shrink:0;font-weight:700;width:18px;text-align:center;margin-top:1px}
+  .mark.r{color:var(--th-gruen)}
+  .mark.f{color:var(--th-rot)}
+
+  .zuord{display:flex;flex-direction:column;gap:7px;margin-bottom:4px}
+  .zrow{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;border:1px solid var(--rule-soft);border-radius:6px;padding:9px 12px;font-size:13.5px;line-height:1.4}
+  .zrow .arrow{color:var(--th-gruen);font-weight:700}
+
+  details.erkl{margin-top:10px;border-top:1px solid var(--rule-soft);padding-top:8px}
+  details.erkl>summary{cursor:pointer;list-style:none;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--th-rot);display:flex;align-items:center;gap:8px;user-select:none}
+  details.erkl>summary::-webkit-details-marker{display:none}
+  details.erkl>summary::before{content:'▸';transition:transform .15s ease;display:inline-block}
+  details.erkl[open]>summary::before{transform:rotate(90deg)}
+  .erkl-body{margin-top:10px;font-size:13.5px;color:var(--ink-soft);line-height:1.55}
+  .erkl-body p{margin:0 0 7px}
+  .erkl-body .step{font-family:'JetBrains Mono',monospace;font-size:12.5px;background:var(--rule-soft);border-radius:5px;padding:8px 11px;margin:6px 0;white-space:pre-wrap;line-height:1.6}
+  .erkl-body .pt{display:block;margin:5px 0}
+  .erkl-body .pt b{color:var(--ink)}
+
+  /* Auswertung */
+  .pkt-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  .pkt-row label{font-size:14px;font-weight:500;color:var(--ink-soft)}
+  input.pkt{font-family:'JetBrains Mono',monospace;font-size:16px;width:130px;padding:8px 10px;border:1px solid var(--rule);border-radius:6px;background:var(--card);color:var(--ink)}
+  input.pkt:focus-visible{outline:2px solid var(--th-rot);outline-offset:2px}
+  .note-result .big{font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:600;line-height:1.15}
+  .note-result .big.pass{color:var(--th-gruen)}
+  .note-result .big.fail{color:var(--th-rot)}
+  .note-result .sub{font-size:13px;color:var(--ink-muted);margin-top:6px;line-height:1.5}
+  .note-result .empty{font-size:14px;color:var(--ink-muted)}
+  .note-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;padding:2px 9px;border-radius:10px;margin-left:10px;vertical-align:middle}
+  .note-badge.pass{background:var(--th-gruen-soft);color:var(--th-gruen)}
+  .note-badge.fail{background:var(--th-rot-soft);color:var(--th-rot)}
+  .noten-wrap{margin-top:4px}
+  .noten-cap{font-size:12.5px;color:var(--ink-muted);margin:0 0 8px}
+  table.noten{border-collapse:collapse;font-size:14px;min-width:320px}
+  table.noten th{text-align:left;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);font-weight:600;padding:6px 22px 6px 0;border-bottom:1px solid var(--rule)}
+  table.noten td{padding:6px 22px 6px 0;border-bottom:1px solid var(--rule-soft);font-family:'JetBrains Mono',monospace}
+  table.noten tr.achieved td{background:var(--th-gruen-soft);font-weight:600;color:var(--th-gruen)}
+  table.noten tr.fail-row.achieved td{background:var(--th-rot-soft);color:var(--th-rot)}
+
+  /* Klausurhinweise */
+  .tipp{--acc:var(--th-rot);background:var(--card);border:1px solid var(--rule);border-radius:8px;box-shadow:var(--shadow-sm);padding:14px 18px;margin-bottom:12px}
+  .tipp.acc-orange{--acc:var(--th-orange)} .tipp.acc-violett{--acc:var(--th-violett)} .tipp.acc-gruen{--acc:var(--th-gruen)} .tipp.acc-blau{--acc:var(--th-blau)}
+  .tipp-h{font-weight:600;font-size:15px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+  .tipp-h::before{content:'';width:14px;height:14px;border-radius:3px;background:var(--acc);flex-shrink:0}
+  .tipp ul{margin:0;padding-left:20px}
+  .tipp li{font-size:14px;color:var(--ink-soft);line-height:1.6;margin-bottom:4px}
+  .tipp li:last-child{margin-bottom:0}
+  .tipp p{font-size:14px;color:var(--ink-soft);line-height:1.55;margin:0}
+  .tipp .sub{font-size:12.5px;color:var(--ink-muted);margin-top:7px}
+
+  footer{margin-top:60px;padding-top:24px;border-top:1px solid var(--rule);font-size:13px;color:var(--ink-muted);text-align:center}
+  footer a{color:inherit;text-decoration:underline}
+  @media(max-width:600px){.container{padding:28px 16px 60px}.zrow{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header class="masthead">
+  <div class="eyebrow">TH Köln · Finanz- und Investitionsmanagement (Bachelor) · Probeklausur</div>
+  <h1 class="masthead-title">Probeklausur — Lösungen &amp; Rechenwege</h1>
+  <p class="masthead-sub">Alle Aufgaben der Probeklausur (60 Punkte) im Original-Wortlaut mit korrekter Lösung.
+  Der Rechenweg bzw. die Begründung lässt sich je Frage aufklappen — gedacht für die Klausurbesprechung.</p>
+</header>
+
+<nav class="secnav">
+  <a href="#a1"><span class="n">1</span>Beteiligungsfinanzierung</a>
+  <a href="#a2"><span class="n">2</span>Kreditfinanzierung</a>
+  <a href="#a3"><span class="n">3</span>Investitionsrechnung</a>
+  <a href="#a4"><span class="n">4</span>Kapitalstruktur</a>
+  <a href="#auswertung"><span class="n">5</span>Auswertung</a>
+  <a href="#klausurhinweise"><span class="n">6</span>Klausurhinweise</a>
+</nav>
+
+<div class="hinweis">
+  <strong>Lesehilfe.</strong> Bei <em>Einfach-/Mehrfachauswahl</em> ist die richtige Antwort grün hervorgehoben.
+  Bei <em>KPRIM</em> steht pro Aussage „richtig" (+) oder „falsch" (−) — Wertung: 4 richtig = volle, 3 richtig = halbe,
+  darunter 0 Punkte. Frage-, Aussagen- und Optionstexte sind im Original-Wortlaut der Klausur; „Rechenweg/Begründung"
+  je Frage aufklappen.
+</div>
+
+<div id="app"></div>
+<section class="aufgabe" id="auswertung"></section>
+
+<section class="aufgabe" id="klausurhinweise">
+  <div class="a-head"><span class="a-num">Hinweise</span><span class="a-title">Hinweise zur Abschlussklausur</span></div>
+  <div class="hinweis">
+    <strong>Orientierung, keine Garantie.</strong> Die folgenden Punkte fassen zusammen, wie die Abschlussklausur
+    voraussichtlich aufgebaut sein wird — als Hilfe für die Vorbereitung.
+  </div>
+
+  <div class="tipp">
+    <div class="tipp-h">Themen &amp; Aufbau</div>
+    <p>Alle vier Themen der Übung sind klausurrelevant — voraussichtlich ein Thema je Aufgabe:</p>
+    <ul style="margin-top:8px">
+      <li>Aufgabe 1 — Einlagen- und Beteiligungsfinanzierung</li>
+      <li>Aufgabe 2 — Kreditfinanzierung</li>
+      <li>Aufgabe 3 — Dynamische Investitionsrechnung</li>
+      <li>Aufgabe 4 — Kapitalstruktur / Leverage-Effekt</li>
+    </ul>
+    <div class="sub">Der Aufbau ist damit gut vergleichbar mit dieser Probeklausur.</div>
+  </div>
+
+  <div class="tipp acc-orange">
+    <div class="tipp-h">Fragetypen &amp; Stil</div>
+    <ul>
+      <li>Voraussichtlich überwiegend Ankreuzformate: <strong>KPRIM</strong> (jede Aussage richtig/falsch), <strong>Mehrfachauswahl</strong> (eine oder mehrere Antworten richtig) und <strong>Einfachauswahl</strong> (genau eine richtig).</li>
+      <li>KPRIM-Wertung wie gewohnt: 4 richtige Bewertungen = volle Punktzahl, 3 = halbe, darunter 0 Punkte.</li>
+    </ul>
+  </div>
+
+  <div class="tipp acc-violett">
+    <div class="tipp-h">Excel-Verständnis</div>
+    <ul>
+      <li>Erwartet wird auch Verständnis der Excel-Übungen — abgefragt wird das <strong>Verständnis</strong>, nicht das Tippen in Excel.</li>
+      <li>Typische Form: Ein Sachverhalt wird beschrieben, und Sie wählen (per Ankreuzen) die Excel-Formel bzw. den Zellbezug, der am besten passt.</li>
+    </ul>
+  </div>
+
+  <div class="tipp acc-gruen">
+    <div class="tipp-h">Hilfsmittel — alles selbst mitbringen</div>
+    <ul>
+      <li>Es werden <strong>weder eine Formelsammlung noch zusätzliches Notizpapier</strong> gestellt.</li>
+      <li>Bringen Sie alle benötigten Hilfsmittel selbst mit (insbesondere einen funktionsfähigen Taschenrechner).</li>
+    </ul>
+  </div>
+
+  <div class="tipp acc-blau">
+    <div class="tipp-h">A/B-Klausuren</div>
+    <ul>
+      <li>Es gibt mehrere Klausurvarianten (A/B) mit teils leicht abweichenden Zahlenwerten und unterschiedlicher Reihenfolge der Antwortmöglichkeiten.</li>
+      <li>Verlassen Sie sich daher auf Ihr eigenes Verständnis und Ihren Rechenweg — die Lösung der Nachbarin/des Nachbarn passt vermutlich nicht zu Ihrer Variante.</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  Prof. Dr. Marc Mehlhorn · TH Köln · Modul Finanz- und Investitionsmanagement · <a href="impressum.html">Impressum</a>
+</footer>
+
+</div><!-- /container -->
+
+<script>
+(function(){
+'use strict';
+
+const DATA=[
+{ id:'a1', nr:'Aufgabe 1', titel:'Einlagen- und Beteiligungsfinanzierung', punkte:15,
+  firma:'MAGENTA AG — Kapitalerhöhung gegen Einlagen',
+  intro:'Die MAGENTA AG, ein börsennotiertes Unternehmen für die Live-Übertragung von Basketballspielen, plant nach dem EM-Sieg der deutschen Nationalmannschaft eine Expansion. Zur Finanzierung ist eine Kapitalerhöhung gegen Einlagen vorgesehen. Ihnen liegen die folgenden Informationen vor:',
+  daten:['Gezeichnetes Kapital (vorher): 20 Mio. EUR','Nennwert je Aktie: 1 EUR','Wert eines Bezugsrechts (BR): 2,50 EUR','Mischkurs nach Kapitalerhöhung (P_neu): 30,00 EUR','Bezugsverhältnis (BV): 4/1'],
+  vorab:'Vorab (Hilfswerte): Altaktien = 20 Mio / 1 = 20 Mio Stück · junge Aktien = 20 Mio / 4 = 5 Mio Stück · Kurs Altaktie P_a = P_neu + BR = 32,50 EUR.',
+  fragen:[
+   {nr:'2.1',p:4,typ:'single',frage:'Zu welchem Preis (P_j) wird eine junge Aktie emittiert (Emissionskurs)?',
+    loesung:'20,00 EUR',
+    step:'Bezugsrechtsformel: BR = (P_a − P_j) / (BV + 1)\n2,50 = (32,50 − P_j) / 5\n12,50 = 32,50 − P_j\nP_j = 20,00 EUR'},
+   {nr:'2.2',p:2,typ:'single',frage:'Wie hoch ist die Veränderung der Kapitalrücklage durch diese Maßnahme?',
+    loesung:'95 Mio. EUR',
+    step:'Agio je junge Aktie = P_j − Nennwert = 20,00 − 1,00 = 19,00 EUR\nVeränderung = Agio × Anzahl junge Aktien = 19,00 × 5.000.000 = 95.000.000 EUR'},
+   {nr:'2.3',p:4,typ:'kprim',frage:'Bewerten Sie bei den folgenden 4 Aussagen, ob diese richtig (+) oder falsch (−) sind. Kreuzen Sie an.',
+    aussagen:[
+     {t:'Ein Altaktionär, der nicht an der Kapitalerhöhung teilnimmt und seine Bezugsrechte verkauft, erleidet einen Vermögensverlust im Aktienbestand in Höhe des Werts seiner Bezugsrechte.',k:true,
+      b:'Die Aktie geht „ex Bezugsrecht" von P_a = 32,50 auf P_neu = 30,00, also genau um den BR-Wert (2,50). Der Wertverlust im Aktienbestand entspricht dem BR-Wert; der Verkauf des BR gleicht ihn aus.'},
+     {t:'Der Vorstand der AG hätte in Deutschland den Emissionskurs rechtlich auf 0,50 EUR festsetzen können.',k:false,
+      b:'Unterpari-Emissionsverbot (§ 9 AktG): Aktien dürfen nicht unter dem Nennwert (hier 1 EUR) ausgegeben werden. 0,50 EUR wäre unzulässig.'},
+     {t:'Eine strategische Begründung für einen deutlichen Abstand zwischen P_a und P_j ist die Sicherstellung einer erfolgreichen Platzierung aller jungen Aktien, auch bei leichten Kursschwankungen der Altaktie.',k:true,
+      b:'Ein spürbarer Abschlag macht die jungen Aktien attraktiv und sichert die Platzierung auch dann, wenn der Altaktienkurs leicht nachgibt.'},
+     {t:'Durch die Kapitalerhöhung erhöht sich das bilanzielle Eigenkapital der AG um exakt den Betrag des zugeflossenen Kapitals.',k:true,
+      b:'Zufluss = P_j × 5 Mio = 100 Mio EUR; davon 5 Mio gezeichnetes Kapital + 95 Mio Kapitalrücklage = 100 Mio. Das bilanzielle EK steigt um den vollen Zufluss.'}
+    ]},
+   {nr:'2.4',p:3,typ:'zuordnung',frage:'Ordnen Sie den folgenden strategischen Entscheidungen der AG (1–3) die wahrscheinlichste finanzwirtschaftliche Konsequenz (A–C) zu.',
+    zuordnung:[
+     {l:'1: Das Unternehmen wählt P_j sehr nahe an P_a.',r:'B: Der Wert des Bezugsrechts (BR) tendiert gegen Null, was das Platzierungsrisiko erhöht.'},
+     {l:'2: Das Unternehmen führt statt der Kapitalerhöhung gegen Einlagen eine Kapitalerhöhung aus Gesellschaftsmitteln durch.',r:'A: Das gezeichnete Kapital erhöht sich, aber dem Unternehmen fließen keine neuen liquiden Mittel zu.'},
+     {l:'3: Der Vorstand lässt sich von der Hauptversammlung ein „genehmigtes Kapital" beschließen.',r:'C: Das Management erhält die Flexibilität, das Grundkapital zu einem späteren, günstigen Zeitpunkt zu erhöhen.'}
+    ],
+    b:'1 → B: Bei P_j ≈ P_a wird BR = (P_a − P_j)/(BV+1) ≈ 0 → kaum Anreiz, das Risiko der Nicht-Platzierung steigt. 2 → A: Kapitalerhöhung aus Gesellschaftsmitteln ist eine reine Umbuchung von Rücklagen in gezeichnetes Kapital (kein Mittelzufluss). 3 → C: Genehmigtes Kapital ist eine Ermächtigung des Vorstands für spätere, flexible Erhöhungen.'},
+   {nr:'2.5',p:2,typ:'mc',frage:'Welche der folgenden Aussagen über Bezugsrechte sind korrekt? (Es können eine oder mehrere Antworten richtig sein.)',
+    optionen:[
+     {t:'Üben die Altaktionäre ihre Bezugsrechte nicht rechtzeitig aus, übernimmt das der Depotanbieter und bucht die jungen Aktien ins Depot ein.',k:false},
+     {t:'Der Handel mit Bezugsrechten an der Börse ermöglicht es neuen Investoren, sich an der Kapitalerhöhung zu beteiligen, indem sie die notwendigen Bezugsrechte erwerben.',k:true},
+     {t:'Ein Altaktionär, der eine Opération Blanche durchführt, behält exakt seinen prozentualen Anteil am Grundkapital wie vor der Kapitalerhöhung.',k:false},
+     {t:'Das Bezugsrecht dient dazu, den Altaktionären einen teilweisen oder vollständigen Ausgleich für die wertmäßige und/oder stimmrechtliche Verwässerung ihres Anteils zu bieten.',k:true}
+    ],
+    b:'Nicht ausgeübte Bezugsrechte werden i. d. R. (fristgerecht) verkauft oder verfallen — keine automatische Einbuchung. Bei der Opération Blanche werden so viele BR verkauft, dass der Rest ohne Eigenmittel bezogen wird; der prozentuale Anteil sinkt dabei.'}
+  ]},
+
+{ id:'a2', nr:'Aufgabe 2', titel:'Kreditfinanzierung', punkte:15,
+  firma:'Türkischer Basketball-Verband — Kreditangebot',
+  intro:'Nach dem verlorenen Finale gegen Deutschland plant die türkische Basketball-Nationalmannschaft in ihre Zukunft zu investieren. Der Verband holt hierfür ein Kreditangebot der größten türkischen Bank ein, das wie folgt aussieht:',
+  daten:['Nominalbetrag (N): 10 Mio. EUR','Laufzeit (T): 5 Jahre','Disagio: 2 %','Nominalzins: 5 % jährlich (nachschüssig)','Tilgung: Die ersten beiden Jahre sind tilgungsfrei. Danach erfolgt die Tilgung in gleichen Raten zum Jahresende.','Einmalige Kosten: 50.000 EUR (fällig bei Kreditauszahlung)','Laufende Kosten: 0,1 % jährliche Kontoführungsgebühr (nachschüssig), berechnet auf den ausstehenden Restbetrag zu Beginn des jeweiligen Jahres.'],
+  instr:'Bewerten Sie für die folgenden 5 Aufgaben die jeweils 4 dazugehörigen Aussagen als richtig (+) oder falsch (−).',
+  vorab:'Vorab (Hilfswerte): Auszahlung = 10 Mio × 0,98 − 50.000 = 9.750.000 EUR · Tilgungsrate (Jahr 3–5) = 10 Mio / 3 = 3.333.333 EUR · höchster Kapitaldienst Jahr 3 = 3.843.333 EUR · laufende Kosten gesamt = 40.000 EUR · Zinsen gesamt = 2.000.000 EUR.',
+  fragen:[
+   {nr:'3.1',p:3,typ:'kprim',frage:'Statischer Effektivzins und Kostenkomponenten',
+    aussagen:[
+     {t:'Zur Berechnung des statischen Effektivzinses nach der Praktikerformel werden die gesamten laufenden Kosten über die Laufzeit auf 5·(0,001·10.000.000) = 50.000 EUR beziffert.',k:false,
+      b:'Die Kontoführung wird auf den fallenden Restbetrag berechnet: 10.000 + 10.000 + 10.000 + 6.667 + 3.333 = 40.000 EUR (nicht 50.000).'},
+     {t:'Die effektive Laufzeit des Kredits ist aufgrund der zwei tilgungsfreien Jahre länger als die durchschnittliche Laufzeit eines Kredits mit identischem Nominalbetrag und Laufzeit, der von Beginn an in fünf gleichen Raten getilgt werden würde.',k:true,
+      b:'Tilgungsfreie Jahre erhöhen die durchschnittliche Kapitalbindung gegenüber sofortiger Ratentilgung.'},
+     {t:'Der Zähler der Praktikerformel ist in diesem Fall größer als der Nominalzins von 5 %.',k:true,
+      b:'Der Zähler enthält neben dem Nominalzins auch das Disagio und die Kosten → größer als 5 %.'},
+     {t:'Im Nenner der Praktikerformel (1−Disagio) steht der Auszahlungsbetrag von 9.750.000 EUR.',k:false,
+      b:'Im Nenner steht der Faktor (1−Disagio) bzw. der Auszahlungskurs, nicht der absolute Auszahlungsbetrag (dieser enthält zudem die 50.000 EUR Einmalkosten).'}
+    ]},
+   {nr:'3.2',p:3,typ:'kprim',frage:'Dynamischer Effektivzins und Kapitalwert',
+    aussagen:[
+     {t:'Würde der Kapitalmarktzins exakt dem dynamischen Effektivzins dieses Kredits entsprechen, wäre der Kapitalwert des Kredits aus Sicht des Kreditnehmers genau Null.',k:true,
+      b:'Genau das definiert den Effektivzins (interner Zinsfuß des Zahlungsstroms): bei diesem Zins ist der Kapitalwert null.'},
+     {t:'Aus Sicht des Kreditgebers ist der Zahlungsstrom in t=0 negativ, da die Auszahlung des Kredits einen Mittelabfluss darstellt.',k:true,
+      b:'Für den Kreditgeber ist die Auszahlung in t = 0 ein Abfluss → negatives Vorzeichen.'},
+     {t:'Wenn der allgemeine Kapitalmarktzins unter dem dynamischen Effektivzins dieses Kredits liegt, hat der Kredit für den Kreditnehmer einen negativen Kapitalwert und ist somit unvorteilhaft.',k:true,
+      b:'Liegt der Marktzins unter dem Effektivzins, ist der Kredit teurer als die Marktalternative → negativer Kapitalwert aus Kreditnehmersicht.'},
+     {t:'Die Berechnung des dynamischen Effektivzinses ist eine Anwendung der internen Zinsfußmethode auf einen Finanzierungszahlungsstrom.',k:true,
+      b:'Der dynamische Effektivzins ist genau der interne Zinsfuß des Finanzierungszahlungsstroms.'}
+    ]},
+   {nr:'3.3',p:3,typ:'kprim',frage:'Tilgungsstrukturen und deren Auswirkungen',
+    aussagen:[
+     {t:'Würde der Kredit stattdessen als Annuitätendarlehen mit identischem Nominalzins und Laufzeit (ohne Freijahre) strukturiert, wäre die Zinsbelastung im ersten Jahr identisch, aber die Tilgung wäre größer null.',k:true,
+      b:'In Jahr 1 ist der Restbetrag in beiden Fällen 10 Mio → Zinsen 500.000 identisch. Das Annuitätendarlehen tilgt jedoch bereits in Jahr 1.'},
+     {t:'Bei einem endfälligen Darlehen (gesamtfällige Tilgung) wäre das Kapitalnutzungsvolumen und damit die effektive Laufzeit am höchsten, was bei ansonsten gleichen Konditionen zu den höchsten Gesamtzinskosten führen würde.',k:true,
+      b:'Endfällige Tilgung lässt den vollen Betrag über die gesamte Laufzeit stehen → höchste Zinssumme.'},
+     {t:'Die Summe der Zinszahlungen über die gesamte Laufzeit ist bei der vorliegenden Ratenstruktur niedriger als bei einem Annuitätendarlehen mit gleicher Laufzeit und gleichem Nominalzins.',k:false,
+      b:'Durch die zwei Freijahre bleibt länger mehr Kapital gebunden → die Zinssumme ist höher (nicht niedriger) als beim Annuitätendarlehen.'},
+     {t:'Die jährliche Tilgungsrate in den Jahren 3, 4 und 5 beträgt jeweils 10.000.000/3.',k:true,
+      b:'Nach zwei Freijahren wird der Nominalbetrag in drei gleichen Raten getilgt: 10 Mio / 3 = 3.333.333 EUR.'}
+    ]},
+   {nr:'3.4',p:3,typ:'kprim',frage:'Analyse des Zahlungsstroms und Liquiditätsbelastung',
+    aussagen:[
+     {t:'Der höchste Kapitaldienst (Zins + Tilgung) fällt im Jahr 3 an.',k:true,
+      b:'Jahr 3: 500.000 Zins + 3.333.333 Tilgung + 10.000 Kontogebühr = 3.843.333 EUR — der höchste Wert.'},
+     {t:'Durch die Kreditaufnahme stehen dem Kreditnehmer in t=0 genau 9,8 Mio. EUR zur Verfügung.',k:false,
+      b:'Auszahlung = 10 Mio × 0,98 − 50.000 = 9.750.000 EUR, nicht 9,8 Mio (die Einmalkosten fehlen in der Aussage).'},
+     {t:'Im Vergleich zu einem Darlehen, das von Beginn an in fünf gleichen Raten getilgt wird, schont die vorliegende Struktur die Liquidität des Kreditnehmers in den ersten beiden Jahren.',k:true,
+      b:'In den Freijahren fällt nur Zins (+ Kontogebühr) an, keine Tilgung → geringere Anfangsbelastung.'},
+     {t:'Die Kontoführungsgebühr in Jahr 4 ist niedriger als die Kontoführungsgebühr in Jahr 3.',k:true,
+      b:'Sie wird auf den Restbetrag berechnet: Jahr 3 = 10.000 (Rest 10 Mio), Jahr 4 = 6.667 (Rest 6,667 Mio).'}
+    ]},
+   {nr:'3.5',p:3,typ:'kprim',frage:'Kreditwürdigkeit und Covenants',
+    aussagen:[
+     {t:'Eine „Goldene Bilanzregel" würde fordern, dass eine langfristige Investition z. B. in eine Sporthalle auch durch langfristiges Kapital gedeckt ist.',k:true,
+      b:'Das ist genau die Aussage der (goldenen) Bilanz-/Finanzierungsregel: Fristenkongruenz von Mittelverwendung und -herkunft.'},
+     {t:'Ein Financial Covenant im Kreditvertrag könnte festlegen, dass der Verschuldungsgrad des Kreditnehmers einen Wert von 2,0 nicht übersteigen darf.',k:true,
+      b:'Genau solche Kennzahlengrenzen (z. B. max. Verschuldungsgrad) sind typische Financial Covenants.'},
+     {t:'Der Nominalzins und das Disagio sind auffällig niedrig. Das liegt vermutlich an der schlechten Bonität des Kreditnehmers und dass der Kreditgeber lieber etwas Zinsen möchte anstatt gar keine Zinsen zu bekommen.',k:false,
+      b:'Niedrige Konditionen sprechen eher für gute Bonität. Die Begründung („lieber etwas Zinsen als gar keine") ist ökonomisch nicht haltbar.'},
+     {t:'Die Höhe des Nominalzinses sagt im Normalfall nichts über die Bonität des Kreditgebers aus.',k:true,
+      b:'Der Zins spiegelt die Bonität des Kreditnehmers, nicht die des Kreditgebers.'}
+    ]}
+  ]},
+
+{ id:'a3', nr:'Aufgabe 3', titel:'Dynamische Verfahren der Investitionsrechnung', punkte:15,
+  firma:'WagnerMedia GmbH — Investitionsvergleich (sich gegenseitig ausschließend)',
+  intro:'Um sich künftig noch besser zu vermarkten, gründen die beiden Brüder Franz und Moritz Wagner die WagnerMedia GmbH. Sie stehen relativ zu Beginn ihrer Gründung vor der Entscheidung, welche von zwei sich gegenseitig ausschließenden Investitionen sie durchführen sollen. Das Management hat die folgenden Informationen ermittelt:',
+  daten:['Zahlungsströme (in Tsd. EUR) — Inv. 1: −300 / +150 / +150 / +150 (3 Jahre)','Inv. 2: −400 / +100 / +200 / +200 / +200 (4 Jahre)','Kalkulationszinssatz am Kapitalmarkt: konstant 8 % p. a.'],
+  instr:'Bewerten Sie für die folgenden 5 Aufgaben die jeweils 4 dazugehörigen Aussagen als richtig (+) oder falsch (−).',
+  vorab:'Vorab (Hilfswerte): Kapitalwert KW₁ = 86,57 Tsd. · KW₂ = 169,84 Tsd. · interner Zinsfuß IZF₁ ≈ 23,38 % · IZF₂ ≈ 24,06 % · statische Amortisation Inv. 1 = 2 Jahre.',
+  fragen:[
+   {nr:'4.1',p:3,typ:'kprim',frage:'Kapitalwertmethode und grundlegende Entscheidungsfindung',
+    aussagen:[
+     {t:'Der Kapitalwert der Inv. 1 beträgt bei einem Kalkulationszinssatz von 8 % rund 86,6 Tsd. EUR.',k:true,
+      b:'KW₁ = −300 + 150/1,08 + 150/1,08² + 150/1,08³ = −300 + 138,89 + 128,60 + 119,08 = 86,57 Tsd.'},
+     {t:'Ein Kapitalwert von genau 0 würde bedeuten, dass das Projekt eine Verzinsung des jeweils gebundenen Kapitals in Höhe des Kalkulationszinssatzes von 8 % erwirtschaftet.',k:true,
+      b:'KW = 0 ⇔ interne Verzinsung = Kalkulationszins.'},
+     {t:'Wenn man ausschließlich die absoluten Kapitalwerte der beiden Investitionen vergleicht, ist Inv. 1 die vorteilhaftere Investition.',k:false,
+      b:'KW₂ = 169,84 > KW₁ = 86,57 → nach absolutem Kapitalwert ist Inv. 2 besser.'},
+     {t:'Der Kapitalwert eines Projekts entspricht dem maximalen Betrag, den ein Investor in t=0 zusätzlich zur Anfangsinvestition ausgeben könnte, ohne sich im Vergleich zur Anlage am Kapitalmarkt schlechter zu stellen.',k:true,
+      b:'Das ist die ökonomische Interpretation des Kapitalwerts.'}
+    ]},
+   {nr:'4.2',p:3,typ:'kprim',frage:'Interner Zinsfuß (IZF) und dessen Anwendungsgrenzen',
+    aussagen:[
+     {t:'Der Interne Zinsfuß von Inv. 1 liegt bei ca. 23,38 %.',k:true,
+      b:'Aus −300 + 150·RBF(r;3) = 0 → RBF = 2,0 → r ≈ 23,38 %.'},
+     {t:'Nach der IZF-Methode ist Inv. 1 vorteilhafter als Inv. 2.',k:false,
+      b:'IZF₂ ≈ 24,06 % > IZF₁ ≈ 23,38 % → nach IZF ist Inv. 2 vorteilhafter.'},
+     {t:'Wenn Kapitalwert- und der IZF-Methode zu unterschiedlichen Aussagen bzgl. der Vorteilhaftigkeit kommen, dann liegt Dominanz zwischen den beiden Investitionen vor.',k:false,
+      b:'Im Gegenteil: Gerade dann liegt KEINE Dominanz vor; es braucht die Differenzinvestition.'},
+     {t:'Der IZF der Differenzinvestition gibt den Zinssatz an, bei dem ein Investor indifferent zwischen den beiden Projekten wäre.',k:true,
+      b:'Der IZF der Differenzinvestition ist der Indifferenz- bzw. Schnittzinssatz der beiden Kapitalwertfunktionen.'}
+    ]},
+   {nr:'4.3',p:3,typ:'kprim',frage:'Annuitätenmethode und korrekter Projektvergleich',
+    aussagen:[
+     {t:'Bei Inv. 1 muss berücksichtigt werden, dass nach dem Projektende für die verbleibende Zeit (hier das 4. Jahr) die freiwerdenden Gelder am Kapitalmarkt zu 8 % angelegt werden können und dadurch der Kapitalwert positiv beeinflusst wird.',k:false,
+      b:'Die Wiederanlage zum Kalkulationszins ist im Kapitalwert bereits implizit enthalten und wertneutral — der Kapitalwert von Inv. 1 ändert sich dadurch nicht.'},
+     {t:'Die äquivalente Annuität von Inv. 2 ist höher als die von Inv. 1 (bei identischem T).',k:true,
+      b:'Annuität = Kapitalwert × Wiedergewinnungsfaktor: Inv. 1 ≈ 86,57/2,577 ≈ 33,6 · Inv. 2 ≈ 169,84/3,312 ≈ 51,3 (Tsd.).'},
+     {t:'Die Annuität eines Projekts gibt an, welchen konstanten jährlichen Betrag ein Investor über die Projektlaufzeit entnehmen kann, sodass der Endwert des Projekts genau null ist.',k:false,
+      b:'Die Annuität ist über den Kapitalwert (Barwert) definiert — der konstante Betrag, dessen Barwert dem Kapitalwert entspricht. Die Formulierung über den „Endwert null" trifft die Definition nicht.'},
+     {t:'Würden beide Projekte die gleiche Laufzeit haben, würde die (äquivalente) Annuitätenmethode immer zur gleichen Rangfolge wie die Kapitalwertmethode führen.',k:true,
+      b:'Bei identischem T ist die Annuität ein konstantes Vielfaches des Kapitalwerts → gleiche Rangfolge.'}
+    ]},
+   {nr:'4.4',p:3,typ:'kprim',frage:'Kapitalwertfunktion und Zinssensitivität',
+    aussagen:[
+     {t:'Die Kapitalwertfunktion von Inv. 2 verläuft steiler (hat eine stärkere negative Steigung) als die von Inv. 1.',k:true,
+      b:'Inv. 2 hat höhere und spätere Rückflüsse → stärkere Zinsabhängigkeit → steilerer Verlauf.'},
+     {t:'Bei einem unendlich hohen Kalkulationszinssatz konvergiert der Kapitalwert beider Projekte gegen ihre jeweilige Anfangsinvestition in t=0.',k:true,
+      b:'Für i → ∞ verschwinden alle künftigen Barwerte → KW → −Anschaffungsauszahlung (−300 bzw. −400).'},
+     {t:'Es gibt keinen Kalkulationszinsfuß, bei dem Inv. 1 besser ist als Inv. 2.',k:false,
+      b:'Bei hohen Zinsen ist Inv. 1 (geringere Anfangsauszahlung) besser; die Kapitalwertfunktionen schneiden sich → es gibt einen Bereich, in dem Inv. 1 vorne liegt.'},
+     {t:'Die Kapitalwertfunktion der Differenzinvestition (2−1) ist im Bereich von Kapitalmarktzinsen zwischen 0 % und 15 % steigend.',k:false,
+      b:'Kapitalwertfunktionen fallen mit steigendem Zins; die Differenzinvestition (2 − 1) verläuft in diesem Bereich fallend, nicht steigend.'}
+    ]},
+   {nr:'4.5',p:3,typ:'kprim',frage:'Dynamische Amortisationsdauer und weitere Kriterien',
+    aussagen:[
+     {t:'Die dynamische Amortisationsdauer für Inv. 1 ist kürzer als 4 Jahre.',k:true,
+      b:'Kumulierte Barwerte Inv. 1: 138,89 / 267,49 / 386,57 → die 300 werden zwischen Jahr 2 und 3 erreicht (< 4 Jahre).'},
+     {t:'Die statische Amortisationsdauer von Inv. 1 beträgt exakt 2 Jahre.',k:true,
+      b:'Kumulierte Rückflüsse: 150 (t=1) + 150 (t=2) = 300 = Anschaffung → genau 2 Jahre.'},
+     {t:'Angenommen, die Investitionen wären nicht mehr sich gegenseitig ausschließend, sondern unabhängig voneinander realisierbar. Der Gesamtkapitalwert bei Durchführung beider Investitionen wäre dann die Summe der Einzelkapitalwerte.',k:true,
+      b:'Kapitalwerte sind additiv → Gesamt-KW = KW₁ + KW₂.'},
+     {t:'Die dynamische Amortisationsrechnung berücksichtigt im Gegensatz zur statischen Amortisation alle Zahlungen einer Investition über die gesamte Laufzeit.',k:false,
+      b:'Beide Amortisationsrechnungen betrachten nur Zahlungen bis zum Amortisationszeitpunkt; spätere Zahlungen bleiben unberücksichtigt (bekannte Schwäche der Amortisationsrechnung).'}
+    ]}
+  ]},
+
+{ id:'a4', nr:'Aufgabe 4', titel:'Kapitalstruktur', punkte:15,
+  firma:'Jumpstart Athletics AG — Leverage-Analyse',
+  intro:'Sie sind als Analyst im Finanzvorstand der Jumpstart Athletics AG tätig, einem weltweit führenden Ausstatter für Jugendbasketball. Ihre Aufgabe ist es, die bestehende Kapitalstruktur zu bewerten. Die Ausgangssituation stellt sich wie folgt dar:',
+  daten:['Gesamtkapital (Bilanzsumme): 200 Mio. EUR','Eigenkapital: 120 Mio. EUR','Fremdkapital: 80 Mio. EUR','Fremdkapitalzins (r_FK): konstant 5,00 % p. a.','Ertragsszenarien (EBIT): schlechtester Fall 15 · Normalfall 25 · bester Fall 35 Mio. EUR'],
+  instr:'5.1–5.8 Single-Choice (nur eine Antwort ist richtig); 5.9–5.12 Multiple-Choice (eine oder mehrere richtig). Antworten sind gerundet angegeben. Formeln: r_GK = EBIT / GK · r_EK = (EBIT − FK · r_FK) / EK · r_EK = r_GK + (r_GK − r_FK) · V mit V = FK/EK.',
+  fragen:[
+   {nr:'5.1',p:2,typ:'single',frage:'Bei welchem EBIT > 0 wäre es für die Gesellschaft nicht möglich, den Leverage-Effekt zu nutzen?',
+    loesung:'10 Mio. EUR',
+    step:'Kein Leverage-Effekt, wenn r_GK = r_FK = 5 %.\nr_GK = EBIT / GK = 0,05 → EBIT = 0,05 × 200 = 10 Mio. EUR'},
+   {nr:'5.2',p:1,typ:'single',frage:'Auf welchen Wert müsste der Verschuldungsgrad V (FK/EK) ansteigen, damit die Eigenkapitalrendite (r_EK) im Normalfall exakt 20 % beträgt?',
+    loesung:'V = 1,0',
+    step:'r_GK = 25 / 200 = 12,5 %.\nLeverage-Formel: 0,20 = 0,125 + (0,125 − 0,05) · V\n0,075 = 0,075 · V → V = 1,0'},
+   {nr:'5.3',p:2,typ:'single',frage:'Welchen EBIT müsste das Unternehmen im Normalfall erzielen, damit die Eigenkapitalrendite (r_EK) genau das Doppelte des Fremdkapitalzinses beträgt?',
+    loesung:'16 Mio. EUR',
+    step:'r_EK = 2 · r_FK = 10 %.\n(EBIT − FK · r_FK) / EK = 0,10 → (EBIT − 80 · 0,05) / 120 = 0,10\n12 = EBIT − 4 → EBIT = 16 Mio. EUR'},
+   {nr:'5.4',p:1,typ:'single',frage:'Wie hoch ist die Gesamtkapitalrendite (r_GK), wenn die Eigenkapitalrendite (r_EK) auf 0 % sinkt (bei sonst gleichen Basisdaten)?',
+    loesung:'2,00 %',
+    step:'r_EK = 0 → EBIT = Zinsen = FK · r_FK = 80 · 0,05 = 4 Mio.\nr_GK = 4 / 200 = 2,00 %'},
+   {nr:'5.5',p:1,typ:'single',frage:'Das Unternehmen tilgt 40 Mio. EUR Fremdkapital durch die Ausgabe neuer Aktien (Kapitalerhöhung). Wie hoch wäre die neue Eigenkapitalrendite (r_EK) im Normalfall?',
+    loesung:'14,38 %',
+    step:'Neue Struktur: EK = 160, FK = 40.\nr_EK = (25 − 40 · 0,05) / 160 = (25 − 2) / 160 = 23 / 160 = 14,375 % ≈ 14,38 %'},
+   {nr:'5.6',p:1,typ:'single',frage:'Wie hoch ist die Gesamtkapitalrendite (r_GK) im schlechtesten Fall?',
+    loesung:'7,50 %',
+    step:'EBIT = 15 Mio. → r_GK = 15 / 200 = 7,50 %'},
+   {nr:'5.7',p:1,typ:'single',frage:'Um wie viele Prozentpunkte ist die Eigenkapitalrendite im Normalfall höher als die Gesamtkapitalrendite?',
+    loesung:'5 Prozentpunkte',
+    step:'r_GK = 25/200 = 12,5 % · r_EK = (25 − 4)/120 = 17,5 %\nDifferenz = 17,5 − 12,5 = 5 Prozentpunkte'},
+   {nr:'5.8',p:1,typ:'single',frage:'Wenn sowohl der EBIT im Normalfall um 20 % sinkt als auch der Fremdkapitalzins auf 7 % steigt, wie hoch wäre dann die neue Eigenkapitalrendite (r_EK)?',
+    loesung:'12,00 %',
+    step:'EBIT_neu = 25 × 0,80 = 20 Mio. · r_FK = 7 %\nr_EK = (20 − 80 · 0,07) / 120 = (20 − 5,6) / 120 = 14,4 / 120 = 12,00 %'},
+   {nr:'5.9',p:1,typ:'mc',frage:'Das Management möchte das rein operative Risiko (Business Risk, Δr_GK) reduzieren. Welche der folgenden Maßnahmen ist/sind dafür am besten geeignet?',
+    optionen:[
+     {t:'Aktienrückkaufprogramm, finanziert durch neue Schulden.',k:false},
+     {t:'Abschluss eines langfristigen Ausstattervertrags mit einem großen internationalen Jugend-Basketballverband zu festen Preisen.',k:true},
+     {t:'Eine außerordentliche Sonderdividende an die Aktionäre ausschütten.',k:false},
+     {t:'Den Fremdkapitalzins mit der Bank neu verhandeln.',k:false}
+    ],
+    b:'Business Risk = Schwankung der Gesamtkapitalrendite (operativ). Nur der langfristige Festpreis-Vertrag stabilisiert die operativen Erträge. Aktienrückkauf, Sonderdividende und Zinsverhandlung betreffen die Finanzierungs-/Kapitalstruktur (Financial Risk), nicht das operative Risiko.'},
+   {nr:'5.10',p:1,typ:'mc',frage:'Warum ist aus Sicht der Eigenkapitalgeber eine hohe Schwankungsbreite der Eigenkapitalrendite (Δr_EK) nicht zwangsläufig negativ?',
+    optionen:[
+     {t:'Weil sie durch das Stimmrecht im Unternehmen kompensiert wird.',k:false},
+     {t:'Weil eine hohe Schwankung immer mit einer höheren erwarteten Rendite einhergeht (Leverage-Chance).',k:false},
+     {t:'Weil die Haftung der Aktionäre auf ihre Einlage beschränkt ist, während die Gewinnchancen unbegrenzt sind.',k:true},
+     {t:'Weil sie durch eine niedrigere Schwankung der Gesamtkapitalrendite ausgeglichen wird.',k:false}
+    ],
+    b:'Entscheidend ist die beschränkte Haftung: Das Verlustrisiko ist auf die Einlage begrenzt, die Gewinnchance nach oben offen — eine hohe Streuung ist daher nicht per se nachteilig. „Immer höhere erwartete Rendite" ist falsch (gilt nur bei r_GK > r_FK).'},
+   {nr:'5.11',p:2,typ:'mc',frage:'Das Management der Jumpstart Athletics AG erwägt, die Kapitalstruktur durch eine Reduzierung der Schulden zu verändern (Deleveraging). Welche der folgenden Effekte wären die Konsequenz?',
+    optionen:[
+     {t:'Würde Jumpstart 40 Mio. EUR Fremdkapital durch Ausgabe neuer Aktien tilgen, würde die Eigenkapitalrendite (r_EK) im Normalfall auf 14,38 % sinken.',k:true},
+     {t:'Würde Jumpstart 40 Mio. EUR Fremdkapital durch Ausgabe neuer Aktien tilgen, würde die Schwankungsbreite der Eigenkapitalrendite (Δr_EK) auf 12,50 Prozentpunkte zurückgehen.',k:true},
+     {t:'Eine Reduzierung des Fremdkapitals führt immer zu einer Reduzierung des operativen Risikos (Business Risk) des Unternehmens.',k:false},
+     {t:'Da das Deleveraging das Risiko des Unternehmens senkt, ist es für die Aktionäre in jedem Fall eine wertsteigernde Maßnahme.',k:false}
+    ],
+    b:'r_EK neu = (25 − 2)/160 = 14,38 % (richtig). Schwankungsbreite: alt Δr_EK = (35−4)/120 − (15−4)/120 = 16,67 PP, neu = (35−2)/160 − (15−2)/160 = 12,50 PP (richtig). Deleveraging senkt das Financial Risk, nicht das Business Risk; und es ist nicht automatisch wertsteigernd.'},
+   {nr:'5.12',p:1,typ:'mc',frage:'Welcher der folgenden Sachverhalte beschreibt am besten einen potenziellen Interessenkonflikt zwischen Eigen- und Fremdkapitalgebern bei der Jumpstart Athletics AG?',
+    optionen:[
+     {t:'Die Fremdkapitalgeber bevorzugen eine hohe Dividendenausschüttung, um das Unternehmen liquide zu halten.',k:false},
+     {t:'Die Eigenkapitalgeber könnten versucht sein, in sehr riskante Projekte (z. B. Sponsoring eines unbekannten, aber talentierten Athleten) zu investieren, da sie vom Upside voll profitieren, während das Downside-Risiko (Insolvenz) auch die Fremdkapitalgeber trifft.',k:true},
+     {t:'Die Fremdkapitalgeber fordern eine möglichst schnelle Tilgung der Schulden, während die Eigenkapitalgeber immer eine endfällige Tilgung bevorzugen.',k:false},
+     {t:'Beide haben immer die gleichen Interessen und darin keinen Konflikt.',k:false}
+    ],
+    b:'Klassischer Risikoanreiz-/Risk-Shifting-Konflikt: Eigenkapitalgeber profitieren voll vom Upside, das Downside (Insolvenz) tragen auch die Fremdkapitalgeber. Fremdkapitalgeber bevorzugen gerade niedrige Ausschüttungen; „immer gleiche Interessen" ist falsch.'}
+  ]}
+];
+
+/* ---------- Render ---------- */
+function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+function el(id){return document.getElementById(id);}
+
+function frageHTML(f){
+  const typLabel={single:'Einfachauswahl',mc:'Mehrfachauswahl',kprim:'KPRIM',zuordnung:'Zuordnung'}[f.typ];
+  let body='';
+  if(f.typ==='single'){
+    body=`<div class="loesung">Lösung: <span class="val">${esc(f.loesung)}</span></div>`;
+    body+=`<details class="erkl"><summary>Rechenweg</summary><div class="erkl-body"><div class="step">${esc(f.step)}</div></div></details>`;
+  } else if(f.typ==='kprim'){
+    const rows=f.aussagen.map(a=>`<div class="aussage ${a.k?'r':'f'}"><span class="badge ${a.k?'r':'f'}">${a.k?'richtig':'falsch'}</span><span>${esc(a.t)}</span></div>`).join('');
+    body=`<div class="aussagen">${rows}</div>`;
+    const begr=f.aussagen.map((a,i)=>`<span class="pt"><b>${i+1}. ${a.k?'richtig':'falsch'}:</b> ${esc(a.b)}</span>`).join('');
+    body+=`<details class="erkl"><summary>Begründungen</summary><div class="erkl-body">${begr}</div></details>`;
+  } else if(f.typ==='mc'){
+    const rows=f.optionen.map(o=>`<div class="aussage ${o.k?'r':'f'}"><span class="mark ${o.k?'r':'f'}">${o.k?'✓':'✗'}</span><span>${esc(o.t)}</span></div>`).join('');
+    const richtige=f.optionen.filter(o=>o.k).map(o=>esc(o.t)).join(' · ');
+    body=`<div class="aussagen">${rows}</div>`;
+    body+=`<details class="erkl"><summary>Begründung</summary><div class="erkl-body"><p><b>Korrekt anzukreuzen:</b> ${richtige}</p><p>${esc(f.b)}</p></div></details>`;
+  } else if(f.typ==='zuordnung'){
+    const rows=f.zuordnung.map(z=>`<div class="zrow"><span>${esc(z.l)}</span><span class="arrow">→</span><span>${esc(z.r)}</span></div>`).join('');
+    body=`<div class="zuord">${rows}</div>`;
+    body+=`<details class="erkl"><summary>Begründung</summary><div class="erkl-body"><p>${esc(f.b)}</p></div></details>`;
+  }
+  return `<div class="frage">
+    <div class="f-head"><span class="f-nr">Frage ${esc(f.nr)}</span><span class="f-punkte">${f.p} ${f.p===1?'Punkt':'Punkte'}</span><span class="f-typ ${f.typ}">${typLabel}</span></div>
+    <div class="f-frage">${esc(f.frage)}</div>
+    ${body}
+  </div>`;
+}
+
+function aufgabeHTML(a){
+  const k=`<div class="kontext">
+    <div class="k-firma">${esc(a.firma)}</div>
+    ${a.intro?`<div class="k-intro">${esc(a.intro)}</div>`:''}
+    <ul>${a.daten.map(d=>`<li>${esc(d)}</li>`).join('')}</ul>
+    ${a.instr?`<div class="k-instr">${esc(a.instr)}</div>`:''}
+    ${a.vorab?`<div class="k-note">${esc(a.vorab)}</div>`:''}
+  </div>`;
+  const fragen=a.fragen.map(frageHTML).join('');
+  return `<section class="aufgabe" id="${a.id}">
+    <div class="a-head"><span class="a-num">${esc(a.nr)}</span><span class="a-title">${esc(a.titel)}</span><span class="a-punkte">${a.punkte} Punkte</span></div>
+    ${k}${fragen}
+  </section>`;
+}
+
+el('app').innerHTML=DATA.map(aufgabeHTML).join('');
+
+/* ---------- Auswertung / Notenstufen ---------- */
+const MAXP=60;
+const NOTEN=[[0,'5,00'],[30,'4,00'],[33,'3,70'],[36,'3,30'],[39,'3,00'],[42,'2,70'],[45,'2,30'],[48,'2,00'],[51,'1,70'],[54,'1,30'],[57,'1,00']];
+function f1(x){return x.toLocaleString('de-DE',{minimumFractionDigits:1,maximumFractionDigits:1});}
+function fp(x){return (Math.round(x*100)/100).toLocaleString('de-DE');}
+function stufeIndex(p){let idx=0;for(let i=0;i<NOTEN.length;i++){if(p>=NOTEN[i][0])idx=i;}return idx;}
+
+function renderAuswertung(){
+  const rows=NOTEN.map((n,i)=>{
+    const unten=n[0];
+    const oben=(i<NOTEN.length-1)?(NOTEN[i+1][0]-0.5):MAXP;
+    return `<tr data-i="${i}"${i===0?' class="fail-row"':''}><td>${f1(unten)} – ${f1(oben)}</td><td>${n[1]}</td></tr>`;
+  }).join('');
+  el('auswertung').innerHTML=`
+   <div class="a-head"><span class="a-num">Auswertung</span><span class="a-title">Ergebnisauswertung &amp; Notenstufen</span><span class="a-punkte">max. 60 Punkte</span></div>
+   <div class="kontext">
+     <div class="pkt-row">
+       <label for="pkt">Erreichte Punkte eintragen (0–60):</label>
+       <input class="pkt" id="pkt" type="text" inputmode="decimal" placeholder="z. B. 45,5" aria-label="Erreichte Punkte (0 bis 60)">
+     </div>
+     <div class="note-result" id="note-out" role="status" aria-live="polite"><span class="empty">Punkte eintragen, um die Note zu sehen.</span></div>
+   </div>
+   <div class="noten-wrap">
+     <p class="noten-cap">Notenstufen (ab der jeweiligen Punktzahl gilt die Note). Bestehensgrenze: 30 Punkte (Note 4,0).</p>
+     <table class="noten"><thead><tr><th>Punkte</th><th>Note</th></tr></thead><tbody>${rows}</tbody></table>
+   </div>`;
+  const inp=el('pkt'), out=el('note-out'), sec=el('auswertung');
+  function update(){
+    sec.querySelectorAll('tr.achieved').forEach(r=>r.classList.remove('achieved'));
+    const raw=inp.value.trim().replace(',','.');
+    if(raw===''){out.innerHTML='<span class="empty">Punkte eintragen, um die Note zu sehen.</span>';return;}
+    let p=parseFloat(raw);
+    if(isNaN(p)){out.innerHTML='<span class="empty">Bitte eine gültige Punktzahl eingeben.</span>';return;}
+    if(p<0)p=0; if(p>MAXP)p=MAXP;
+    const idx=stufeIndex(p), note=NOTEN[idx][1], pass=p>=30;
+    const tr=sec.querySelector('tr[data-i="'+idx+'"]'); if(tr)tr.classList.add('achieved');
+    let sub=fp(p)+' von 60 Punkten · '+Math.round(p/MAXP*100)+' %';
+    if(idx<NOTEN.length-1){const need=Math.round((NOTEN[idx+1][0]-p)*100)/100; sub+=' · noch '+fp(need)+' Punkte bis Note '+NOTEN[idx+1][1];}
+    else{sub+=' · beste Notenstufe erreicht';}
+    out.innerHTML='<div class="big '+(pass?'pass':'fail')+'">Note '+note+'<span class="note-badge '+(pass?'pass':'fail')+'">'+(pass?'bestanden':'nicht bestanden')+'</span></div><div class="sub">'+sub+'</div>';
+  }
+  inp.addEventListener('input',update);
+}
+renderAuswertung();
+})();
+</script>
+</body>
+</html>
