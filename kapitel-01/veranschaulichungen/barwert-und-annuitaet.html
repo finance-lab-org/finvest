@@ -1,0 +1,2174 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Barwert und Annuität: bündeln und verteilen · Finanz- und Investitionsmanagement</title>
+<style>
+/* Grundgestaltung aller erzeugten Seiten ausser dem Selbsttest: Startseite, Kapitelseiten,
+   Uebersichten, Impressum und Veranschaulichungen. Farben, Schrift, Kopf und Abschnittskopf
+   wie in selbsttest/style.css, Kacheln nach _Vorlagen/Website_Vorlage/index.html.
+   Nur Systemschriften, keine Web-Schriften, keine Bilder, kein Laden von aussen. */
+:root{
+ --th-rot:#C90C0F;--th-orange:#EA5B0C;--th-violett:#B82585;
+ --th-rot-soft:#FBE7E7;--th-orange-soft:#FFF3E9;--th-violett-soft:#F7ECF3;
+ --gruen:#2D6A3F;--gruen-soft:#EAF3EC;
+ --bg:#FAFAFA;--card:#FFFFFF;--ink:#1A1A1A;--ink-soft:#404040;--ink-muted:#737373;--ink-faint:#A3A3A3;
+ --rule:#E5E5E5;--rule-soft:#F0F0F0;
+ --shadow-sm:0 1px 2px rgba(0,0,0,0.04);--shadow-md:0 1px 3px rgba(0,0,0,0.04),0 4px 12px rgba(0,0,0,0.04);
+ --shadow-lg:0 4px 8px rgba(0,0,0,0.04),0 12px 24px rgba(0,0,0,0.06);
+ --serif:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+ --mono:ui-monospace, Menlo, Consolas, monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--serif);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-wrap:break-word}
+.container{max-width:1100px;margin:0 auto;padding:40px 32px 40px}
+a{color:var(--th-rot)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--th-violett);outline-offset:2px}
+img,svg{max-width:100%}
+
+/* Rueckweg oben */
+.zurueck{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--th-rot);text-decoration:none;margin-bottom:20px;padding:4px 0}
+.zurueck:hover{text-decoration:underline}
+
+/* Kopf */
+header.masthead{border-bottom:2px solid var(--th-rot);padding-bottom:28px;margin-bottom:36px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--th-rot);margin-bottom:12px}
+.eyebrow a{color:inherit}
+h1.masthead-title{font-weight:700;font-size:clamp(26px,3.5vw,38px);letter-spacing:-.02em;line-height:1.2;margin-bottom:8px}
+.masthead-kapitel{font-size:17px;font-weight:600;color:var(--ink-soft);margin-bottom:6px}
+.masthead-sub{font-size:15px;color:var(--ink-muted);max-width:760px}
+.masthead-meta{display:flex;flex-wrap:wrap;gap:8px 26px;font-family:var(--mono);font-size:12px;color:var(--ink-muted)}
+.masthead-meta strong{color:var(--ink);font-weight:600}
+
+/* Abschnitte */
+section{margin-bottom:40px;scroll-margin-top:20px}
+.section-head{border-bottom:1px solid var(--rule);padding-bottom:12px;margin-bottom:22px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.section-num{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--th-rot);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+.section-title{font-size:20px;font-weight:600;letter-spacing:-.01em}
+.section-meta{font-family:var(--mono);font-size:12px;color:var(--ink-muted);margin-left:auto}
+
+/* Kacheln */
+.tile-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
+.tile{position:relative;display:flex;flex-direction:column;min-width:0;background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:24px;box-shadow:var(--shadow-sm);text-decoration:none;color:inherit;transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease;overflow:hidden}
+.tile::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--th-rot);transform:scaleX(0);transform-origin:left;transition:transform .2s ease}
+a.tile:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+a.tile:hover::before,a.tile:focus-visible::before{transform:scaleX(1)}
+.tile-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:14px}
+.tile-title{font-size:18px;font-weight:600;letter-spacing:-.01em;color:var(--ink);margin-bottom:10px;line-height:1.35}
+.tile-desc{font-size:14px;color:var(--ink-muted);line-height:1.5;flex-grow:1}
+.tile-cta{margin-top:18px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--th-rot);display:inline-flex;align-items:center;gap:6px;transition:gap .15s ease}
+a.tile:hover .tile-cta{gap:10px}
+
+/* Kachel ohne Link: Kapitel oder Inhalt folgt */
+.tile.folgt{background:var(--bg);border-style:dashed;box-shadow:none;cursor:default}
+.tile.folgt::before{display:none}
+.tile.folgt .tile-title{color:var(--ink-muted)}
+.tile.folgt .tile-desc{color:var(--ink-faint)}
+.tile.folgt .tile-cta{color:var(--ink-faint)}
+
+/* Fuss */
+footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--rule);font-size:12px;color:var(--ink-muted)}
+footer a{color:var(--ink-muted);text-decoration:none;transition:color .15s ease}
+footer a:hover{color:var(--th-rot);text-decoration:underline}
+
+/* Schmale Bildschirme */
+@media(max-width:600px){
+ .container{padding:24px 16px 40px}
+ header.masthead{padding-bottom:22px;margin-bottom:28px}
+ .section-meta{margin-left:0}
+ .tile-grid{grid-template-columns:1fr;gap:14px}
+ .tile{padding:20px}
+}
+
+/* Gestaltung einer Veranschaulichung. Baut auf seite/basis.css auf (Farben, Schrift, Kopf).
+   Bausteine aus lib.js: .regler, .diagramm, .auftrag; fuer app.html: .erklaerung, .werkbank,
+   .steuerung, .anzeige, .werte, .formel. Bedienbar ab 375 Pixel Breite ohne seitliches
+   Scrollen: Raster und Flex-Kinder mit min-width:0, Grafiken mit max-width:100%. */
+
+/* Erklaertext */
+.erklaerung{background:var(--card);border:1px solid var(--rule);border-left:3px solid var(--th-violett);border-radius:6px;padding:16px 20px;box-shadow:var(--shadow-sm);margin-bottom:24px;color:var(--ink-soft);font-size:14.5px}
+.erklaerung p+p,.erklaerung p+ul,.erklaerung ul+p{margin-top:8px}
+.erklaerung ul{padding-left:20px}
+.erklaerung strong{color:var(--ink)}
+
+/* Formel, bei Bedarf in sich seitlich verschiebbar statt die Seite zu verbreitern */
+.formel{font-family:"Cambria Math","STIX Two Math","Times New Roman",serif;font-size:18px;color:var(--ink);background:var(--bg);border:1px solid var(--rule-soft);border-radius:6px;padding:10px 14px;margin:10px 0;overflow-x:auto;max-width:100%;white-space:nowrap}
+.formel sub,.formel sup{font-size:.72em}
+
+/* Anordnung: Steuerung links, Anzeige rechts; schmal untereinander */
+.werkbank{display:grid;grid-template-columns:minmax(260px,360px) minmax(0,1fr);gap:24px;align-items:start;margin-bottom:28px}
+.werkbank>*{min-width:0}
+.steuerung{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:20px 22px 6px;box-shadow:var(--shadow-sm)}
+.steuerung h2,.anzeige h2{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:14px}
+.anzeige{display:flex;flex-direction:column;gap:18px}
+.anzeige>.erklaerung{margin-bottom:0}
+
+/* Regler mit Zahlenfeld */
+.regler{margin-bottom:18px;min-width:0}
+.regler>label{display:block;font-size:14px;font-weight:600;color:var(--ink);margin-bottom:6px}
+.regler-zeile{display:flex;align-items:flex-start;gap:12px;min-width:0}
+.regler-schiene{flex:1 1 auto;min-width:0}
+.regler input[type="range"]{display:block;width:100%;min-width:0;height:28px;margin:0;accent-color:var(--th-rot);cursor:pointer;touch-action:pan-y}
+.regler-skala{display:flex;justify-content:space-between;gap:8px;font-family:var(--mono);font-size:11px;color:var(--ink-faint);margin-top:1px;white-space:nowrap}
+.regler-feld{display:inline-flex;align-items:center;gap:6px;flex:0 0 auto}
+.regler-feld input,.auftrag-eingabe input{font-family:var(--mono);font-size:14px;color:var(--ink);background:var(--card);border:1px solid var(--rule);border-radius:6px;padding:6px 8px;text-align:right;min-width:0}
+.regler-feld input{width:7.2em}
+.regler-feld input:focus,.auftrag-eingabe input:focus{border-color:var(--ink-muted)}
+.einheit{font-family:var(--mono);font-size:12px;color:var(--ink-muted);white-space:nowrap}
+.regler-feld .einheit{min-width:2.4em}
+
+/* Kennzahlenleiste */
+.werte{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.wert{min-width:0;background:var(--card);border:1px solid var(--rule);border-left:3px solid var(--th-violett);border-radius:6px;padding:12px 14px;box-shadow:var(--shadow-sm)}
+.wert.haupt{border-left-color:var(--th-rot)}
+.wert-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:6px}
+.wert-zahl{font-family:var(--mono);font-size:19px;font-weight:600;color:var(--ink);line-height:1.3}
+.wert-sub{font-size:12px;color:var(--ink-muted);margin-top:4px}
+
+/* Diagramme */
+.diagramm{min-width:0;margin:0;background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:16px 18px 12px;box-shadow:var(--shadow-sm)}
+.diagramm-titel{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:8px}
+.diagramm svg{display:block;width:100%;max-width:100%;height:auto}
+.diagramm text{font-family:var(--serif)}
+.diagramm .achse-zahl{fill:var(--ink-muted);font-family:var(--mono)}
+.diagramm .achse-titel{fill:var(--ink-soft)}
+.diagramm .kategorie{fill:var(--ink-soft)}
+.diagramm .achse{stroke:var(--ink-faint);stroke-width:1}
+.diagramm .gitter{stroke:var(--rule);stroke-width:1}
+.diagramm .nulllinie{stroke:var(--ink-muted);stroke-width:1}
+.diagramm .reihe{fill:none;stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+.diagramm .hilfslinie{stroke-width:1;stroke-dasharray:4 4;opacity:.7}
+.diagramm .marke{stroke:var(--card);stroke-width:2}
+.diagramm .marke-text{fill:var(--ink);font-weight:600;paint-order:stroke;stroke:var(--card);stroke-width:4px;stroke-linejoin:round}
+/* Deckender Hintergrund hinter Markentexten (use mit Filter aus lib.js), immer in der Kartenfarbe */
+.diagramm .marke-grund{flood-color:var(--card);flood-opacity:1}
+.diagramm .marke-hintergrund{pointer-events:none}
+.diagramm .fuehrungslinie{stroke:var(--ink-faint);stroke-width:1}
+.diagramm .balken{stroke:none}
+.legende{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--ink-soft);margin-top:8px}
+.legende:empty{display:none}
+.legende-eintrag{display:inline-flex;align-items:center}
+.legende-linie{display:inline-block;width:22px;border-top-width:3px;margin-right:8px}
+.legende-flaeche{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:8px}
+
+/* Auftraege */
+.auftrag{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:18px 22px;box-shadow:var(--shadow-sm);margin-bottom:16px;min-width:0}
+.auftrag-kopf{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--th-rot);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+.auftrag-frage{font-size:14.5px;color:var(--ink);margin-bottom:12px}
+.auftrag-eingabe{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.auftrag-eingabe input{width:11em;max-width:100%}
+.auftrag-optionen{display:flex;flex-direction:column;gap:8px}
+.option{display:flex;align-items:flex-start;gap:4px;width:100%;text-align:left;font-family:inherit;font-size:14px;line-height:1.5;color:var(--ink);background:transparent;border:1px solid var(--rule);border-radius:6px;padding:10px 14px;cursor:pointer;transition:all .12s}
+.option:hover{border-color:var(--ink);background:var(--bg)}
+.option .lbl{font-family:var(--mono);color:var(--ink-faint);font-size:12px;margin-right:6px;flex-shrink:0;line-height:1.9}
+.option.sel{border-width:1.5px;font-weight:600}
+.option.ok{border-color:var(--gruen);background:var(--gruen-soft)}
+.option.falsch{border-color:var(--th-rot);background:var(--th-rot-soft)}
+.btn{padding:9px 18px;border:1px solid var(--rule);border-radius:6px;background:transparent;font-family:inherit;font-size:14px;font-weight:600;color:var(--ink-soft);cursor:pointer;transition:all .15s}
+.btn:hover{border-color:var(--ink);color:var(--ink);background:var(--bg)}
+.btn-primary{border-color:var(--th-rot);color:var(--th-rot)}
+.btn-primary:hover{background:var(--th-rot-soft);border-color:var(--th-rot);color:var(--th-rot)}
+.rueckmeldung{margin-top:12px;font-size:14px;color:var(--ink-soft);border-left:3px solid var(--rule);padding:10px 14px;border-radius:4px;background:var(--bg)}
+.rueckmeldung:empty{display:none}
+.rueckmeldung.ok{border-left-color:var(--gruen);background:var(--gruen-soft)}
+.rueckmeldung.falsch{border-left-color:var(--th-rot);background:var(--th-rot-soft)}
+.urteil{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;margin-right:4px}
+.rueckmeldung.ok .urteil{color:var(--gruen)}
+.rueckmeldung.falsch .urteil{color:var(--th-rot)}
+.auftrag-hinweis{display:block;margin-top:6px;color:var(--ink)}
+
+/* Mittlere Breite: Steuerung ueber der Anzeige */
+@media(max-width:820px){
+ .werkbank{grid-template-columns:minmax(0,1fr)}
+}
+
+/* Schmale Bildschirme */
+@media(max-width:600px){
+ .erklaerung{padding:14px 16px}
+ .steuerung{padding:16px 16px 4px}
+ .diagramm{padding:12px 10px 10px}
+ .auftrag{padding:16px}
+ .werte{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .wert{padding:10px 12px}
+ .wert-zahl{font-size:17px}
+ .formel{font-size:16px}
+ .auftrag-eingabe input{flex:1 1 8em;width:auto}
+ .auftrag-eingabe .btn{flex:0 0 auto}
+}
+
+</style>
+</head>
+<body>
+<div class="container">
+ <nav aria-label="Rückweg"><a class="zurueck" href="index.html">Zur Übersicht der Veranschaulichungen</a></nav>
+ <header class="masthead">
+  <div class="eyebrow">TH Köln · Finanz- und Investitionsmanagement</div>
+  <h1 class="masthead-title">Barwert und Annuität: bündeln und verteilen</h1>
+  <p class="masthead-kapitel">Kapitel 1: Grundlagen des Finanz- und Investitionsmanagements</p>
+ </header>
+
+ <main id="app">
+<!-- Aufbau: Einleitung, Erkunden (Eingaben, Kennzahlen, Grafik, Kontrollzeile, Faktoren),
+     Zahlungen und Werte mit Rechenweg, Auftraege, Zum Mitnehmen. Regler, Diagramm und
+     Auftraege fuellt app.js in die leeren Elemente mit id; Elemente mit data-eur oder
+     data-zahl erhalten die berechneten Werte. -->
+<style>
+[hidden]{display:none!important}
+.sym{text-transform:none;letter-spacing:0}
+.wert-label{-webkit-hyphens:auto;hyphens:auto}
+.steuerung #startwerte{margin:2px 0 16px}
+.summenzeile{font-size:14.5px;color:var(--ink-soft)}
+.summenzeile .betrag{font-family:var(--mono);font-weight:600;color:var(--ink);white-space:nowrap}
+.summenzeichen{display:inline-flex;align-items:center;gap:1px}
+.grenzen{display:inline-flex;flex-direction:column;align-items:flex-start;font-size:.68em;line-height:1.05}
+.x-achsentitel{font-family:var(--serif);font-size:13px;color:var(--ink-soft);text-align:center;margin-top:2px}
+.kontrollzeile{font-size:14.5px;color:var(--ink-soft);background:var(--card);border:1px solid var(--rule);border-left:3px solid var(--th-orange);border-radius:6px;padding:10px 14px;box-shadow:var(--shadow-sm)}
+.kontrollzeile .wert-label{margin-bottom:4px}
+.kontrollzeile .betrag{font-family:var(--mono);font-weight:600;color:var(--ink);white-space:nowrap}
+.faktorzeile{display:flex;flex-direction:column;gap:10px}
+.faktorzeile .wert-zahl{font-size:16px}
+.faktorzeile .formel{margin:0;font-size:16px}
+.faktorzeile p{font-size:14px;color:var(--ink-soft)}
+.karte{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:16px 20px;box-shadow:var(--shadow-sm);min-width:0;margin-bottom:16px}
+.karte-titel{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:10px}
+.tabelle{width:100%;border-collapse:collapse;font-size:14px}
+.tabelle th{text-align:left;font-size:12px;font-weight:600;color:var(--ink-muted);border-bottom:1px solid var(--rule);padding:6px 8px}
+.tabelle tbody th{font-size:14px;color:var(--ink);border-bottom:1px solid var(--rule-soft)}
+.tabelle td{padding:6px 8px;border-bottom:1px solid var(--rule-soft)}
+.tabelle .zahl{text-align:right;font-family:var(--mono);white-space:nowrap}
+.tabelle th.zahl{font-family:inherit}
+.nur-karte{display:none}
+.rechenweg summary{cursor:pointer;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted)}
+.rechenweg[open] summary{margin-bottom:6px}
+.rechenweg .formel{white-space:normal;font-size:17px;line-height:1.5}
+.term{display:inline-block;white-space:nowrap;vertical-align:middle;margin:3px 0}
+.abstand{margin-left:1.6em}
+.bruch{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 .15em}
+.bruch>span{padding:0 .25em;line-height:1.3}
+.bruch>span+span{border-top:1px solid currentColor}
+.rechenweg-fuss{font-size:14px;color:var(--ink-soft);margin-top:8px}
+.rechenweg-fuss+.rechenweg-fuss{margin-top:4px}
+@media(min-width:821px){.werkbank>.steuerung{position:sticky;top:16px}}
+@media(max-width:600px){
+ .karte{padding:12px}
+ .rechenweg .formel{font-size:15px;padding:8px 10px}
+ .abstand{margin-left:.6em}
+ .tabelle thead{display:none}
+ .tabelle,.tabelle tbody,.tabelle tr,.tabelle th,.tabelle td{display:block;width:100%}
+ .tabelle tr{border:1px solid var(--rule);border-radius:6px;padding:8px 12px;margin-bottom:8px}
+ .tabelle tbody th{border:0;padding:0 0 4px;font-size:13px}
+ .nur-karte{display:inline}
+ .tabelle td{display:flex;justify-content:space-between;gap:12px;border:0;padding:3px 0}
+ .tabelle td::before{content:attr(data-label);font-family:var(--serif);color:var(--ink-soft);text-align:left}
+}
+</style>
+
+<section class="erklaerung">
+ <p>Sie erhalten am Ende der nächsten drei Jahre jeweils eine Zahlung. Verändern Sie die Beträge und den Zinssatz: Die Anwendung bündelt die abgezinsten Zahlungen zum Barwert und verteilt diesen wieder auf drei gleiche jährliche Annuitäten. Heute erfolgt keine Zahlung; der Barwert bezeichnet den heutigen Wert.</p>
+ <p>Verschieben Sie die Regler oder geben Sie Beträge in die Zahlenfelder ein. Übernehmen Sie eine Feldeingabe mit Enter oder indem Sie das Feld verlassen.</p>
+</section>
+
+<section>
+ <div class="section-head">
+  <div class="section-num">Erkunden</div>
+ </div>
+ <div class="werkbank">
+  <div class="steuerung">
+   <h2>Eingaben</h2>
+   <div id="regler"></div>
+   <button type="button" class="btn" id="startwerte">Startwerte wiederherstellen</button>
+  </div>
+  <div class="anzeige">
+   <div class="werte">
+    <div class="wert haupt">
+     <div class="wert-label">Barwert heute <span class="sym">BW<sub>0</sub></span></div>
+     <div class="wert-zahl" id="bw" data-eur="bw"></div>
+    </div>
+    <div class="wert haupt">
+     <div class="wert-label">Annuität je Jahr <span class="sym"><em>A</em></span></div>
+     <div class="wert-zahl" id="a" data-eur="a"></div>
+    </div>
+   </div>
+   <p class="summenzeile">Nominale Zahlungssumme <span class="summenzeichen">&sum;<span class="grenzen"><span>3</span><span>t=1</span></span></span>z<sub>t</sub> = <span class="betrag" id="summe" data-eur="summe"></span></p>
+   <div id="diagramm"></div>
+   <div class="x-achsentitel">Zeitpunkt t in Jahren</div>
+   <div class="kontrollzeile">
+    <div class="wert-label">Barwert der Annuitäten <span class="sym"><em>A</em> &middot; RBF(3;<em>i</em>)</span></div>
+    <p>Erneut abgezinst ergeben die drei Annuitäten <span class="betrag" id="bwA" data-eur="bwA"></span>. Das ist derselbe Barwert wie bei Ihren Zahlungen.</p>
+   </div>
+   <div class="erklaerung"><p>Grün zeigt Ihre Zahlungen, Violett deren Barwerte heute und Orange die gleich hohen Annuitäten. Die violetten Balken stehen beim Jahr der zugehörigen Zahlung; alle violetten Beträge sind auf heute abgezinst. Ihre Zahlungen und die Annuitäten sind zwei alternative Zahlungsreihen mit demselben Barwert.</p></div>
+   <div class="faktorzeile">
+    <div class="werte">
+     <div class="wert">
+      <div class="wert-label">Rentenbarwertfaktor <span class="sym">RBF(3;<em>i</em>)</span></div>
+      <div class="wert-zahl" id="rbf" data-zahl="rbf"></div>
+     </div>
+     <div class="wert">
+      <div class="wert-label">Annuitätenfaktor <span class="sym">ANF(3;<em>i</em>)</span></div>
+      <div class="wert-zahl" id="anf" data-zahl="anf"></div>
+     </div>
+    </div>
+    <div class="formel">ANF(3;<em>i</em>) = 1/RBF(3;<em>i</em>)</div>
+    <p>Der Rentenbarwertfaktor ist die Summe der drei Diskontfaktoren. Bei gleichen Zahlungen bündelt er deren Jahresbetrag zum Barwert. Der Annuitätenfaktor ist sein Kehrwert und verteilt einen Barwert auf gleich hohe Jahreszahlungen.</p>
+   </div>
+  </div>
+ </div>
+
+ <div class="karte">
+  <div class="karte-titel">Zahlungen und Werte</div>
+  <table class="tabelle">
+   <thead>
+    <tr><th scope="col">Jahr t</th><th scope="col" class="zahl">Zahlung</th><th scope="col" class="zahl">Barwert heute</th><th scope="col" class="zahl">Annuität</th></tr>
+   </thead>
+   <tbody>
+    <tr><th scope="row"><span class="nur-karte">Jahr </span>1</th><td class="zahl" data-label="Zahlung" id="tab-z1" data-eur="z1"></td><td class="zahl" data-label="Barwert heute" id="b1" data-eur="b1"></td><td class="zahl" data-label="Annuität" id="tab-a1" data-eur="a"></td></tr>
+    <tr><th scope="row"><span class="nur-karte">Jahr </span>2</th><td class="zahl" data-label="Zahlung" id="tab-z2" data-eur="z2"></td><td class="zahl" data-label="Barwert heute" id="b2" data-eur="b2"></td><td class="zahl" data-label="Annuität" id="tab-a2" data-eur="a"></td></tr>
+    <tr><th scope="row"><span class="nur-karte">Jahr </span>3</th><td class="zahl" data-label="Zahlung" id="tab-z3" data-eur="z3"></td><td class="zahl" data-label="Barwert heute" id="b3" data-eur="b3"></td><td class="zahl" data-label="Annuität" id="tab-a3" data-eur="a"></td></tr>
+   </tbody>
+  </table>
+ </div>
+
+ <details class="karte rechenweg" id="rechenweg">
+  <summary>Rechenweg</summary>
+  <div class="formel">
+   <span class="term">BW<sub>0</sub> = <span class="bruch"><span>z<sub>1</sub></span><span>1 + <em>i</em></span></span> +</span>
+   <span class="term"><span class="bruch"><span>z<sub>2</sub></span><span>(1 + <em>i</em>)<sup>2</sup></span></span> +</span>
+   <span class="term"><span class="bruch"><span>z<sub>3</sub></span><span>(1 + <em>i</em>)<sup>3</sup></span></span></span>
+  </div>
+  <div class="formel">
+   <span class="term">BW<sub>0</sub> = <span class="bruch"><span id="rw2-z1" data-zahl="z1"></span><span id="zinsbasis" data-zahl="zinsbasis"></span></span> +</span>
+   <span class="term"><span class="bruch"><span id="rw2-z2" data-zahl="z2"></span><span><span data-zahl="zinsbasis"></span><sup>2</sup></span></span> +</span>
+   <span class="term"><span class="bruch"><span id="rw2-z3" data-zahl="z3"></span><span><span data-zahl="zinsbasis"></span><sup>3</sup></span></span> &asymp; <span id="rw2-bw" data-zahl="bw"></span>&nbsp;EUR</span>
+  </div>
+  <div class="formel">
+   <span class="term">RBF(3;<span id="iAnteil" data-zahl="iAnteil"></span>) = <span class="bruch"><span>1</span><span data-zahl="zinsbasis"></span></span> +</span>
+   <span class="term"><span class="bruch"><span>1</span><span><span data-zahl="zinsbasis"></span><sup>2</sup></span></span> +</span>
+   <span class="term"><span class="bruch"><span>1</span><span><span data-zahl="zinsbasis"></span><sup>3</sup></span></span> &asymp; <span id="rw3-rbf" data-zahl="rbf"></span></span>
+  </div>
+  <div class="formel" id="rbf-geschlossen">
+   <span class="term">RBF(3;<span data-zahl="iAnteil"></span>) = <span class="bruch"><span>1 &minus; <span data-zahl="zinsbasis"></span><sup>&minus;3</sup></span><span data-zahl="iAnteil"></span></span> &asymp; <span id="rw4-rbf" data-zahl="rbf"></span></span>
+  </div>
+  <div class="formel" id="rbf-null" hidden>RBF(3;0) = 1 + 1 + 1 = 3</div>
+  <div class="formel">
+   <span class="term">ANF(3;<em>i</em>) = <span class="bruch"><span>1</span><span>RBF(3;<em>i</em>)</span></span> &asymp; <span id="rw5-anf" data-zahl="anf"></span>,</span>
+   <span class="term abstand"><em>A</em> = <span class="bruch"><span>BW<sub>0</sub></span><span>RBF(3;<em>i</em>)</span></span> &asymp; <span id="rw5-a" data-zahl="a"></span>&nbsp;EUR</span>
+  </div>
+  <div class="formel">
+   <span class="term"><em>A</em> &middot; DF<sub>1</sub> +</span>
+   <span class="term"><em>A</em> &middot; DF<sub>2</sub> +</span>
+   <span class="term"><em>A</em> &middot; DF<sub>3</sub> = <em>A</em> &middot; RBF(3;<em>i</em>) &asymp; <span id="rw6-bwA" data-zahl="bwA"></span>&nbsp;EUR</span>
+  </div>
+ </details>
+ <p class="rechenweg-fuss">Die Anzeigen sind gerundet. Alle Rechnungen verwenden die ungerundeten Werte.</p>
+ <p class="rechenweg-fuss" id="satz-gleich" hidden>Ihre drei Zahlungen sind gleich hoch: z<sub>1</sub> = z<sub>2</sub> = z<sub>3</sub> = <em>C</em>. Deshalb gilt BW<sub>0</sub> = <em>C</em> &middot; RBF(3;<em>i</em>) und anschließend <em>A</em> = <em>C</em>.</p>
+ <p class="rechenweg-fuss" id="satz-null" hidden>Bei 0&nbsp;% gilt RBF(3;0) = 3 und ANF(3;0) = 1/3. Die Annuität ist dann die nominale Zahlungssumme geteilt durch drei.</p>
+</section>
+
+<section>
+ <div class="section-head">
+  <div class="section-num">Probieren Sie es aus</div>
+  <div class="section-title">Aufträge</div>
+ </div>
+ <div id="auftraege"></div>
+</section>
+
+<section>
+ <div class="section-head">
+  <div class="section-num">Zum Mitnehmen</div>
+ </div>
+ <div class="erklaerung"><p>Gleiche Jahreszahlungen bündeln Sie mit dem Rentenbarwertfaktor; einen Barwert verteilen Sie mit dessen Kehrwert, dem Annuitätenfaktor. Bei gleichem Zinssatz und gleicher Laufzeit bleibt dabei der Barwert erhalten.</p></div>
+</section>
+ </main>
+
+ <footer>TH Köln · Finanz- und Investitionsmanagement (Bachelor) · Prof. Dr. Marc Mehlhorn · Veranschaulichung zur Vorlesung · <a href="../../impressum.html">Impressum</a></footer>
+</div>
+<script>
+// Bibliothek FUI fuer die interaktiven Veranschaulichungen der Lehrpipeline (Kuerzel FUI historisch).
+//
+// Wird vom Generator build_veranschaulichung.py in jede Anwendung eingebettet und ist in
+// Node als Modul ladbar (Tests in lib.test.mjs). Keine Abhaengigkeiten, ES2019, kein
+// Laden von aussen, keine Speicherung.
+//
+// Reine Funktionen (in Node getestet):
+//   zahl, eur, prozent      deutsches Zahlenformat mit Tausenderpunkt und Dezimalkomma
+//   mitEinheit              Zahlentext und Einheit mit geschuetztem Leerzeichen verbinden
+//   parseZahl               Zahleneingabe lesen ("1.234,56", "1234.56", "10.000 EUR", "5 %")
+//   pruefeAntwort           Eingabe gegen Zielwert mit Toleranz
+//   ticks, skala, pfad      runde Achsenteilung, lineare Abbildung, SVG-Pfad mit Luecken
+//   rundeAufSchritt         Reglerwert auf das Raster min + k * step, halbe Schritte aufgerundet
+//   skalaText               Beschriftung einer Reglergrenze ("1.000 EUR", "15 %", "1 Aktie")
+//   grundBereich            Filterbereich des Hintergrunds hinter einem Markentext (Anteile des
+//                           Textrahmens, siehe linienDiagramm)
+//   laengeImRechteck        Laenge einer Strecke innerhalb eines Rechtecks
+//   abstandPunktStrecke, abstandStrecken  Abstaende in der Ebene
+//   linienAbstand           Abstand eines Rechtecks zur Strichkante der naechsten Linie
+//   zuordnungEindeutig      Text deutlich naeher am eigenen als am naechsten fremden Punkt
+//   linieZwischen           fremde Linie zwischen Punkt und Text
+//   fuehrungPruefen         Fuehrungslinie: Abstand zu fremden Punkten, Deckung durch Linien
+//   waehleLagen             Lage der Markentexte aus Punkten, Textmassen, Linien und Flaeche
+//   titelZeilen             Achsentitel in einer oder zwei Zeilen, notfalls kleinere Schrift
+//
+// Zahl und Einheit: Zwischen Zahl und Einheit steht immer ein geschuetztes Leerzeichen
+// (U+00A0), damit der Browser dort nie umbricht: in eur und prozent, in den Skalen,
+// Zahlenfeldern und Sprachtexten der Regler und damit auch in Achsen, Kennzahlen und
+// Balkentiteln, die mit eur oder prozent formatiert werden. Anwendungen, die Zahl und
+// Einheit selbst zusammensetzen ("1.200.000 Anteile"), verwenden mitEinheit.
+//
+// Bausteine fuer die Seite (nur im Browser, geprueft an der Musteranwendung). Jeder
+// Baustein haengt sich an das Element ziel an (Element oder id). Texte wie label, frage,
+// optionen und Rueckmeldungen duerfen einfaches HTML enthalten, etwa z<sub>T</sub>.
+//
+//   regler(ziel, {id, label, min, max, step, wert, nks = 2, einheit = '', einheitEins = '',
+//                 anzeige = 'zahl' | 'prozent' | 'eur', onChange})
+//       Schieberegler mit Zahlenfeld, beide synchron. Das Zahlenfeld wird mit parseZahl
+//       gelesen, auf [min, max] begrenzt und auf step gerundet. Bei anzeige 'prozent' ist
+//       der Wert ein Anteil (0.05), das Feld zeigt Prozent (5,00). onChange(wert) bei jeder
+//       Aenderung, auch nach set(). Rueckgabe {get(), set(v), element}.
+//       Unter dem Schieber stehen Minimum und Maximum mit so wenigen Nachkommastellen wie
+//       noetig und der Einheit (skalaText). einheitEins ist die Einzahl der Einheit, etwa
+//       'Aktie' zu 'Aktien': Sie ersetzt die Einheit ueberall dort, wo die Zahl genau als
+//       "1" erscheint (Skala, Einheit neben dem Zahlenfeld, Sprachtext des Schiebers), also
+//       "1 Aktie", aber "1,5 Aktien" und "10 Aktien". Ohne einheitEins bleibt die Einheit
+//       unveraendert. Entscheidung: Einzahl ueber diese Option statt die Einheit an der
+//       Skala wegzulassen, weil die Skala sonst ohne Einheit dastuende.
+//
+//   linienDiagramm(ziel, {titel, x: {min, max, label, format, ticks},
+//                  y: {min, max, label, format, ticks},
+//                  reihen: [{name, punkte: [[x, y], ...], farbe, strich}],
+//                  marken: [{x, y, text, farbe, hilfslinien}]})
+//       SVG mit viewBox 0 0 640 360. Fehlt min oder max einer Achse, gilt der Datenbereich
+//       (bei y einschliesslich 0), nach aussen auf Teilstriche gerundet. format ist eine
+//       Funktion v => Text oder 'zahl', 'prozent', 'eur'. farbe: 'rot', 'violett',
+//       'orange', 'gruen', 'grau' oder eine CSS-Farbe; ohne Angabe der Reihe nach.
+//       strich: 'voll', 'gestrichelt', 'punktiert'. Rueckgabe {update({reihen, marken, x, y})}.
+//       Markentexte stehen zuerst frei und eindeutig: waehleLagen setzt jeden Text in die
+//       Zeichenflaeche, auf keinen anderen Markentext und keinen Punkt, und zwar (1) so, dass
+//       seine Flaeche zu jeder Reihe, Grenz- und Hilfslinie mindestens halbe Strichbreite plus
+//       2 Einheiten Abstand haelt (Strichbreite in Pixeln, in viewBox-Einheiten umgerechnet),
+//       solange eine Lage das erlaubt; (2) ohne Fuehrungslinie nur hoechstens eine Zeile vom
+//       Punkt, deutlich naeher am eigenen als an jedem fremden Punkt und ohne fremde Linie
+//       dazwischen; sonst mit einer duennen Fuehrungslinie (line.fuehrungslinie) vom Rand des
+//       Punkts bis an die Flaeche, die jeden fremden Punkt um mehr als dessen Radius plus 3
+//       verfehlt, moeglichst keine Linie kreuzt und nicht auf einer Achse liegt; (3) bei
+//       Gleichstand in der bisherigen Standardlage rechts oben. Gemessen wird der Text in der
+//       Schrift der Seite (textMasse). Einzelheiten bei waehleLagen.
+//       Als Absicherung liegt hinter jedem Markentext eine deckende Flaeche in der Kartenfarbe:
+//       ein use-Element (use.marke-hintergrund), das den Text wiederholt, mit einem SVG-Filter,
+//       der nur eine Flaeche zeichnet (feFlood, Klasse marke-grund, flood-color var(--card)
+//       aus style.css). Der Filterbereich haengt am Rahmen des Texts (objectBoundingBox) und
+//       reicht GRUND_RAND_X Einheiten nach links und rechts und GRUND_RAND_Y nach oben und
+//       unten darueber hinaus (grundBereich), gemessen mit getBBox. Die Schrift steht als Stil
+//       am Text (font-weight 600), damit die Kopie im use-Element genau so breit ist wie der
+//       Text. Ein Unterstrich vor einem Zeichen setzt es als Index tief ("EW_T"). IDs sind
+//       eindeutig: Text <Diagramm-ID>-text-<k>, Filter <Diagramm-ID>-grund-<k>, Diagramm-ID
+//       aus neueId. Zeichenfolge im SVG: Achsen und Gitter, Reihen, alle Hilfs- und
+//       Fuehrungslinien, alle Hintergruende, dann je Marke der Punkt (circle.marke) und
+//       unmittelbar dahinter sein Text (text.marke-text). Kein Hintergrund liegt also auf einem
+//       Punkt oder auf einem anderen Markentext. Anwendungen muessen die Lage nicht selbst
+//       ordnen; wer den Text nach dem Zeichnen verschiebt, findet ihn als nextElementSibling des
+//       circle.marke, und die Flaeche wandert mit.
+//       Achsentitel (auch in balkenDiagramm) werden nie abgeschnitten: Passt ein Titel nicht
+//       in die Hoehe oder Breite der viewBox, bricht er an einem Leerzeichen in zwei Zeilen um
+//       (tspan je Zeile, Textinhalt gleich dem Titel), reicht das nicht, wird er bis auf 80 %
+//       der Schrift verkleinert (titelZeilen); der Rand waechst um die zweite Zeile.
+//
+//   balkenDiagramm(ziel, {titel, kategorien, reihen: [{name, werte, farbe}],
+//                  y: {min, max, label, format, ticks}, gestapelt = false})
+//       Gruppierte oder gestapelte Balken. Rueckgabe {update({reihen, y, kategorien})}.
+//
+//   auftrag(ziel, {nr, frage, ziel: zahl, toleranz, einheit = '', hinweis = '',
+//                  richtig, falsch, wert})
+//       Karte mit Frage, Zahlenfeld, Schaltflaeche "Prüfen" und Rueckmeldung. Enter prueft.
+//       Nach dem zweiten falschen Versuch erscheint zusaetzlich der hinweis. ziel darf eine
+//       Funktion sein, die den Zielwert zur aktuellen Einstellung liefert. Mit wert (einer
+//       Funktion) entfaellt das Zahlenfeld: geprueft wird dann die aktuelle Einstellung,
+//       etwa ein Reglerwert.
+//
+//   auswahlAuftrag(ziel, {nr, frage, optionen: [text], richtig: index,
+//                         rueckmeldungen: [text]})
+//       Auswahl per Schaltflaechen, Rueckmeldung je Option, beliebig oft.
+const FUI = (() => {
+  'use strict';
+
+  // ------------------------------------------------------------ Zahlen
+
+  // Rundet kaufmaennisch auf nks Nachkommastellen, wie man es von Hand erwartet
+  // (1,005 wird 1,01). Der Umweg ueber toPrecision(15) glaettet Binaerfehler wie
+  // 0,07 * 100 = 7,000000000000001, der Umweg ueber die Exponentenschreibweise
+  // vermeidet Fehler beim Multiplizieren mit 10^nks.
+  function runde(x, nks) {
+    const glatt = Number(x.toPrecision(15));
+    const text = String(glatt);
+    if (/e/i.test(text)) return Number(glatt.toFixed(nks));
+    return Number(Math.round(Number(text + 'e' + nks)) + 'e-' + nks);
+  }
+
+  function stellen(nks, standard) {
+    const n = Number(nks);
+    if (!Number.isFinite(n) || n < 0) return standard;
+    return Math.min(Math.floor(n), 10);
+  }
+
+  // Deutsches Format: Tausenderpunkt, Dezimalkomma, Minuszeichen "-" (nicht U+2212),
+  // keine negative Null. Nicht endliche Werte ergeben "nicht definiert".
+  function zahl(x, nks) {
+    const n = stellen(nks === undefined ? 2 : nks, 2);
+    const wert = Number(x);
+    if (x === null || x === '' || !Number.isFinite(wert)) return 'nicht definiert';
+    const betrag = runde(Math.abs(wert), n);
+    const teile = betrag.toFixed(n).split('.');
+    const ganz = teile[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    const text = teile.length > 1 ? ganz + ',' + teile[1] : ganz;
+    return (wert < 0 && betrag !== 0 ? '-' : '') + text;
+  }
+
+  // Zahlentext und Einheit mit geschuetztem Leerzeichen (U+00A0): kein Umbruch zwischen beiden.
+  // Ohne Einheit bleibt der Text unveraendert.
+  function mitEinheit(text, einheit) {
+    return einheit ? text + '\u00a0' + einheit : text;
+  }
+
+  function eur(x, nks) {
+    const text = zahl(x, nks === undefined ? 2 : nks);
+    return text === 'nicht definiert' ? text : mitEinheit(text, 'EUR');
+  }
+
+  // Erwartet einen Anteil: prozent(0.05) ergibt "5,00 %" (mit geschuetztem Leerzeichen).
+  function prozent(x, nks) {
+    const wert = Number(x);
+    if (x === null || x === '' || !Number.isFinite(wert)) return 'nicht definiert';
+    return mitEinheit(zahl(wert * 100, nks === undefined ? 2 : nks), '%');
+  }
+
+  // Liest eine Zahleneingabe. Einheiten davor oder dahinter und Leerzeichen entfallen.
+  // Enthaelt der Text ein Komma, sind Punkte Tausendertrenner. Sonst ist ein Punkt mit
+  // genau drei Folgeziffern hinter einer bis drei Ziffern (ohne fuehrende Null) ein
+  // Tausendertrenner ("10.000"), jeder andere Punkt ein Dezimalpunkt ("1234.56", "0.050").
+  // Leer oder unlesbar ergibt NaN.
+  function parseZahl(text) {
+    if (typeof text === 'number') return Number.isFinite(text) ? text : NaN;
+    if (text === null || text === undefined) return NaN;
+    let s = String(text).replace(/\u2212/g, '-').replace(/\s+/g, '');
+    s = s.replace(/^[^0-9+\-.,]+/, '').replace(/[^0-9.,]+$/, '');
+    const m = /^([+-]?)(.*)$/.exec(s);
+    const vorzeichen = m[1] === '-' ? -1 : 1;
+    let rumpf = m[2];
+    if (!/^[0-9.,]*[0-9][0-9.,]*$/.test(rumpf)) return NaN;
+
+    if (rumpf.indexOf(',') >= 0) {
+      if (rumpf.split(',').length > 2) return NaN;
+      rumpf = rumpf.replace(/\./g, '').replace(',', '.');
+    } else {
+      const punkte = (rumpf.match(/\./g) || []).length;
+      if (punkte === 1) {
+        if (/^[1-9]\d{0,2}\.\d{3}$/.test(rumpf)) rumpf = rumpf.replace('.', '');
+      } else if (punkte > 1) {
+        if (!/^[1-9]\d{0,2}(\.\d{3})+$/.test(rumpf)) return NaN;
+        rumpf = rumpf.replace(/\./g, '');
+      }
+    }
+    if (!/^(\d+\.?\d*|\.\d+)$/.test(rumpf)) return NaN;
+    return vorzeichen * Number(rumpf);
+  }
+
+  // true, wenn die Eingabe hoechstens toleranz vom Ziel abweicht. Texte werden mit
+  // parseZahl gelesen; NaN und nicht endliche Werte sind nie richtig.
+  function pruefeAntwort(eingabe, ziel, toleranz) {
+    const wert = typeof eingabe === 'string' ? parseZahl(eingabe) : Number(eingabe);
+    const tol = Number(toleranz) || 0;
+    if (!Number.isFinite(wert) || !Number.isFinite(Number(ziel))) return false;
+    return Math.abs(wert - Number(ziel)) <= tol + 1e-9;
+  }
+
+  // ------------------------------------------------------------ Achsen und Pfade
+
+  // Runde Teilstriche im Intervall [min, max]: Schrittweite 1, 2, 2,5 oder 5 mal einer
+  // Zehnerpotenz, so gewaehlt, dass die Zahl der Abschnitte moeglichst nahe bei anzahl liegt.
+  function ticks(min, max, anzahl) {
+    let a = Number(min), b = Number(max);
+    const n = Math.max(1, Math.round(Number(anzahl === undefined ? 5 : anzahl)) || 1);
+    if (!Number.isFinite(a) || !Number.isFinite(b)) return [];
+    if (a > b) { const t = a; a = b; b = t; }
+    if (a === b) return [a];
+
+    const roh = (b - a) / n;
+    const potenz = Math.pow(10, Math.floor(Math.log10(roh)));
+    let schritt = potenz;
+    let abstand = Infinity;
+    [1, 2, 2.5, 5, 10].forEach((f) => {
+      const s = f * potenz;
+      const d = Math.abs((b - a) / s - n);
+      if (d < abstand - 1e-9) { abstand = d; schritt = s; }
+    });
+
+    const erster = Math.ceil(a / schritt - 1e-9);
+    const letzter = Math.floor(b / schritt + 1e-9);
+    const liste = [];
+    for (let k = erster; k <= letzter; k++) {
+      liste.push(Number((k * schritt).toPrecision(12)) + 0);
+    }
+    return liste;
+  }
+
+  // Lineare Abbildung des Datenbereichs [dmin, dmax] auf den Pixelbereich [pmin, pmax].
+  function skala(dmin, dmax, pmin, pmax) {
+    const d0 = Number(dmin), d1 = Number(dmax), p0 = Number(pmin), p1 = Number(pmax);
+    if (d1 === d0) return () => (p0 + p1) / 2;
+    const faktor = (p1 - p0) / (d1 - d0);
+    return (v) => p0 + (Number(v) - d0) * faktor;
+  }
+
+  function koordinate(v) {
+    return String(runde(v, 2) + 0);
+  }
+
+  // SVG-Pfad "M x0 y0 L x1 y1 ..." aus Punkten [x, y]. Ein Punkt mit nicht endlichem
+  // x oder y unterbricht den Pfad, der naechste gueltige Punkt beginnt mit "M".
+  function pfad(punkte, sx, sy) {
+    const teile = [];
+    let neu = true;
+    (punkte || []).forEach((p) => {
+      const x = sx(p[0]), y = sy(p[1]);
+      if (!Number.isFinite(Number(p[0])) || !Number.isFinite(Number(p[1]))
+          || !Number.isFinite(x) || !Number.isFinite(y)) {
+        neu = true;
+        return;
+      }
+      teile.push((neu ? 'M ' : 'L ') + koordinate(x) + ' ' + koordinate(y));
+      neu = false;
+    });
+    return teile.join(' ');
+  }
+
+  // ------------------------------------------------------------ Hilfen fuer die Seite
+
+  function esc(text) {
+    return String(text === null || text === undefined ? '' : text)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function knoten(ziel) {
+    const el = typeof ziel === 'string' ? document.getElementById(ziel) : ziel;
+    if (!el) throw new Error('FUI: Zielelement "' + ziel + '" fehlt.');
+    return el;
+  }
+
+  function wennFunktion(wert, argument) {
+    return typeof wert === 'function' ? wert(argument) : wert;
+  }
+
+  let laufnummer = 0;
+  function neueId(praefix) {
+    laufnummer += 1;
+    return 'fui-' + praefix + '-' + laufnummer;
+  }
+
+  // ------------------------------------------------------------ Regler
+
+  // Begrenzt v auf [min, max] und rundet auf das Raster min + k * step. Der Quotient wird vor
+  // dem Runden auf 12 Stellen geglättet, sonst rundet etwa 3,05 / 0,1 = 30,4999… ab statt auf.
+  function rundeAufSchritt(v, min, max, step) {
+    const w = Math.min(max, Math.max(min, Number(v)));
+    const k = Math.round(Number(((w - min) / step).toPrecision(12)));
+    return Math.min(max, Math.max(min, Number((min + k * step).toPrecision(12))));
+  }
+
+  // Anzeigeangaben eines Reglers: Faktor der Anzeige, Einheit und Einheit zum Zahlentext
+  // (Einzahl einheitEins, wenn der Text genau "1" lautet).
+  function reglerAnzeige(optionen) {
+    const o = Object.assign({ nks: 2, einheit: '', einheitEins: '', anzeige: 'zahl' }, optionen || {});
+    const faktor = o.anzeige === 'prozent' ? 100 : 1;
+    const einheit = o.einheit || (o.anzeige === 'prozent' ? '%' : (o.anzeige === 'eur' ? 'EUR' : ''));
+    return {
+      o: o,
+      faktor: faktor,
+      einheit: einheit,
+      einheitZu: (text) => (o.einheitEins && text === '1' ? o.einheitEins : einheit),
+    };
+  }
+
+  // Grenze unter dem Schieber nur mit den noetigen Nachkommastellen: "1.000 EUR", "15 %",
+  // mit einheitEins "1 Aktie".
+  function skalaText(v, optionen) {
+    const a = reglerAnzeige(optionen);
+    const wert = Number(v) * a.faktor;
+    const text = zahl(wert, Math.min(stellen(a.o.nks, 2), nachkomma(wert)));
+    return mitEinheit(text, a.einheitZu(text));
+  }
+
+  function regler(ziel, optionen) {
+    const anzeige = reglerAnzeige(optionen);
+    const o = anzeige.o, faktor = anzeige.faktor, einheit = anzeige.einheit;
+    const min = Number(o.min), max = Number(o.max);
+    const step = Number(o.step) > 0 ? Number(o.step) : (max - min) / 100;
+    const id = o.id || neueId('regler');
+
+    function normiere(v) { return rundeAufSchritt(v, min, max, step); }
+    function feldText(v) { return zahl(v * faktor, o.nks); }
+    function sprechText(v) { const t = feldText(v); return mitEinheit(t, anzeige.einheitZu(t)); }
+
+    // Mit einheitEins wechselt die Einheit neben dem Feld; eine feste Mindestbreite in
+    // Zeichen (Festbreitenschrift) haelt Feld und Schieber dabei ruhig.
+    const breiteEinheit = o.einheitEins
+      ? ' style="min-width:' + Math.max(einheit.length, String(o.einheitEins).length) + 'ch"' : '';
+    const div = document.createElement('div');
+    div.className = 'regler';
+    div.innerHTML =
+      '<label for="' + esc(id) + '" id="' + esc(id) + '-label">' + (o.label || '') + '</label>'
+      + '<div class="regler-zeile"><div class="regler-schiene">'
+      + '<input type="range" id="' + esc(id) + '" min="' + min + '" max="' + max + '" step="' + step + '">'
+      + '<div class="regler-skala" aria-hidden="true"><span>' + esc(skalaText(min, o)) + '</span><span>'
+      + esc(skalaText(max, o)) + '</span></div></div>'
+      + '<span class="regler-feld">'
+      + '<input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" id="'
+      + esc(id) + '-zahl" aria-labelledby="' + esc(id) + '-label">'
+      + '<span class="einheit"' + breiteEinheit + '>' + esc(einheit) + '</span>'
+      + '</span></div>';
+    knoten(ziel).appendChild(div);
+
+    const schieber = div.querySelector('input[type="range"]');
+    const feld = div.querySelector('input[type="text"]');
+    const einheitFeld = div.querySelector('.regler-feld .einheit');
+    let wert = normiere(o.wert !== undefined ? o.wert : min);
+
+    function zeige(quelle) {
+      if (quelle !== 'schieber') schieber.value = String(wert);
+      feld.value = feldText(wert);
+      einheitFeld.textContent = anzeige.einheitZu(feld.value);
+      schieber.setAttribute('aria-valuetext', sprechText(wert));
+    }
+    function setze(v, quelle) {
+      const neu = normiere(v);
+      const geaendert = neu !== wert;
+      wert = neu;
+      zeige(quelle);
+      if (geaendert && typeof o.onChange === 'function') o.onChange(wert);
+    }
+    function uebernimmFeld() {
+      const v = parseZahl(feld.value);
+      if (!Number.isFinite(v)) { zeige('feld'); return; }
+      setze(v / faktor, 'feld');
+    }
+
+    schieber.addEventListener('input', () => setze(Number(schieber.value), 'schieber'));
+    feld.addEventListener('change', uebernimmFeld);
+    feld.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); uebernimmFeld(); }
+    });
+    zeige('start');
+
+    return {
+      get: () => wert,
+      set: (v) => setze(v, 'set'),
+      element: div,
+    };
+  }
+
+  // ------------------------------------------------------------ Diagramme
+
+  const BREITE = 640, HOEHE = 360;
+  const FARBEN = {
+    rot: 'var(--th-rot)', violett: 'var(--th-violett)', orange: 'var(--th-orange)',
+    gruen: 'var(--gruen)', grau: 'var(--ink-muted)',
+  };
+  const FARBFOLGE = ['rot', 'violett', 'orange', 'gruen'];
+  const STRICHE = { voll: '', gestrichelt: '8 6', punktiert: '2 5' };
+
+  function farbe(f, i) {
+    if (!f) return FARBEN[FARBFOLGE[i % FARBFOLGE.length]];
+    return FARBEN[f] || String(f);
+  }
+  function strichart(s) {
+    if (!s) return '';
+    return STRICHE[s] !== undefined ? STRICHE[s] : String(s);
+  }
+
+  // Stellen nach dem Komma, die eine Zahl zur Darstellung braucht (0,025 braucht 3).
+  function nachkomma(v) {
+    const t = String(Number(Math.abs(v).toPrecision(12)));
+    if (/e-/.test(t)) return Number(t.split('e-')[1]);
+    const i = t.indexOf('.');
+    return i < 0 ? 0 : t.length - i - 1;
+  }
+
+  function formatierer(achse, liste) {
+    const f = achse.format;
+    if (typeof f === 'function') return f;
+    if (f === 'prozent') {
+      const d = liste.reduce((m, v) => Math.max(m, nachkomma(v * 100)), 0);
+      return (v) => prozent(v, d);
+    }
+    const d = liste.reduce((m, v) => Math.max(m, nachkomma(v)), 0);
+    if (f === 'eur') return (v) => eur(v, d);
+    return (v) => zahl(v, d);
+  }
+
+  // Bereich einer Achse: feste Grenzen aus der Angabe, fehlende aus den Daten, nach
+  // aussen auf den naechsten Teilstrich gerundet.
+  function bereich(achse, werte, mitNull, anzahl) {
+    const festMin = Number.isFinite(achse.min), festMax = Number.isFinite(achse.max);
+    const endlich = werte.filter((v) => Number.isFinite(v));
+    let lo = festMin ? achse.min : (endlich.length ? Math.min.apply(null, endlich) : 0);
+    let hi = festMax ? achse.max : (endlich.length ? Math.max.apply(null, endlich) : 1);
+    if (mitNull && !festMin) lo = Math.min(0, lo);
+    if (mitNull && !festMax) hi = Math.max(0, hi);
+    if (lo === hi) { if (!festMax) hi = lo + 1; else if (!festMin) lo = hi - 1; }
+    if (!festMin || !festMax) {
+      const t = ticks(lo, hi, anzahl);
+      const s = t.length > 1 ? t[1] - t[0] : 1;
+      if (!festMin) lo = Number((Math.floor(lo / s + 1e-9) * s).toPrecision(12));
+      if (!festMax) hi = Number((Math.ceil(hi / s - 1e-9) * s).toPrecision(12));
+    }
+    return { min: lo, max: hi };
+  }
+
+  // Schriftgroesse in viewBox-Einheiten, so dass die Beschriftung auch bei 375 Pixel
+  // Bildschirmbreite rund 11 Pixel hoch erscheint.
+  function schriftFuer(breite) {
+    return Math.max(12, Math.min(22, 11.5 * BREITE / (breite || BREITE)));
+  }
+
+  const beobachtet = [];
+  let geplant = false;
+  function beobachte(neuZeichnen) {
+    if (beobachtet.length === 0 && typeof window !== 'undefined') {
+      window.addEventListener('resize', () => {
+        if (geplant) return;
+        geplant = true;
+        window.requestAnimationFrame(() => {
+          geplant = false;
+          beobachtet.forEach((f) => f());
+        });
+      });
+    }
+    beobachtet.push(neuZeichnen);
+  }
+
+  // Hintergrund hinter Markentexten: Rand in viewBox-Einheiten ueber den Textrahmen hinaus.
+  // Der Rahmen eines SVG-Texts reicht schon von der Ober- bis zur Unterlaenge der Schrift,
+  // deshalb genuegt oben und unten ein kleiner Rand.
+  const GRUND_RAND_X = 2.5, GRUND_RAND_Y = 1;
+
+  // Filterbereich (objectBoundingBox) fuer einen Text der Breite breite und Hoehe hoehe:
+  // der Textrahmen plus randX links und rechts und randY oben und unten, ausgedrueckt als
+  // Anteile des Rahmens. Ohne gueltige Masse gilt der Standardbereich des Browsers.
+  function grundBereich(breite, hoehe, randX, randY) {
+    const b = Number(breite), h = Number(hoehe);
+    const rx = Number.isFinite(Number(randX)) ? Number(randX) : GRUND_RAND_X;
+    const ry = Number.isFinite(Number(randY)) ? Number(randY) : GRUND_RAND_Y;
+    if (!(b > 0) || !(h > 0) || !Number.isFinite(b) || !Number.isFinite(h)) {
+      return { x: -0.1, y: -0.1, width: 1.2, height: 1.2 };
+    }
+    const ax = runde(Math.max(0, rx) / b, 4), ay = runde(Math.max(0, ry) / h, 4);
+    return { x: -ax, y: -ay, width: runde(1 + 2 * ax, 4), height: runde(1 + 2 * ay, 4) };
+  }
+
+  function setzeBereich(filter, bereich) {
+    ['x', 'y', 'width', 'height'].forEach((k) => filter.setAttribute(k, String(bereich[k])));
+  }
+
+  // Filter fuer den deckenden Hintergrund eines Markentexts: nur die Flaeche in der
+  // Kartenfarbe (Klasse marke-grund, flood-color in style.css) ueber dem Filterbereich.
+  function grundFilter(id, bereich) {
+    return '<filter id="' + esc(id) + '" x="' + bereich.x + '" y="' + bereich.y + '" width="' + bereich.width
+      + '" height="' + bereich.height + '" color-interpolation-filters="sRGB">'
+      + '<feFlood class="marke-grund"/></filter>';
+  }
+
+  // Hintergruende als eigene Schicht vor dem ersten Punkt, also ueber allen Linien und unter
+  // allen Punkten und Markentexten: je Markentext ein use-Element, das den Text wiederholt
+  // und mit dem Filter nur die Flaeche zeichnet. use wiederholt den Text laufend; verschiebt
+  // eine Anwendung den Text, wandert die Flaeche mit. gruende: [{text: ID, grund: Filter-ID}].
+  function legeGruende(svg, gruende) {
+    if (!gruende.length || !svg || typeof svg.insertBefore !== 'function') return;
+    const doc = svg.ownerDocument || document;
+    const vor = typeof svg.querySelector === 'function' ? svg.querySelector('circle.marke') : null;
+    gruende.forEach((g) => {
+      const flaeche = doc.createElementNS(svg.namespaceURI, 'use');
+      flaeche.setAttribute('class', 'marke-hintergrund');
+      flaeche.setAttribute('href', '#' + g.text);
+      flaeche.setAttribute('filter', 'url(#' + g.grund + ')');
+      flaeche.setAttribute('aria-hidden', 'true');
+      svg.insertBefore(flaeche, vor);
+    });
+  }
+
+  // Nach dem Zeichnen: Filterbereiche aus den gemessenen Textrahmen. Ist nichts messbar
+  // (Diagramm verborgen, keine Darstellung), bleibt der geschaetzte Bereich stehen.
+  function messeGruende(svg, gruende) {
+    if (!svg || typeof svg.querySelector !== 'function') return;
+    gruende.forEach((g) => {
+      const el = svg.querySelector('text[id="' + g.text + '"]');
+      const filter = svg.querySelector('filter[id="' + g.grund + '"]');
+      if (!el || !filter || typeof el.getBBox !== 'function') return;
+      let bb = null;
+      try { bb = el.getBBox(); } catch (e) { bb = null; }
+      if (bb && bb.width > 0 && bb.height > 0) setzeBereich(filter, grundBereich(bb.width, bb.height));
+    });
+  }
+
+  // ------------------------------------------------------------ Lage der Markentexte
+
+  // Schrift der Markentexte als Stil am Element selbst: So hat auch die Wiederholung im
+  // use-Element (Hintergrund) genau dieselbe Schrift, denn Stilregeln der Seite wie
+  // .diagramm .marke-text erreichen die Kopie nicht.
+  const MARKE_SCHRIFT = 'font-weight:600';
+
+  // Strichbreiten in Bildschirmpixeln wie in style.css (.reihe, .hilfslinie). Mit
+  // vector-effect="non-scaling-stroke" bleibt der Strich bei jeder Breite gleich breit; in
+  // viewBox-Einheiten ist er also um so breiter, je schmaler das Diagramm erscheint.
+  const STRICH_REIHE = 2.5, STRICH_HILFSLINIE = 1;
+
+  // Teil [t0, t1] der Strecke a-b innerhalb des Rechtecks q = {x0, y0, x1, y1} (Liang-Barsky),
+  // null, wenn die Strecke das Rechteck nicht trifft.
+  function teilImRechteck(a, b, q) {
+    const dx = b[0] - a[0], dy = b[1] - a[1];
+    const p = [-dx, dx, -dy, dy];
+    const w = [a[0] - q.x0, q.x1 - a[0], a[1] - q.y0, q.y1 - a[1]];
+    let t0 = 0, t1 = 1;
+    for (let i = 0; i < 4; i++) {
+      if (p[i] === 0) {
+        if (w[i] < 0) return null;
+      } else {
+        const t = w[i] / p[i];
+        if (p[i] < 0) { if (t > t1) return null; if (t > t0) t0 = t; } else { if (t < t0) return null; if (t < t1) t1 = t; }
+      }
+    }
+    return t1 >= t0 ? [t0, t1] : null;
+  }
+
+  // Laenge der Strecke a-b innerhalb des Rechtecks q = {x0, y0, x1, y1}.
+  function laengeImRechteck(a, b, q) {
+    const t = teilImRechteck(a, b, q);
+    const dx = b[0] - a[0], dy = b[1] - a[1];
+    return t && t[1] > t[0] ? (t[1] - t[0]) * Math.sqrt(dx * dx + dy * dy) : 0;
+  }
+
+  // Abstand des Punkts p = [x, y] von der Strecke a-b.
+  function abstandPunktStrecke(p, a, b) {
+    const dx = b[0] - a[0], dy = b[1] - a[1];
+    const l2 = dx * dx + dy * dy;
+    const t = l2 > 0 ? Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / l2)) : 0;
+    const x = a[0] + t * dx - p[0], y = a[1] + t * dy - p[1];
+    return Math.sqrt(x * x + y * y);
+  }
+
+  // Kleinster Abstand der Strecken a-b und c-d, 0, wenn sie sich schneiden oder beruehren.
+  function abstandStrecken(a, b, c, d) {
+    const k = (p, q, r) => (q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0]);
+    const d1 = k(c, d, a), d2 = k(c, d, b), d3 = k(a, b, c), d4 = k(a, b, d);
+    if (((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) && ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0))) return 0;
+    return Math.min(abstandPunktStrecke(a, c, d), abstandPunktStrecke(b, c, d),
+      abstandPunktStrecke(c, a, b), abstandPunktStrecke(d, a, b));
+  }
+
+  // Abstand der Strecke a-b vom Rechteck q, 0, wenn sie es beruehrt oder hineinreicht.
+  function abstandRechteckStrecke(q, a, b) {
+    if (teilImRechteck(a, b, q)) return 0;
+    const e = [[q.x0, q.y0], [q.x1, q.y0], [q.x1, q.y1], [q.x0, q.y1]];
+    let m = Infinity;
+    for (let i = 0; i < 4; i++) m = Math.min(m, abstandStrecken(a, b, e[i], e[(i + 1) % 4]));
+    return m;
+  }
+
+  // Streckenzug in Stuecke zu hoechstens 16 Strecken mit Rahmen, damit die Suche Stuecke
+  // abseits eines Rechtecks ohne Rechnung ueberspringt (Kurven mit vielen Stuetzstellen).
+  function stuecke(linie) {
+    const aus = [];
+    for (let a = 0; a < linie.length - 1; a += 16) {
+      const pkt = linie.slice(a, Math.min(linie.length, a + 17));
+      const xs = pkt.map((p) => p[0]), ys = pkt.map((p) => p[1]);
+      aus.push({ pkt: pkt, x0: Math.min.apply(null, xs), x1: Math.max.apply(null, xs),
+        y0: Math.min.apply(null, ys), y1: Math.max.apply(null, ys) });
+    }
+    return aus;
+  }
+
+  // Linien fuer die Platzierung: ein Streckenzug [[x, y], ...] oder {punkte, halb, marke}. halb ist
+  // die halbe Strichbreite in viewBox-Einheiten (ohne Angabe halbStandard), marke der Index der
+  // Marke, zu der eine Hilfslinie gehoert. Bereits aufbereitete Linien bleiben, wie sie sind.
+  function linienListe(linien, halbStandard) {
+    const h = Number.isFinite(halbStandard) ? halbStandard : STRICH_REIHE / 2;
+    return (linien || []).map((l) => {
+      if (l && l.teile) return l;
+      const punkte = Array.isArray(l) ? l : (l && l.punkte);
+      if (!punkte || punkte.length < 2) return null;
+      return {
+        punkte: punkte, teile: stuecke(punkte),
+        halb: l && Number.isFinite(l.halb) ? l.halb : h,
+        marke: l && Number.isInteger(l.marke) ? l.marke : null,
+      };
+    }).filter((l) => l);
+  }
+
+  function nahe(t, q, g) {
+    return !(t.x1 < q.x0 - g || t.x0 > q.x1 + g || t.y1 < q.y0 - g || t.y0 > q.y1 + g);
+  }
+
+  function stueckeImRechteck(teile, q) {
+    let s = 0;
+    teile.forEach((t) => {
+      if (!nahe(t, q, 0)) return;
+      for (let i = 1; i < t.pkt.length; i++) s += laengeImRechteck(t.pkt[i - 1], t.pkt[i], q);
+    });
+    return s;
+  }
+
+  // Abstand der Strichkante einer aufbereiteten Linie vom Rechteck q (Abstand der Mittellinie minus
+  // halbe Strichbreite), hoechstens bis; Stuecke weiter als bis werden nicht gerechnet.
+  function kanteAbstand(q, l, bis) {
+    const g = bis + l.halb;
+    let m = Infinity;
+    l.teile.forEach((t) => {
+      if (!nahe(t, q, g)) return;
+      for (let i = 1; i < t.pkt.length; i++) m = Math.min(m, abstandRechteckStrecke(q, t.pkt[i - 1], t.pkt[i]));
+    });
+    return Math.min(bis, m - l.halb);
+  }
+
+  // Kleinster Abstand zwischen dem Rechteck q (Textrahmen oder Flaeche) und der Strichkante der
+  // naechsten Linie; negativ, wenn ein Strich in das Rechteck reicht. Linien wie in waehleLagen;
+  // mit bis wird nur bis zu diesem Wert genau gerechnet. Ohne Linien Infinity.
+  function linienAbstand(q, linien, bis) {
+    const grenze = Number.isFinite(bis) ? bis : Infinity;
+    return linienListe(linien).reduce((m, l) => Math.min(m, kanteAbstand(q, l, grenze)), grenze);
+  }
+
+  // Abstand der Mittellinie einer aufbereiteten Linie vom Punkt p = [x, y] oder von der Strecke
+  // a-b; genau bis zum Wert bis, Stuecke weiter entfernt werden uebersprungen (dann Infinity).
+  function punktLinieAbstand(p, l, bis) {
+    let m = Infinity;
+    l.teile.forEach((t) => {
+      if (!nahe(t, { x0: p[0], y0: p[1], x1: p[0], y1: p[1] }, Math.min(m, bis))) return;
+      for (let i = 1; i < t.pkt.length; i++) m = Math.min(m, abstandPunktStrecke(p, t.pkt[i - 1], t.pkt[i]));
+    });
+    return m;
+  }
+  function streckeLinieAbstand(a, b, l, bis) {
+    const q = { x0: Math.min(a[0], b[0]), y0: Math.min(a[1], b[1]), x1: Math.max(a[0], b[0]), y1: Math.max(a[1], b[1]) };
+    let m = Infinity;
+    l.teile.forEach((t) => {
+      if (!nahe(t, q, Math.min(m, bis))) return;
+      for (let i = 1; i < t.pkt.length; i++) m = Math.min(m, abstandStrecken(a, b, t.pkt[i - 1], t.pkt[i]));
+    });
+    return m;
+  }
+
+  // Abstand des Punkts p = {x, y} vom Rechteck q, 0 im Rechteck.
+  function abstandZu(p, q) {
+    const nx = Math.min(Math.max(p.x, q.x0), q.x1), ny = Math.min(Math.max(p.y, q.y0), q.y1);
+    return Math.sqrt((nx - p.x) * (nx - p.x) + (ny - p.y) * (ny - p.y));
+  }
+
+  // Zuordnung: Der Textrahmen liegt deutlich naeher am eigenen Punkt als am naechsten fremden,
+  // mindestens ZUORDNUNG_ABSTAND Einheiten und mindestens um den Faktor ZUORDNUNG_FAKTOR (Abstaende
+  // jeweils vom Rand des Punkts bis zum Textrahmen).
+  const ZUORDNUNG_ABSTAND = 6, ZUORDNUNG_FAKTOR = 2;
+  function zuordnungEindeutig(eigen, fremd) {
+    const e = Math.max(0, Number(eigen)), f = Number(fremd);
+    if (!Number.isFinite(e) || Number.isNaN(f)) return false;
+    return f >= e + ZUORDNUNG_ABSTAND && f >= ZUORDNUNG_FAKTOR * e;
+  }
+
+  // Laeuft eine der Linien zwischen dem Punkt p = {x, y, r} und dem Rechteck q hindurch? Geprueft
+  // werden die Strecken vom Rand des Punkts (r + 1) zum naechsten Punkt des Rechtecks und zur
+  // Stelle, an der die Verbindung zur Mitte des Rechtecks in das Rechteck eintritt; eine Linie
+  // liegt dazwischen, wenn ihr Strich (halbe Strichbreite) eine der Strecken beruehrt. linien sind
+  // die fremden Linien (Reihen, Grenz- und Hilfslinien, die nicht durch den Punkt laufen).
+  function linieZwischen(p, q, linien) {
+    const liste = linienListe(linien);
+    if (!liste.length) return false;
+    const naechster = [Math.min(Math.max(p.x, q.x0), q.x1), Math.min(Math.max(p.y, q.y0), q.y1)];
+    const mitte = [(q.x0 + q.x1) / 2, (q.y0 + q.y1) / 2];
+    const t = teilImRechteck([p.x, p.y], mitte, q);
+    const ziele = [naechster];
+    if (t) ziele.push([p.x + t[0] * (mitte[0] - p.x), p.y + t[0] * (mitte[1] - p.y)]);
+    return ziele.some((z) => {
+      const dx = z[0] - p.x, dy = z[1] - p.y, L = Math.sqrt(dx * dx + dy * dy);
+      if (L <= p.r + 1) return false;
+      const s = [p.x + dx * (p.r + 1) / L, p.y + dy * (p.r + 1) / L];
+      return liste.some((l) => streckeLinieAbstand(s, z, l, l.halb + 1) <= l.halb);
+    });
+  }
+
+  // Pruefung einer Fuehrungslinie f = [x1, y1, x2, y2]: punkt ist der kleinste Abstand der Linie zu
+  // einem fremden Mittelpunkt abzueglich dessen Radius (fremdePunkte [{x, y, r}]), deckung die
+  // Laenge der Fuehrungslinie, die im Strich einer Linie oder bis zu einer Einheit daneben liegt
+  // (Kreuzung oder Verlauf auf einer Reihe), laenge ihre Laenge.
+  function fuehrungPruefen(f, fremdePunkte, linien) {
+    const a = [f[0], f[1]], b = [f[2], f[3]];
+    let punkt = Infinity;
+    (fremdePunkte || []).forEach((p) => { punkt = Math.min(punkt, abstandPunktStrecke([p.x, p.y], a, b) - p.r); });
+    const L = Math.sqrt((b[0] - a[0]) * (b[0] - a[0]) + (b[1] - a[1]) * (b[1] - a[1]));
+    const liste = linienListe(linien).filter((l) => streckeLinieAbstand(a, b, l, l.halb + 1) <= l.halb + 1);
+    let deckung = 0;
+    if (liste.length && L > 0) {
+      const n = Math.ceil(L);
+      for (let k = 0; k < n; k++) {
+        const t = (k + 0.5) / n, q = [a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1])];
+        if (liste.some((l) => punktLinieAbstand(q, l, l.halb + 1) <= l.halb + 1)) deckung += L / n;
+      }
+    }
+    return { punkt: punkt, deckung: deckung, laenge: L };
+  }
+
+  function ueberlappt(a, b, luecke) {
+    const l = luecke || 0;
+    return a.x0 < b.x1 + l && b.x0 < a.x1 + l && a.y0 < b.y1 + l && b.y0 < a.y1 + l;
+  }
+
+  function kreisTrifft(k, q) {
+    const nx = Math.min(Math.max(k.x, q.x0), q.x1), ny = Math.min(Math.max(k.y, q.y0), q.y1);
+    return (k.x - nx) * (k.x - nx) + (k.y - ny) * (k.y - ny) < k.r * k.r;
+  }
+
+  function flaecheAussen(q, f) {
+    return Math.max(0, f.links - q.x0) + Math.max(0, q.x1 - f.rechts) + Math.max(0, f.oben - q.y0) + Math.max(0, q.y1 - f.unten);
+  }
+
+  function schnittFlaeche(a, b) {
+    const w = Math.min(a.x1, b.x1) - Math.max(a.x0, b.x0), h = Math.min(a.y1, b.y1) - Math.max(a.y0, b.y0);
+    return w > 0 && h > 0 ? w * h : 0;
+  }
+
+  function erweitert(q, d) {
+    return { x0: q.x0 - d, y0: q.y0 - d, x1: q.x1 + d, y1: q.y1 + d };
+  }
+
+  function reihenfolgen(n) {
+    if (n > 4) return [Array.from({ length: n }, (_, i) => i)];
+    const aus = [];
+    const bilde = (rest, weg) => {
+      if (!rest.length) { aus.push(weg); return; }
+      rest.forEach((x, i) => bilde(rest.slice(0, i).concat(rest.slice(i + 1)), weg.concat([x])));
+    };
+    bilde(Array.from({ length: n }, (_, i) => i), []);
+    return aus;
+  }
+
+  // Waehlt fuer jeden Markentext eine Lage. Reine Funktion, alle Masse in viewBox-Einheiten.
+  //   marken:  [{x, y, r, breite, auf, ab, text}]  Punkt (Mitte, Radius) und Masse des Texts:
+  //            Breite, Hoehe ueber (auf) und unter (ab) der Grundlinie; text false: nur Punkt
+  //   linien:  Reihen, Grenz- und Hilfslinien als Streckenzuege [[x, y], ...] oder
+  //            {punkte, halb, marke} (halbe Strichbreite, Marke einer Hilfslinie; ohne halb gilt
+  //            die Angabe halb, sonst die halbe Breite einer Reihe bei voller Groesse)
+  //   flaeche: {links, rechts, oben, unten}  Zeichenflaeche, in der die Hintergruende liegen
+  //   randX, randY: Rand des Hintergrunds um den Text (GRUND_RAND_X, GRUND_RAND_Y);
+  //   abstand: Luecke zwischen Punkt und Text (4); luecke: Mindestabstand zur Strichkante (2)
+  //   achsen:  Achsenlinien wie linien; sie zaehlen nur fuer Fuehrungslinien, weil eine
+  //            Fuehrungslinie auf einer Achse nicht zu sehen ist
+  // Kandidaten je Text: rechts oben (bisherige Standardlage), links oben, rechts unten, links
+  // unten, mittig oben, mittig unten, rechts und links auf Hoehe des Punkts; die ersten sechs
+  // zusaetzlich in STUFEN weiteren Abstaenden von je einer halben Zeile, darueber und darunter
+  // auch um ein und drei Viertel der Textbreite verschoben; dazu ein Raster ueber die ganze
+  // Zeichenflaeche (an neun gleich verteilten Stellen vom linken bis zum rechten Rand, mittig
+  // ueber dem Punkt, buendig am Punkt; Schritt eine halbe Zeile).
+  // Eigene Linien einer Marke sind ihre Hilfslinien und die Reihen, die bis auf EIGEN_TOLERANZ
+  // durch ihren Punkt laufen; alle anderen sind fremd.
+  // Je Kandidat:
+  //   frei:      Die Flaeche haelt zu jeder Linie mindestens luecke Einheiten Abstand von der
+  //              Strichkante (Abstand der Mittellinie mindestens halbe Strichbreite plus luecke).
+  //   eindeutig: Der Text steht hoechstens eine Zeile vom Rand seines Punkts, deutlich naeher am
+  //              eigenen als an jedem fremden Punkt (zuordnungEindeutig), und keine fremde Linie
+  //              laeuft zwischen Punkt und Text (linieZwischen).
+  //   Fuehrungslinie: Ist die Lage nicht eindeutig, verbindet eine Fuehrungslinie Punkt und Text,
+  //              vom Rand des Punkts bis an die Flaeche (fuehrungWaehlen: zum naechsten Punkt der
+  //              Flaeche, sonst zu einer Ecke oder Kante). Sie ist nur zulaessig, wenn sie mindestens
+  //              FUEHRUNG_MIN lang ist, jeden fremden Mittelpunkt um mehr als dessen Radius plus
+  //              FUEHRUNG_PUNKT verfehlt, hoechstens ACHSE_ANTEIL ihrer Laenge auf oder neben einer
+  //              Achse liegt (sonst waere sie nicht zu sehen) und der Text mindestens eine Zeile (und
+  //              ZUORDNUNG_ABSTAND) vom Rand jedes fremden Punkts entfernt steht.
+  // Pflicht: Hintergrund in der Zeichenflaeche, auf keinem Punkt, auf keinem anderen Hintergrund
+  // (Luecke 2), keine Fuehrungslinie durch einen anderen Hintergrund, Fuehrungslinie zulaessig.
+  // Kreuzen sich zwei Fuehrungslinien (Abstand unter 1), ist die Zuordnung unklar: Das kostet
+  // KREUZUNG_GEWICHT, und bei der Wahl der Gesamtlage zaehlen Kreuzungen vor dem Anteil unter
+  // Flaechen, solange dieser hoechstens KREUZUNG_DECKUNG betraegt (siehe unten).
+  // Wert (der kleinste gewinnt, bei Gleichstand die frueher genannte Lage, also die bisherige
+  // Standardlage): Rang: frei vor nicht frei (RANG_FLAECHE); ohne freie Lage entscheidet der
+  // groesste Anteil einer Linie unter der Flaeche, gemessen an der Strichflaeche (je Prozentpunkt
+  // so viel wie eine Fuehrungslinie, dazu ein Zehntel der Summe aller Linien), weil die Grenzen
+  // fuer die Absicherung je Linie gelten; so nimmt auch ein anderer Text eine freie Lage in Kauf,
+  // die ihm eine Fuehrungslinie kostet, wenn der erste Text dafuer weniger verdeckt. Danach eindeutig ohne
+  // Fuehrungslinie vor Fuehrungslinie (RANG_FUEHRUNG, dazu je Einheit Laenge und je Einheit, die
+  // auf oder ueber einer Linie liegt, und ein Zuschlag, wenn der Text naeher an einem fremden Punkt
+  // steht). Zuletzt WEITE_GEWICHT je Einheit Abstand vom Punkt (in halben Zeilen gestuft, die erste
+  // halbe Zeile kostet nichts).
+  // Gesamtlage: Die Texte werden gemeinsam gesetzt, nicht einer nach dem anderen mit der jeweils
+  // besten Lage (sonst nimmt der erste Text dem zweiten den freien Platz und zwingt ihn zu einer
+  // Fuehrungslinie quer durch das Bild). Jede Reihenfolge der Texte wird durchprobiert (bei bis
+  // zu vier Texten), und je Text werden die SUCHE_BREITE besten zulaessigen Lagen weiterverfolgt,
+  // beim letzten Text alle. Beste Gesamtlage: (1) weniger Konflikte, (2) groesster Anteil einer
+  // Linie unter einer Flaeche in ganzen Prozentpunkten, soweit er KREUZUNG_DECKUNG uebersteigt,
+  // (3) weniger sich kreuzende Fuehrungslinien, (4) kleinerer groesster Anteil unter einer Flaeche,
+  // (5) kleinere Summe der Werte; bei Gleichstand die zuerst gefundene. Findet ein Text keinen
+  // zulaessigen Platz, gilt die Lage mit der kleinsten Ueberdeckung (konflikt true).
+  // Rueckgabe je Marke null (ohne Text) oder {x, y (Textanfang, Grundlinie), text, grund
+  // (Rechtecke {x0, y0, x1, y1}), fuehrung ([x1, y1, x2, y2] oder null), stufe, rang, anteil (Anteil
+  // der Mittellinien unter der Flaeche), anteilStrich (an der Strichflaeche, Summe ueber die Linien),
+  // anteilMax (groesster Anteil einer Linie an der Strichflaeche), frei, kante (Abstand
+  // der Flaeche zur naechsten Strichkante, hoechstens luecke + 1), eindeutig, zwischen, eigen und
+  // fremd (Abstand des Textrahmens vom Rand des eigenen und des naechsten fremden Punkts),
+  // fuehrungPunkt (Abstand der Fuehrungslinie zum naechsten fremden Punkt abzueglich Radius),
+  // wert, konflikt}.
+  const STUFEN = 6, WEITE_GEWICHT = 0.0003, LUECKE_LINIE = 2, EIGEN_TOLERANZ = 1.5;
+  const FUEHRUNG_MIN = 8, FUEHRUNG_PUNKT = 3, ACHSE_ANTEIL = 0.25;
+  // Suche der Gesamtlage: verfolgte Lagen je Text nach Anzahl der Marken (ab fuenf Marken nur die
+  // beste, also eine Wahl nach der anderen); Anteil unter Flaechen, bis zu dem Kreuzungen vorgehen.
+  const SUCHE_BREITE = [1, 12, 12, 12, 4], KREUZUNG_DECKUNG = 0.05;
+  const RANG_FLAECHE = 10, FLAECHE_JE_ANTEIL = 100, ANTEIL_SUMME = 0.1, RANG_FUEHRUNG = 1,
+    FUEHRUNG_JE_EINHEIT = 0.002, DECKUNG_JE_EINHEIT = 0.04, FUEHRUNG_FREMD_NAEHER = 0.5, KREUZUNG_GEWICHT = 2;
+
+  // Fuehrungslinie vom Rand des Punkts m (r + 1) bis an die Flaeche grund: zuerst zum naechsten
+  // Punkt der Flaeche. Laeuft sie dort durch einen fremden Punkt (FUEHRUNG_PUNKT) oder ist sie
+  // kuerzer als FUEHRUNG_MIN oder liegt sie zu mehr als ACHSE_ANTEIL ihrer Laenge auf einer Achse
+  // (achsen), gelten Ecken, Mitten und Viertel der Kanten als Ende, soweit die Linie die Flaeche
+  // erst am Ende erreicht; unter den zulaessigen die kuerzeste mit wenig Deckung.
+  function fuehrungWaehlen(m, grund, fremdePunkte, hindernisse, achsen) {
+    const baue = (gx, gy) => {
+      const dg = Math.sqrt((gx - m.x) * (gx - m.x) + (gy - m.y) * (gy - m.y)) || 1;
+      const f = [m.x + (gx - m.x) * (m.r + 1) / dg, m.y + (gy - m.y) * (m.r + 1) / dg, gx, gy];
+      const pruefung = fuehrungPruefen(f, fremdePunkte, hindernisse);
+      const aufAchse = achsen && achsen.length ? fuehrungPruefen(f, [], achsen).deckung : 0;
+      return { fuehrung: f, pruefung: pruefung,
+        gueltig: pruefung.laenge >= FUEHRUNG_MIN && pruefung.punkt > FUEHRUNG_PUNKT
+          && aufAchse <= ACHSE_ANTEIL * pruefung.laenge };
+    };
+    const erste = baue(Math.min(Math.max(m.x, grund.x0), grund.x1), Math.min(Math.max(m.y, grund.y0), grund.y1));
+    if (erste.gueltig) return erste;
+    const innen = { x0: grund.x0 + 0.5, y0: grund.y0 + 0.5, x1: grund.x1 - 0.5, y1: grund.y1 - 0.5 };
+    let beste = null;
+    [0, 0.25, 0.5, 0.75, 1].forEach((a) => [[grund.x0 + a * (grund.x1 - grund.x0), grund.y0],
+      [grund.x0 + a * (grund.x1 - grund.x0), grund.y1], [grund.x0, grund.y0 + a * (grund.y1 - grund.y0)],
+      [grund.x1, grund.y0 + a * (grund.y1 - grund.y0)]].forEach((z) => {
+      const c = baue(z[0], z[1]);
+      if (!c.gueltig || laengeImRechteck([c.fuehrung[0], c.fuehrung[1]], z, innen) > 0) return;
+      const w = FUEHRUNG_JE_EINHEIT * c.pruefung.laenge + DECKUNG_JE_EINHEIT * c.pruefung.deckung;
+      if (!beste || w < beste.w - 1e-9) beste = Object.assign(c, { w: w });
+    }));
+    return beste || erste;
+  }
+
+  function waehleLagen(eingabe) {
+    const e = eingabe || {};
+    const f = e.flaeche;
+    const rx = Number.isFinite(e.randX) ? e.randX : GRUND_RAND_X;
+    const ry = Number.isFinite(e.randY) ? e.randY : GRUND_RAND_Y;
+    const abstand = Number.isFinite(e.abstand) ? e.abstand : 4;
+    const luecke = Number.isFinite(e.luecke) ? e.luecke : LUECKE_LINIE;
+    const marken = e.marken || [];
+    const linien = linienListe(e.linien, e.halb);
+    const achsen = linienListe(e.achsen, e.halb);
+    const hindernisse = linien.concat(achsen);
+    const ganz = { x0: f.links, y0: f.oben, x1: f.rechts, y1: f.unten };
+    const laengen = linien.map((l) => stueckeImRechteck(l.teile, ganz));
+    const punkte = marken.map((m) => ({ x: m.x, y: m.y, r: m.r + 1 }));
+    const fremdeLinien = marken.map((m, i) => linien.filter((l) => (l.marke === null
+      ? punktLinieAbstand([m.x, m.y], l, EIGEN_TOLERANZ + 1) > EIGEN_TOLERANZ : l.marke !== i)));
+    const fremdePunkte = marken.map((m, i) => marken.filter((o, j) => j !== i).map((o) => ({ x: o.x, y: o.y, r: o.r })));
+
+    const kandidaten = marken.map((m, i) => {
+      if (!m.text) return [];
+      const w = m.breite, s = (m.auf + m.ab + 2) / 2;
+      const xR = m.x + m.r + abstand, xL = m.x - m.r - abstand - w;
+      const xM = Math.min(Math.max(m.x - w / 2, f.links + rx), f.rechts - rx - w);
+      const xV = Math.min(Math.max(m.x - w / 4, f.links + rx), f.rechts - rx - w);
+      const xD = Math.min(Math.max(m.x - 3 * w / 4, f.links + rx), f.rechts - rx - w);
+      const bO = (k) => m.y - m.r - abstand - k * s;
+      const bU = (k) => m.y + m.r + abstand + m.auf + k * s;
+      const bOM = (k) => m.y - m.r - 2 - ry - m.ab - k * s;
+      const bUM = (k) => m.y + m.r + 2 + ry + m.auf + k * s;
+      const lagen = [];
+      for (let k = 0; k <= STUFEN; k++) {
+        lagen.push([xR, bO(k)], [xL, bO(k)], [xR, bU(k)], [xL, bU(k)], [xM, bOM(k)], [xM, bUM(k)]);
+        if (k === 0) lagen.push([xR, m.y + (m.auf - m.ab) / 2], [xL, m.y + (m.auf - m.ab) / 2]);
+      }
+      for (let k = 0; k <= STUFEN; k++) lagen.push([xV, bOM(k)], [xD, bOM(k)], [xV, bUM(k)], [xD, bUM(k)]);
+      // Weiter entfernte Lagen im Raster der Zeichenflaeche: an neun gleich verteilten Stellen
+      // vom linken bis zum rechten Rand, mittig ueber dem Punkt und buendig am Punkt, in
+      // Schritten einer halben Zeile.
+      const xs = [xM, xR, xL];
+      for (let j = 0; j <= 8; j++) xs.push(f.links + rx + j * (f.rechts - f.links - 2 * rx - w) / 8);
+      for (let b = f.oben + ry + m.auf; b + m.ab + ry <= f.unten; b += s) xs.forEach((x) => lagen.push([x, b]));
+      return lagen.map((l, rang) => {
+        const text = { x0: l[0], y0: l[1] - m.auf, x1: l[0] + w, y1: l[1] + m.ab };
+        const grund = { x0: text.x0 - rx, y0: text.y0 - ry, x1: text.x1 + rx, y1: text.y1 + ry };
+        let anteil = 0, anteilStrich = 0, anteilMax = 0;
+        linien.forEach((li, j) => {
+          if (!(laengen[j] > 0)) return;
+          anteil += stueckeImRechteck(li.teile, grund) / laengen[j];
+          const a = stueckeImRechteck(li.teile, erweitert(grund, li.halb)) / laengen[j];
+          anteilStrich += a;
+          anteilMax = Math.max(anteilMax, a);
+        });
+        const kante = linien.reduce((mm, li) => Math.min(mm, kanteAbstand(grund, li, luecke + 1)), luecke + 1);
+        const frei = kante >= luecke - 1e-9;
+        const eigen = abstandZu(m, text) - m.r;
+        const fremd = fremdePunkte[i].reduce((mm, o) => Math.min(mm, abstandZu(o, text) - o.r), Infinity);
+        const weit = eigen > m.auf + m.ab;
+        const zwischen = !weit && linieZwischen(m, text, fremdeLinien[i]);
+        const eindeutig = !weit && !zwischen && zuordnungEindeutig(eigen, fremd);
+        const stufe = Math.floor(Math.max(0, abstandZu(m, grund) - m.r - 1) / s);
+        let wert = (frei ? 0 : RANG_FLAECHE + FLAECHE_JE_ANTEIL * (anteilMax + ANTEIL_SUMME * anteilStrich))
+          + WEITE_GEWICHT * stufe * s;
+        let fuehrung = null, pruefung = null, ungueltig = false;
+        if (!eindeutig) {
+          const wahl = fuehrungWaehlen(m, grund, fremdePunkte[i], hindernisse, achsen);
+          fuehrung = wahl.fuehrung;
+          pruefung = wahl.pruefung;
+          ungueltig = !wahl.gueltig || fremd < Math.max(ZUORDNUNG_ABSTAND, m.auf + m.ab);
+          wert += RANG_FUEHRUNG + FUEHRUNG_JE_EINHEIT * pruefung.laenge + DECKUNG_JE_EINHEIT * pruefung.deckung
+            + (fremd < eigen ? FUEHRUNG_FREMD_NAEHER : 0);
+        }
+        return { x: l[0], y: l[1], stufe: stufe, rang: rang, text: text, grund: grund, fuehrung: fuehrung,
+          aussen: flaecheAussen(grund, f), anteil: anteil, anteilStrich: anteilStrich, anteilMax: anteilMax, frei: frei, kante: kante,
+          eindeutig: eindeutig, zwischen: zwischen, eigen: eigen, fremd: fremd, ungueltig: ungueltig,
+          fuehrungPunkt: pruefung ? pruefung.punkt : null, wert: wert };
+      });
+    });
+
+    // Gesamtlage (siehe oben): Tiefensuche je Reihenfolge; alle Teile des Schluessels wachsen mit
+    // jedem gesetzten Text, deshalb bricht die Suche ab, sobald sie nicht mehr besser werden kann.
+    let beste = null;
+    const breite = marken.length < SUCHE_BREITE.length ? SUCHE_BREITE[marken.length] : 1;
+    const zulaessig = (c, gesetzt) => c.aussen === 0 && !c.ungueltig
+      && gesetzt.every((g) => !ueberlappt(c.grund, g.grund, 2) && !kreuzt(c.fuehrung, g.grund) && !kreuzt(g.fuehrung, c.grund))
+      && punkte.every((p) => !kreisTrifft(p, c.grund));
+    // Fuehrungslinien, die eine schon gesetzte kreuzen; jede Kreuzung kostet KREUZUNG_GEWICHT
+    const kreuzungenMit = (c, gesetzt) => gesetzt.filter((g) => fuehrungenKreuzen(c.fuehrung, g.fuehrung)).length;
+    const mitKreuzung = (c, gesetzt) => c.wert + (kreuzungenMit(c, gesetzt) ? KREUZUNG_GEWICHT : 0);
+    const schluessel = (k, x, d, s) => [k, d > KREUZUNG_DECKUNG + 1e-9 ? Math.ceil(100 * d - 1e-6) : 0, x, d, s];
+    const nichtBesser = (k, x, d, s) => {
+      if (!beste) return false;
+      const a = schluessel(k, x, d, s), b = schluessel(beste.konflikte, beste.kreuzungen, beste.deckung, beste.summe);
+      for (let j = 0; j < a.length; j++) {
+        const t = j === a.length - 1 ? 1e-6 : 1e-4;
+        if (a[j] > b[j] + t) return true;
+        if (a[j] < b[j] - t) return false;
+      }
+      return true;
+    };
+    reihenfolgen(marken.length).forEach((folge) => {
+      const wahl = marken.map(() => null);
+      const suche = (tiefe, konflikte, kreuzungen, summe, deckung) => {
+        if (nichtBesser(konflikte, kreuzungen, deckung, summe)) return;
+        if (tiefe === folge.length) {
+          beste = { wahl: wahl.slice(), konflikte: konflikte, kreuzungen: kreuzungen, summe: summe, deckung: deckung };
+          return;
+        }
+        const i = folge[tiefe];
+        if (!kandidaten[i].length) { suche(tiefe + 1, konflikte, kreuzungen, summe, deckung); return; }
+        const gesetzt = wahl.filter((w) => w);
+        const liste = [];
+        kandidaten[i].forEach((c) => {
+          if (zulaessig(c, gesetzt)) liste.push({ c: c, w: mitKreuzung(c, gesetzt), x: kreuzungenMit(c, gesetzt) });
+        });
+        if (!liste.length) {
+          // Kein zulaessiger Platz: kleinste Ueberdeckung anderer Texte und Punkte, dann der Wert
+          let gut = null;
+          const last = (c) => c.aussen * 1e6 + gesetzt.reduce((s, g) => s + schnittFlaeche(c.grund, g.grund), 0)
+            + punkte.reduce((s, p) => s + (kreisTrifft(p, c.grund) ? p.r * p.r : 0), 0) + (c.ungueltig ? 50 : 0);
+          kandidaten[i].forEach((c) => {
+            if (!gut || last(c) < last(gut) - 1e-6 || (Math.abs(last(c) - last(gut)) <= 1e-6 && c.wert < gut.wert - 1e-6)) gut = c;
+          });
+          gut = Object.assign({}, gut, { konflikt: true });
+          wahl[i] = gut;
+          suche(tiefe + 1, konflikte + 1, kreuzungen + kreuzungenMit(gut, gesetzt), summe + mitKreuzung(gut, gesetzt),
+            gut.frei ? deckung : Math.max(deckung, gut.anteilMax));
+          wahl[i] = null;
+          return;
+        }
+        // Lagen dieses Texts nach Wert, bei Gleichstand die frueher genannte; beim letzten Text alle
+        liste.sort((a, b) => (Math.abs(a.w - b.w) > 1e-6 ? a.w - b.w : a.c.rang - b.c.rang));
+        (tiefe === folge.length - 1 ? liste : liste.slice(0, breite)).forEach((x) => {
+          wahl[i] = x.c;
+          suche(tiefe + 1, konflikte, kreuzungen + x.x, summe + x.w, x.c.frei ? deckung : Math.max(deckung, x.c.anteilMax));
+        });
+        wahl[i] = null;
+      };
+      suche(0, 0, 0, 0, 0);
+    });
+
+    const aus = beste.wahl.map((c) => (c ? {
+      x: c.x, y: c.y, text: c.text, grund: c.grund, fuehrung: c.fuehrung, stufe: c.stufe, rang: c.rang,
+      anteil: c.anteil, anteilStrich: c.anteilStrich, anteilMax: c.anteilMax, frei: c.frei, kante: c.kante, eindeutig: c.eindeutig,
+      zwischen: c.zwischen, eigen: c.eigen, fremd: c.fremd, fuehrungPunkt: c.fuehrungPunkt, wert: c.wert,
+      konflikt: !!c.konflikt,
+    } : null));
+    // Mit protokoll: alle Kandidaten je Marke (fuer Tests und Pruefhilfen)
+    if (e.protokoll) aus.kandidaten = kandidaten;
+    return aus;
+  }
+
+  // Zwei Fuehrungslinien kreuzen oder beruehren sich (dann waere die Zuordnung unklar).
+  function fuehrungenKreuzen(a, b) {
+    return !!a && !!b && abstandStrecken([a[0], a[1]], [a[2], a[3]], [b[0], b[1]], [b[2], b[3]]) < 1;
+  }
+
+  function kreuzt(strecke, q) {
+    return !!strecke && laengeImRechteck([strecke[0], strecke[1]], [strecke[2], strecke[3]], q) > 0.5;
+  }
+
+  // Index in Markentexten: Ein Unterstrich vor einem Buchstaben oder einer Ziffer setzt dieses
+  // eine Zeichen tief ("EW_T"), mit dy 0,3 der Schriftgroesse und 75 % Schrift, wie es die
+  // Anwendungen fuer Achsentexte tun. Weil die Bibliothek den Index selbst setzt, misst sie den
+  // Text so, wie er erscheint. Ohne Unterstrich bleibt der Text reiner Text.
+  function indexMarkup(inhalt, fs) {
+    const teile = String(inhalt).split(/_([A-Za-z0-9])/);
+    if (teile.length === 1) return esc(inhalt);
+    let versatz = 0, h = '';
+    teile.forEach((stueck, k) => {
+      if (!stueck) return;
+      const tief = k % 2 === 1, neu = tief ? fs * 0.3 : 0;
+      h += '<tspan' + (neu !== versatz ? ' dy="' + koordinate(neu - versatz) + '"' : '')
+        + (tief ? ' font-size="' + koordinate(fs * 0.75) + '"' : '') + '>' + esc(stueck) + '</tspan>';
+      versatz = neu;
+    });
+    return h;
+  }
+
+  // Masse eines Markentexts in der Schrift der Seite: kurz ein unsichtbares Messelement ins
+  // SVG setzen. Ohne Darstellung (Node, verborgenes Diagramm) gilt eine Schaetzung.
+  function textMasse(svg, inhalt, fs) {
+    const schaetzung = { breite: String(inhalt).length * fs * 0.58, auf: fs * 0.95, ab: fs * 0.25, x0: 0 };
+    if (!svg || typeof svg.appendChild !== 'function' || typeof svg.removeChild !== 'function') return schaetzung;
+    try {
+      const el = (svg.ownerDocument || document).createElementNS(svg.namespaceURI, 'text');
+      el.setAttribute('x', '0');
+      el.setAttribute('y', '0');
+      el.setAttribute('font-size', koordinate(fs));
+      el.setAttribute('class', 'marke-text');
+      el.setAttribute('style', MARKE_SCHRIFT);
+      el.setAttribute('visibility', 'hidden');
+      el.innerHTML = indexMarkup(inhalt, fs);
+      svg.appendChild(el);
+      const bb = el.getBBox();
+      svg.removeChild(el);
+      if (bb && bb.width > 0 && bb.height > 0) return { breite: bb.width, auf: -bb.y, ab: bb.y + bb.height, x0: bb.x };
+    } catch (fehler) {
+      return schaetzung;
+    }
+    return schaetzung;
+  }
+
+  // Streckenzuege einer Reihe in viewBox-Einheiten; nicht endliche Punkte trennen wie in pfad.
+  function streckenzuege(punkte, sx, sy) {
+    const zuege = [];
+    let zug = [];
+    (punkte || []).forEach((p) => {
+      const x = sx(p[0]), y = sy(p[1]);
+      if (!Number.isFinite(Number(p[0])) || !Number.isFinite(Number(p[1])) || !Number.isFinite(x) || !Number.isFinite(y)) {
+        if (zug.length > 1) zuege.push(zug);
+        zug = [];
+        return;
+      }
+      zug.push([x, y]);
+    });
+    if (zug.length > 1) zuege.push(zug);
+    return zuege;
+  }
+
+  function text(x, y, inhalt, fs, attribute) {
+    return '<text x="' + koordinate(x) + '" y="' + koordinate(y) + '" font-size="' + koordinate(fs)
+      + '"' + (attribute || '') + '>' + esc(inhalt) + '</text>';
+  }
+  function linie(x1, y1, x2, y2, klasse, stil) {
+    return '<line class="' + klasse + '" x1="' + koordinate(x1) + '" y1="' + koordinate(y1)
+      + '" x2="' + koordinate(x2) + '" y2="' + koordinate(y2) + '"'
+      + (stil ? ' style="' + esc(stil) + '"' : '') + ' vector-effect="non-scaling-stroke"/>';
+  }
+
+  // Zeilen fuer eine Kategorienbeschriftung, hoechstens drei.
+  function umbrechen(inhalt, zeichen) {
+    const woerter = String(inhalt).split(/\s+/).filter((w) => w);
+    const zeilen = [];
+    woerter.forEach((w) => {
+      const letzte = zeilen.length ? zeilen[zeilen.length - 1] : null;
+      if (letzte !== null && (letzte + ' ' + w).length <= zeichen) zeilen[zeilen.length - 1] = letzte + ' ' + w;
+      else zeilen.push(w);
+    });
+    if (zeilen.length > 3) {
+      zeilen[2] = zeilen.slice(2).join(' ');
+      zeilen.length = 3;
+    }
+    return zeilen.length ? zeilen : [''];
+  }
+
+  // Gemeinsamer Rahmen beider Diagrammarten: figure mit Titel, SVG und Legende.
+  function rahmen(ziel, titel) {
+    const figur = document.createElement('figure');
+    figur.className = 'diagramm';
+    figur.innerHTML = (titel ? '<figcaption class="diagramm-titel">' + esc(titel) + '</figcaption>' : '')
+      + '<svg viewBox="0 0 ' + BREITE + ' ' + HOEHE
+      + '" width="100%" role="img" aria-label="' + esc(titel || 'Diagramm') + '"></svg>'
+      + '<div class="legende"></div>';
+    knoten(ziel).appendChild(figur);
+    return {
+      figur: figur,
+      svg: figur.querySelector('svg'),
+      legende: figur.querySelector('.legende'),
+    };
+  }
+
+  function legendeHtml(reihen, alsFlaeche) {
+    return reihen.map((r, i) => {
+      if (!r.name) return '';
+      const f = farbe(r.farbe, i);
+      const muster = alsFlaeche
+        ? '<span class="legende-flaeche" style="background:' + esc(f) + '"></span>'
+        : '<span class="legende-linie" style="border-top-color:' + esc(f) + ';border-top-style:'
+          + (r.strich === 'gestrichelt' ? 'dashed' : (r.strich === 'punktiert' ? 'dotted' : 'solid')) + '"></span>';
+      return '<span class="legende-eintrag">' + muster + esc(r.name) + '</span>';
+    }).join('');
+  }
+
+  // Raender aus der Laenge der Beschriftungen; zeichen ist die geschaetzte Breite einer Ziffer.
+  // yTitel und xTitel sind die Lagen der Achsentitel aus titelZeilen (oder leer): Jede weitere
+  // Zeile eines umbrochenen Titels braucht eine Zeilenhoehe mehr Rand.
+  function raender(fs, yLabels, yTitel, xTitel, rechtsText, untenZeilen) {
+    const zeichen = fs * 0.6;
+    const laengste = yLabels.reduce((m, s) => Math.max(m, s.length), 1);
+    const mehr = (t) => (t && t.zeilen ? (t.zeilen.length - 1) * t.fs * TITEL_ZEILE : 0);
+    return {
+      links: 8 + laengste * zeichen + 8 + (yTitel ? fs * 1.5 + mehr(yTitel) : 0),
+      rechts: Math.max(14, rechtsText.length * zeichen / 2 + 6),
+      oben: fs * 0.7 + 8,
+      unten: 8 + fs * 1.15 * untenZeilen + 4 + (xTitel ? fs * 1.5 + mehr(xTitel) : 0),
+    };
+  }
+
+  // ------------------------------------------------------------ Achsentitel
+
+  // Achsentitel werden nie abgeschnitten. Passt ein Titel in einer Zeile nicht in die verfuegbare
+  // Laenge, bricht er an einem Leerzeichen (nicht am geschuetzten) in zwei Zeilen um: die
+  // Zeilen moeglichst gleich lang, keine Zeile beginnt oder endet mit einem Gleichheitszeichen,
+  // solange es anders geht. Reicht das nicht, wird die Schrift verkleinert, hoechstens bis auf
+  // TITEL_MIN der Schrift. Der Wortlaut bleibt gleich. TITEL_RAND haelt der Titel zum Rand der
+  // viewBox ein, TITEL_ZEILE ist der Zeilenabstand in Schriftgroessen.
+  const TITEL_RAND = 3, TITEL_MIN = 0.8, TITEL_ZEILE = 1.15;
+
+  // Reine Funktion: breiteVon(text, fs) liefert die Breite eines Texts in der Schrift fs.
+  // Rueckgabe {zeilen: [text] oder [erste, zweite], fs, passt}; passt ist false, wenn der Titel
+  // auch in der kleinsten Schrift nicht in verfuegbar passt (dann gilt die kleinste Schrift).
+  function titelZeilen(inhalt, verfuegbar, breiteVon, fs, fsMin) {
+    const titel = String(inhalt);
+    const min = Number.isFinite(fsMin) ? fsMin : fs * TITEL_MIN;
+    const ganz = breiteVon(titel, fs);
+    if (ganz <= verfuegbar) return { zeilen: [titel], fs: fs, passt: true };
+    let beste = null;
+    for (let k = titel.indexOf(' '); k > 0; k = titel.indexOf(' ', k + 1)) {
+      const a = titel.slice(0, k), b = titel.slice(k + 1);
+      if (!a.trim() || !b.trim()) continue;
+      const breite = Math.max(breiteVon(a, fs), breiteVon(b, fs));
+      const gleich = /=\s*$/.test(a) || /^\s*=/.test(b) ? 1 : 0;
+      if (!beste || gleich < beste.gleich || (gleich === beste.gleich && breite < beste.breite - 1e-9)) {
+        beste = { zeilen: [a, b], breite: breite, gleich: gleich };
+      }
+    }
+    const zeilen = beste ? beste.zeilen : [titel];
+    const breite = beste ? beste.breite : ganz;
+    if (breite <= verfuegbar) return { zeilen: zeilen, fs: fs, passt: true };
+    const noetig = fs * verfuegbar / breite;
+    return { zeilen: zeilen, fs: Math.max(min, noetig), passt: noetig >= min - 1e-9 };
+  }
+
+  // Breite eines Achsentitels in der Schrift der Seite (Messelement im SVG, Index wie in den
+  // Markentexten); ohne Darstellung eine Schaetzung.
+  function titelBreiteVon(svg) {
+    return (inhalt, fs) => {
+      const schaetzung = String(inhalt).replace(/_/g, '').length * fs * 0.5;
+      if (!svg || typeof svg.appendChild !== 'function' || typeof svg.removeChild !== 'function') return schaetzung;
+      try {
+        const el = (svg.ownerDocument || document).createElementNS(svg.namespaceURI, 'text');
+        el.setAttribute('font-size', koordinate(fs));
+        el.setAttribute('class', 'achse-titel');
+        el.setAttribute('visibility', 'hidden');
+        el.innerHTML = indexMarkup(inhalt, fs);
+        svg.appendChild(el);
+        const bb = el.getBBox();
+        svg.removeChild(el);
+        return bb && bb.width > 0 ? bb.width : schaetzung;
+      } catch (fehler) {
+        return schaetzung;
+      }
+    };
+  }
+
+  // Lage beider Achsentitel und Raender: rechne(yTitel, xTitel) liefert die Raender. Der y-Titel
+  // steht mittig zur Zeichenflaeche und darf nach oben und unten bis TITEL_RAND an den Rand der
+  // viewBox reichen, der x-Titel ebenso nach links und rechts. Weil umbrochene Titel die Raender
+  // und damit die verfuegbare Laenge aendern, wird bis zu dreimal nachgerechnet.
+  function titelLayout(svg, fs, yLabel, xLabel, rechne) {
+    const breiteVon = titelBreiteVon(svg);
+    const gleich = (a, b) => (!a && !b) || (a && b && a.fs === b.fs && a.zeilen.join('\n') === b.zeilen.join('\n'));
+    let ty = yLabel ? { zeilen: [String(yLabel)], fs: fs, passt: true } : null;
+    let tx = xLabel ? { zeilen: [String(xLabel)], fs: fs, passt: true } : null;
+    let r = rechne(ty, tx);
+    for (let n = 0; n < 3; n++) {
+      const mitte = (r.oben + HOEHE - r.unten) / 2, cx = (r.links + BREITE - r.rechts) / 2;
+      const ny = yLabel ? titelZeilen(yLabel, 2 * Math.min(mitte - TITEL_RAND, HOEHE - TITEL_RAND - mitte), breiteVon, fs) : null;
+      const nx = xLabel ? titelZeilen(xLabel, 2 * Math.min(cx - TITEL_RAND, BREITE - TITEL_RAND - cx), breiteVon, fs) : null;
+      if (gleich(ny, ty) && gleich(nx, tx)) break;
+      ty = ny; tx = nx;
+      r = rechne(ty, tx);
+    }
+    return { r: r, ty: ty, tx: tx };
+  }
+
+  // Markup eines Achsentitels an (x, y), mit attribute. Einzeilig wie bisher als reiner Text; bei
+  // zwei Zeilen je Zeile ein tspan mit eigener Lage (dy der zweiten Zeile im Koordinatensystem
+  // des Texts, bei gedrehtem Titel also nach rechts), der Index wie in den Markentexten. Das
+  // Leerzeichen der Umbruchstelle bleibt am Ende der ersten Zeile, damit der Textinhalt gleich
+  // dem Titel ist.
+  function titelMarkup(t, x, y, attribute) {
+    const kopf = '<text class="achse-titel" x="' + koordinate(x) + '" y="' + koordinate(y) + '" font-size="'
+      + koordinate(t.fs) + '"' + attribute + '>';
+    if (t.zeilen.length === 1) return kopf + esc(t.zeilen[0]) + '</text>';
+    const lh = t.fs * TITEL_ZEILE;
+    return kopf + t.zeilen.map((z, k) => '<tspan x="' + koordinate(x) + '" y="' + koordinate(y + k * lh) + '">'
+      + indexMarkup(k < t.zeilen.length - 1 ? z + ' ' : z, t.fs) + '</tspan>').join('') + '</text>';
+  }
+
+  function yAchse(r, ya, yt, fy, sy, fs, ty) {
+    let h = '';
+    yt.forEach((t) => {
+      const y = sy(t);
+      h += linie(r.links, y, BREITE - r.rechts, y, t === 0 ? 'nulllinie' : 'gitter');
+      h += text(r.links - 8, y, fy(t), fs, ' text-anchor="end" dy="0.35em" class="achse-zahl"');
+    });
+    if (ya.label) {
+      const t = ty || { zeilen: [String(ya.label)], fs: fs };
+      const mitte = (r.oben + HOEHE - r.unten) / 2, x = t.fs * 1.05;
+      h += titelMarkup(t, x, mitte, ' text-anchor="middle" transform="rotate(-90 ' + koordinate(x) + ' '
+        + koordinate(mitte) + ')"');
+    }
+    return h + linie(r.links, r.oben, r.links, HOEHE - r.unten, 'achse');
+  }
+
+  function linienDiagramm(ziel, optionen) {
+    const cfg = Object.assign({ x: {}, y: {}, reihen: [], marken: [] }, optionen || {});
+    const teile = rahmen(ziel, cfg.titel);
+    const diagrammId = neueId('diagramm');
+    let schriftAlt = 0;
+
+    function zeichne() {
+      const breite = teile.figur.clientWidth || BREITE;
+      const fs = schriftFuer(breite);
+      schriftAlt = fs;
+      const eng = breite < 480;
+      const alleX = [], alleY = [];
+      cfg.reihen.forEach((r) => (r.punkte || []).forEach((p) => { alleX.push(Number(p[0])); alleY.push(Number(p[1])); }));
+      const xa = Object.assign({}, cfg.x), ya = Object.assign({}, cfg.y);
+      const xb = bereich(xa, alleX, false, eng ? 4 : 6);
+      const yb = bereich(ya, alleY, true, eng ? 4 : 5);
+      const xt = Array.isArray(xa.ticks) ? xa.ticks : ticks(xb.min, xb.max, eng ? 4 : 6);
+      const yt = Array.isArray(ya.ticks) ? ya.ticks : ticks(yb.min, yb.max, eng ? 4 : 5);
+      const fx = formatierer(xa, xt), fy = formatierer(ya, yt);
+      const xLabels = xt.map(fx);
+      const rechtsText = xLabels.length ? xLabels[xLabels.length - 1] : '';
+      const tl = titelLayout(teile.svg, fs, ya.label, xa.label, (ty, tx) => raender(fs, yt.map(fy), ty, tx, rechtsText, 1));
+      const r = tl.r;
+      const sx = skala(xb.min, xb.max, r.links, BREITE - r.rechts);
+      const sy = skala(yb.min, yb.max, HOEHE - r.unten, r.oben);
+      const unten = HOEHE - r.unten;
+
+      let h = yAchse(r, ya, yt, fy, sy, fs, tl.ty);
+      h += linie(r.links, unten, BREITE - r.rechts, unten, 'achse');
+      xt.forEach((t, i) => {
+        const x = sx(t);
+        h += linie(x, unten, x, unten + 5, 'achse');
+        h += text(x, unten + 8 + fs * 0.85, xLabels[i], fs, ' text-anchor="middle" class="achse-zahl"');
+      });
+      if (xa.label) {
+        const tx = tl.tx, cx = (r.links + BREITE - r.rechts) / 2;
+        h += tx.zeilen.length === 1
+          ? text(cx, HOEHE - 6, tx.zeilen[0], tx.fs, ' text-anchor="middle" class="achse-titel"')
+          : titelMarkup(tx, cx, HOEHE - 6 - (tx.zeilen.length - 1) * tx.fs * TITEL_ZEILE, ' text-anchor="middle"');
+      }
+
+      // Die Reihen liegen in einem inneren SVG mit gleichem Koordinatensystem, das sie an
+      // der Zeichenflaeche abschneidet (ohne Verweis auf einen Beschneidungspfad).
+      const kx = r.links, ky = r.oben - 4, kb = BREITE - r.rechts - r.links, kh = unten - r.oben + 8;
+      const rahmenInnen = koordinate(kx) + ' ' + koordinate(ky) + ' ' + koordinate(kb) + ' ' + koordinate(kh);
+      h += '<svg class="zeichenflaeche" x="' + koordinate(kx) + '" y="' + koordinate(ky) + '" width="'
+        + koordinate(kb) + '" height="' + koordinate(kh) + '" viewBox="' + rahmenInnen + '" overflow="hidden">';
+      cfg.reihen.forEach((reihe, i) => {
+        const d = pfad(reihe.punkte || [], sx, sy);
+        if (!d) return;
+        const f = farbe(reihe.farbe, i);
+        const strich = strichart(reihe.strich);
+        h += '<path class="reihe" d="' + d + '" style="stroke:' + esc(f)
+          + (strich ? ';stroke-dasharray:' + esc(strich) : '') + '" vector-effect="non-scaling-stroke"/>';
+      });
+      h += '</svg>';
+
+      // Marken in drei Schichten: erst alle Hilfslinien und Fuehrungslinien, dann die
+      // Hintergruende aller Markentexte (legeGruende), dann je Marke Punkt und Text. So liegt
+      // keine Linie auf einem Markentext und kein Hintergrund auf einem Punkt oder einem
+      // anderen Markentext. Die Lage jedes Texts waehlt waehleLagen so, dass er moeglichst
+      // wenig von Reihen, Grenz- und Hilfslinien ueberdeckt.
+      const rad = fs * 0.34, fsText = fs * 0.95;
+      const marken = [];
+      (cfg.marken || []).forEach((m) => {
+        const mx = Number(m.x), my = Number(m.y);
+        if (!Number.isFinite(mx) || !Number.isFinite(my)) return;
+        if (mx < xb.min || mx > xb.max || my < yb.min || my > yb.max) return;
+        marken.push({ m: m, x: sx(mx), y: sy(my), f: farbe(m.farbe || 'rot', 0) });
+      });
+      // Linien mit halber Strichbreite in viewBox-Einheiten (Strich in Bildschirmpixeln, siehe
+      // STRICH_REIHE); Hilfslinien gehoeren zu ihrer Marke.
+      let pxBreite = 0;
+      try { pxBreite = teile.svg.getBoundingClientRect().width; } catch (fehler) { pxBreite = 0; }
+      const jePx = BREITE / (pxBreite > 0 ? pxBreite : breite);
+      const linienZuege = [];
+      cfg.reihen.forEach((reihe) => streckenzuege(reihe.punkte, sx, sy)
+        .forEach((z) => linienZuege.push({ punkte: z, halb: STRICH_REIHE / 2 * jePx })));
+      marken.forEach((k, j) => {
+        if (!k.m.hilfslinien) return;
+        h += linie(k.x, k.y, k.x, unten, 'hilfslinie', 'stroke:' + k.f);
+        h += linie(r.links, k.y, k.x, k.y, 'hilfslinie', 'stroke:' + k.f);
+        const halb = STRICH_HILFSLINIE / 2 * jePx;
+        linienZuege.push({ punkte: [[k.x, k.y], [k.x, unten]], halb: halb, marke: j },
+          { punkte: [[r.links, k.y], [k.x, k.y]], halb: halb, marke: j });
+      });
+      const masse = marken.map((k) => (k.m.text ? textMasse(teile.svg, String(k.m.text), fsText) : null));
+      const lagen = waehleLagen({
+        marken: marken.map((k, j) => (masse[j]
+          ? { x: k.x, y: k.y, r: rad, breite: masse[j].breite, auf: masse[j].auf, ab: masse[j].ab, text: true }
+          : { x: k.x, y: k.y, r: rad, text: false })),
+        linien: linienZuege,
+        flaeche: { links: r.links + 1, rechts: BREITE - r.rechts - 0.5, oben: r.oben - 3.5, unten: unten - 1 },
+        achsen: [{ punkte: [[r.links, r.oben], [r.links, unten]], halb: 0.5 * jePx },
+          { punkte: [[r.links, unten], [BREITE - r.rechts, unten]], halb: 0.5 * jePx }],
+      });
+      lagen.forEach((l) => {
+        if (l && l.fuehrung) h += linie(l.fuehrung[0], l.fuehrung[1], l.fuehrung[2], l.fuehrung[3], 'fuehrungslinie');
+      });
+      let filterDefs = '';
+      const gruende = [];
+      marken.forEach((k, j) => {
+        h += '<circle class="marke" cx="' + koordinate(k.x) + '" cy="' + koordinate(k.y) + '" r="'
+          + koordinate(rad) + '" style="fill:' + esc(k.f) + '" vector-effect="non-scaling-stroke"/>';
+        const l = lagen[j];
+        if (k.m.text && l) {
+          const g = { text: diagrammId + '-text-' + j, grund: diagrammId + '-grund-' + j };
+          gruende.push(g);
+          filterDefs += grundFilter(g.grund, grundBereich(l.text.x1 - l.text.x0, l.text.y1 - l.text.y0));
+          h += '<text x="' + koordinate(l.x - masse[j].x0) + '" y="' + koordinate(l.y) + '" font-size="'
+            + koordinate(fsText) + '" text-anchor="start" class="marke-text" style="' + MARKE_SCHRIFT + '" id="'
+            + g.text + '" data-grund="' + g.grund + '">' + indexMarkup(k.m.text, fsText) + '</text>';
+        }
+      });
+
+      teile.svg.innerHTML = (filterDefs ? '<defs>' + filterDefs + '</defs>' : '') + h;
+      legeGruende(teile.svg, gruende);
+      messeGruende(teile.svg, gruende);
+      teile.legende.innerHTML = legendeHtml(cfg.reihen, false);
+    }
+
+    zeichne();
+    beobachte(() => {
+      if (Math.abs(schriftFuer(teile.figur.clientWidth || BREITE) - schriftAlt) > 0.5) zeichne();
+    });
+
+    return {
+      update: (neu) => {
+        const n = neu || {};
+        if (n.reihen) cfg.reihen = n.reihen;
+        if (n.marken) cfg.marken = n.marken;
+        if (n.x) cfg.x = Object.assign({}, cfg.x, n.x);
+        if (n.y) cfg.y = Object.assign({}, cfg.y, n.y);
+        zeichne();
+      },
+    };
+  }
+
+  function balkenDiagramm(ziel, optionen) {
+    const cfg = Object.assign({ kategorien: [], reihen: [], y: {}, gestapelt: false }, optionen || {});
+    const teile = rahmen(ziel, cfg.titel);
+    let schriftAlt = 0;
+
+    function zeichne() {
+      const breite = teile.figur.clientWidth || BREITE;
+      const fs = schriftFuer(breite);
+      schriftAlt = fs;
+      const eng = breite < 480;
+      const kat = cfg.kategorien || [];
+      const k = Math.max(1, kat.length);
+      const werte = [];
+      kat.forEach((_, j) => {
+        let plus = 0, minus = 0;
+        cfg.reihen.forEach((r) => {
+          const v = Number((r.werte || [])[j]);
+          if (!Number.isFinite(v)) return;
+          if (cfg.gestapelt) { if (v >= 0) plus += v; else minus += v; } else werte.push(v);
+        });
+        if (cfg.gestapelt) werte.push(plus, minus);
+      });
+      const ya = Object.assign({}, cfg.y);
+      const yb = bereich(ya, werte, true, eng ? 4 : 5);
+      const yt = Array.isArray(ya.ticks) ? ya.ticks : ticks(yb.min, yb.max, eng ? 4 : 5);
+      const fy = formatierer(ya, yt);
+
+      // Kategorienbeschriftung: erst die Raender schaetzen, dann umbrechen. Braucht der
+      // Achsentitel danach mehr Rand, wird mit dem schmaleren Band noch einmal umbrochen.
+      const fsKat = fs * 0.9;
+      const rechne = (n) => titelLayout(teile.svg, fs, ya.label, null, (ty) => raender(fs, yt.map(fy), ty, false, '', n));
+      let tl = rechne(1), zeilen = [], maxZeilen = 1;
+      for (let n = 0; n < 2; n++) {
+        const band = (BREITE - tl.r.links - tl.r.rechts) / k;
+        const zeichenJeZeile = Math.max(4, Math.floor(band * 0.92 / (fsKat * 0.56)));
+        zeilen = kat.map((c) => umbrechen(c, zeichenJeZeile));
+        maxZeilen = zeilen.reduce((m, z) => Math.max(m, z.length), 1);
+        const links = tl.r.links;
+        tl = rechne(maxZeilen);
+        if (tl.r.links <= links) break;
+      }
+      const r = tl.r;
+      const sy = skala(yb.min, yb.max, HOEHE - r.unten, r.oben);
+      const unten = HOEHE - r.unten;
+      const x0 = r.links, bandBreite = (BREITE - r.rechts - r.links) / k;
+      const null0 = sy(Math.min(Math.max(0, yb.min), yb.max));
+
+      let h = yAchse(r, ya, yt, fy, sy, fs, tl.ty);
+      h += linie(r.links, unten, BREITE - r.rechts, unten, 'achse');
+      const gruppe = bandBreite * 0.72;
+      const m = cfg.gestapelt ? 1 : Math.max(1, cfg.reihen.length);
+      const balken = gruppe / m;
+
+      kat.forEach((c, j) => {
+        const start = x0 + j * bandBreite + (bandBreite - gruppe) / 2;
+        let plus = 0, minus = 0;
+        cfg.reihen.forEach((reihe, i) => {
+          const v = Number((reihe.werte || [])[j]);
+          if (!Number.isFinite(v)) return;
+          let a, b, x;
+          if (cfg.gestapelt) {
+            x = start;
+            if (v >= 0) { a = plus; plus += v; b = plus; } else { a = minus; minus += v; b = minus; }
+          } else {
+            x = start + i * balken;
+            a = 0; b = v;
+          }
+          const ya1 = Math.max(r.oben, Math.min(unten, sy(a)));
+          const yb1 = Math.max(r.oben, Math.min(unten, sy(b)));
+          const oben = Math.min(ya1, yb1), hoehe = Math.abs(ya1 - yb1);
+          h += '<rect class="balken" x="' + koordinate(x + (cfg.gestapelt ? 0 : balken * 0.06)) + '" y="'
+            + koordinate(oben) + '" width="' + koordinate(cfg.gestapelt ? gruppe : balken * 0.88)
+            + '" height="' + koordinate(hoehe) + '" style="fill:' + esc(farbe(reihe.farbe, i)) + '"><title>'
+            + esc((reihe.name ? reihe.name + ', ' : '') + c + ': ' + fy(v)) + '</title></rect>';
+        });
+        const mitte = x0 + (j + 0.5) * bandBreite;
+        zeilen[j].forEach((z, zi) => {
+          h += text(mitte, unten + 8 + fs * 0.85 + zi * fs * 1.15, z, fsKat, ' text-anchor="middle" class="kategorie"');
+        });
+      });
+      if (yb.min < 0 && yb.max > 0) h += linie(r.links, null0, BREITE - r.rechts, null0, 'nulllinie');
+
+      teile.svg.innerHTML = h;
+      teile.legende.innerHTML = cfg.reihen.length > 1 || cfg.gestapelt ? legendeHtml(cfg.reihen, true) : '';
+    }
+
+    zeichne();
+    beobachte(() => {
+      if (Math.abs(schriftFuer(teile.figur.clientWidth || BREITE) - schriftAlt) > 0.5) zeichne();
+    });
+
+    return {
+      update: (neu) => {
+        const n = neu || {};
+        if (n.reihen) cfg.reihen = n.reihen;
+        if (n.kategorien) cfg.kategorien = n.kategorien;
+        if (n.y) cfg.y = Object.assign({}, cfg.y, n.y);
+        zeichne();
+      },
+    };
+  }
+
+  // ------------------------------------------------------------ Auftraege
+
+  const TEXT_RICHTIG = 'Das stimmt.';
+  const TEXT_FALSCH = 'Das stimmt noch nicht. Prüfen Sie Ihre Rechnung und versuchen Sie es erneut.';
+
+  function rueckmeldung(ausgabe, ok, inhalt, zusatz) {
+    ausgabe.className = 'rueckmeldung ' + (ok ? 'ok' : 'falsch');
+    ausgabe.innerHTML = '<span class="urteil">' + (ok ? 'Richtig' : 'Noch nicht richtig') + '</span> '
+      + inhalt + (zusatz ? '<span class="auftrag-hinweis">Hinweis: ' + zusatz + '</span>' : '');
+  }
+
+  function auftrag(ziel, optionen) {
+    const o = Object.assign({ einheit: '', hinweis: '', toleranz: 0 }, optionen || {});
+    const nurEinstellung = typeof o.wert === 'function';
+    const id = neueId('auftrag');
+    const karte = document.createElement('div');
+    karte.className = 'auftrag';
+    karte.innerHTML =
+      '<div class="auftrag-kopf">Auftrag ' + esc(o.nr === undefined ? '' : o.nr) + '</div>'
+      + '<p class="auftrag-frage">' + (o.frage || '') + '</p>'
+      + '<div class="auftrag-eingabe">'
+      + (nurEinstellung ? '' : '<input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" id="'
+        + id + '" aria-label="Ihre Antwort zu Auftrag ' + esc(o.nr === undefined ? '' : o.nr) + '">'
+        + (o.einheit ? '<span class="einheit">' + esc(o.einheit) + '</span>' : ''))
+      + '<button type="button" class="btn btn-primary">' + (nurEinstellung ? 'Einstellung prüfen' : 'Prüfen')
+      + '</button></div>'
+      + '<p class="rueckmeldung" aria-live="polite"></p>';
+    knoten(ziel).appendChild(karte);
+
+    const feld = karte.querySelector('input');
+    const knopf = karte.querySelector('button');
+    const ausgabe = karte.querySelector('.rueckmeldung');
+    let fehlversuche = 0;
+
+    function pruefe() {
+      const eingabe = nurEinstellung ? Number(o.wert()) : parseZahl(feld.value);
+      if (!Number.isFinite(eingabe)) {
+        ausgabe.className = 'rueckmeldung leer';
+        ausgabe.textContent = 'Bitte geben Sie eine Zahl ein, etwa 1.234,56.';
+        return;
+      }
+      const zielwert = Number(wennFunktion(o.ziel));
+      if (pruefeAntwort(eingabe, zielwert, o.toleranz)) {
+        fehlversuche = 0;
+        rueckmeldung(ausgabe, true, wennFunktion(o.richtig, eingabe) || TEXT_RICHTIG, '');
+      } else {
+        fehlversuche += 1;
+        rueckmeldung(ausgabe, false, wennFunktion(o.falsch, eingabe) || TEXT_FALSCH,
+          fehlversuche >= 2 ? o.hinweis : '');
+      }
+    }
+
+    knopf.addEventListener('click', pruefe);
+    if (feld) {
+      feld.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); pruefe(); }
+      });
+    }
+    return { element: karte, pruefe: pruefe };
+  }
+
+  function auswahlAuftrag(ziel, optionen) {
+    const o = Object.assign({ optionen: [], rueckmeldungen: [] }, optionen || {});
+    const nr = esc(o.nr === undefined ? '' : o.nr);
+    const karte = document.createElement('div');
+    karte.className = 'auftrag auswahl';
+    karte.innerHTML =
+      '<div class="auftrag-kopf">Auftrag ' + nr + '</div>'
+      + '<p class="auftrag-frage">' + (o.frage || '') + '</p>'
+      + '<div class="auftrag-optionen" role="group" aria-label="Antworten zu Auftrag ' + nr + '">'
+      + o.optionen.map((t, i) => '<button type="button" class="option" aria-pressed="false" data-i="' + i
+        + '"><span class="lbl">' + String.fromCharCode(97 + i) + ')</span> <span>' + t + '</span></button>').join('')
+      + '</div><p class="rueckmeldung" aria-live="polite"></p>';
+    knoten(ziel).appendChild(karte);
+
+    const knoepfe = Array.prototype.slice.call(karte.querySelectorAll('.option'));
+    const ausgabe = karte.querySelector('.rueckmeldung');
+    knoepfe.forEach((k) => {
+      k.addEventListener('click', () => {
+        const i = Number(k.getAttribute('data-i'));
+        const ok = i === Number(o.richtig);
+        knoepfe.forEach((andere) => {
+          const gewaehlt = andere === k;
+          andere.setAttribute('aria-pressed', gewaehlt ? 'true' : 'false');
+          andere.classList.toggle('sel', gewaehlt);
+          andere.classList.toggle('ok', gewaehlt && ok);
+          andere.classList.toggle('falsch', gewaehlt && !ok);
+        });
+        rueckmeldung(ausgabe, ok, o.rueckmeldungen[i] || (ok ? TEXT_RICHTIG : TEXT_FALSCH), '');
+      });
+    });
+    return { element: karte };
+  }
+
+  return {
+    zahl, eur, prozent, mitEinheit, parseZahl, pruefeAntwort,
+    ticks, skala, pfad, rundeAufSchritt, skalaText, grundBereich, laengeImRechteck, waehleLagen,
+    abstandPunktStrecke, abstandStrecken, linienAbstand, zuordnungEindeutig, linieZwischen, fuehrungPruefen,
+    titelZeilen,
+    regler, linienDiagramm, balkenDiagramm, auftrag, auswahlAuftrag,
+  };
+})();
+
+if (typeof module !== 'undefined') module.exports = FUI;
+
+</script>
+<script>
+// Barwert und Annuität: drei Zahlungen am Ende der Jahre 1 bis 3 werden abgezinst und zum
+// Barwert gebündelt; der Barwert wird mit dem Annuitätenfaktor auf drei gleiche Jahreszahlungen
+// verteilt. Aufbau wie in der Musteranwendung:
+//   1. Rechenlogik als reine Funktion (nachrechenbar, etwa mit Python).
+//   2. Regler anlegen; jede Änderung ruft aktualisiere() auf.
+//   3. aktualisiere() setzt Kennzahlen, Tabelle, Rechenweg, bedingte Sätze und Diagramm.
+//   4. Aufträge mit Zielwert, Toleranz und Rückmeldungen anlegen.
+// Gerechnet wird ungerundet, gerundet nur in der Anzeige.
+(function () {
+  'use strict';
+
+  // ---------------------------------------------------------- Rechenlogik
+
+  function rechne(z1, z2, z3, i) {
+    const iAnteil = i;
+    const zinsbasis = 1 + i;
+    const df1 = 1 / zinsbasis;
+    const df2 = 1 / Math.pow(zinsbasis, 2);
+    const df3 = 1 / Math.pow(zinsbasis, 3);
+    const b1 = z1 * df1;
+    const b2 = z2 * df2;
+    const b3 = z3 * df3;
+    const summe = z1 + z2 + z3;
+    const bw = b1 + b2 + b3;
+    const rbf = df1 + df2 + df3;
+    const anf = 1 / rbf;
+    const a = bw * anf;
+    const bwA = a * df1 + a * df2 + a * df3;
+    return { z1, z2, z3, iAnteil, zinsbasis, df1, df2, df3, b1, b2, b3, summe, bw, rbf, anf, a, bwA };
+  }
+
+  // Nachkommastellen der Anzeige je Größe
+  const NKS = {
+    z1: 2, z2: 2, z3: 2, b1: 2, b2: 2, b3: 2, summe: 2, bw: 2, a: 2, bwA: 2,
+    rbf: 8, anf: 8, iAnteil: 3, zinsbasis: 3,
+  };
+
+  // ---------------------------------------------------------- Regler
+
+  const START = { z1: 1000, z2: 1000, z3: 1000, i: 0.10 };
+  const ort = document.getElementById('regler');
+  const regler = {
+    z1: FUI.regler(ort, {
+      id: 'z1', label: 'Zahlung im Jahr 1', min: 0, max: 3000, step: 50,
+      wert: START.z1, nks: 2, anzeige: 'eur', onChange: aktualisiere,
+    }),
+    z2: FUI.regler(ort, {
+      id: 'z2', label: 'Zahlung im Jahr 2', min: 0, max: 3000, step: 50,
+      wert: START.z2, nks: 2, anzeige: 'eur', onChange: aktualisiere,
+    }),
+    z3: FUI.regler(ort, {
+      id: 'z3', label: 'Zahlung im Jahr 3', min: 0, max: 3000, step: 50,
+      wert: START.z3, nks: 2, anzeige: 'eur', onChange: aktualisiere,
+    }),
+    i: FUI.regler(ort, {
+      id: 'i', label: 'Zinssatz je Jahr', min: 0, max: 0.15, step: 0.005,
+      wert: START.i, nks: 2, anzeige: 'prozent', onChange: aktualisiere,
+    }),
+  };
+
+  // Setzt nur die vier Eingaben zurück; Aufträge bleiben unverändert.
+  document.getElementById('startwerte').addEventListener('click', () => {
+    Object.keys(START).forEach((k) => regler[k].set(START[k]));
+    aktualisiere();
+  });
+
+  // ---------------------------------------------------------- Anzeige
+
+  const diagramm = FUI.balkenDiagramm('diagramm', {
+    titel: 'Ihre Zahlungen, deren Barwerte und die Annuitäten',
+    kategorien: ['0', '1', '2', '3'],
+    reihen: [],
+    y: { min: 0, max: 3000, ticks: [0, 1000, 2000, 3000], label: 'Betrag in EUR', format: (v) => FUI.eur(v, 2) },
+  });
+
+  // Beschriftung der Zeitachse unmittelbar unter die Kategorienachse, vor die Legende
+  const figur = document.querySelector('#diagramm figure.diagramm');
+  figur.insertBefore(document.querySelector('.x-achsentitel'), figur.querySelector('.legende'));
+
+  function aktualisiere() {
+    const r = rechne(regler.z1.get(), regler.z2.get(), regler.z3.get(), regler.i.get());
+
+    document.querySelectorAll('[data-eur]').forEach((el) => {
+      const k = el.getAttribute('data-eur');
+      el.textContent = FUI.eur(r[k], NKS[k]);
+    });
+    document.querySelectorAll('[data-zahl]').forEach((el) => {
+      const k = el.getAttribute('data-zahl');
+      el.textContent = FUI.zahl(r[k], NKS[k]);
+    });
+
+    const nullzins = r.iAnteil === 0;
+    document.getElementById('rbf-geschlossen').hidden = nullzins;
+    document.getElementById('rbf-null').hidden = !nullzins;
+    document.getElementById('satz-null').hidden = !nullzins;
+    document.getElementById('satz-gleich').hidden = !(r.z1 === r.z2 && r.z2 === r.z3);
+
+    diagramm.update({
+      reihen: [
+        { name: 'Ihre Zahlung', werte: [0, r.z1, r.z2, r.z3], farbe: 'gruen' },
+        { name: 'Barwert heute', werte: [0, r.b1, r.b2, r.b3], farbe: 'violett' },
+        { name: 'Annuität', werte: [0, r.a, r.a, r.a], farbe: 'orange' },
+      ],
+    });
+  }
+
+  aktualisiere();
+
+  // ---------------------------------------------------------- Aufträge
+
+  const auftraege = document.getElementById('auftraege');
+
+  FUI.auftrag(auftraege, {
+    nr: 1,
+    frage: 'Stellen Sie für Jahr 1 eine Zahlung von 600,00\u00a0EUR, für Jahr 2 von 1.200,00\u00a0EUR und für '
+      + 'Jahr 3 von 1.800,00\u00a0EUR ein. Wählen Sie 6,00\u00a0% Zins. Welche gleichbleibende jährliche '
+      + 'Annuität hat denselben Barwert wie diese Zahlungen? Lesen Sie den Betrag ab und geben Sie ihn in EUR '
+      + 'auf zwei Nachkommastellen ein.',
+    ziel: 1176.71, // 3.145,348173... / 2,673011949... = 1.176,7056...
+    toleranz: 0.01,
+    einheit: 'EUR',
+    richtig: 'Die Annuität von 1.176,71\u00a0EUR bildet denselben Barwert ab, obwohl die ursprünglichen '
+      + 'Zahlungen unterschiedlich hoch sind.',
+    falsch: 'Die nominale Zahlungssumme durch drei zu teilen berücksichtigt die unterschiedlichen '
+      + 'Zahlungszeitpunkte nicht.',
+    hinweis: 'Stellen Sie die drei Zahlungsregler und den Zinssatz wie angegeben ein und lesen Sie die '
+      + 'Hauptkennzahl „Annuität je Jahr“ ab.',
+  });
+
+  FUI.auswahlAuftrag(auftraege, {
+    nr: 2,
+    frage: 'Stellen Sie zunächst die Zahlungen 600,00\u00a0EUR, 1.200,00\u00a0EUR und 1.800,00\u00a0EUR bei '
+      + '6,00\u00a0% Zins ein. Vertauschen Sie dann die Zahlungen in Jahr 1 und Jahr 3: 1.800,00\u00a0EUR, '
+      + '1.200,00\u00a0EUR und 600,00\u00a0EUR. Vergleichen Sie die nominale Zahlungssumme, den Barwert und '
+      + 'die Annuität vor und nach dem Tausch. Was beobachten Sie?',
+    optionen: [
+      'Die nominale Zahlungssumme, der Barwert und die Annuität bleiben gleich.',
+      'Die nominale Zahlungssumme bleibt gleich, der Barwert und die Annuität steigen.',
+      'Die nominale Zahlungssumme bleibt gleich, der Barwert und die Annuität sinken.',
+    ],
+    richtig: 1,
+    rueckmeldungen: [
+      'Die nominale Zahlungssumme bleibt gleich, aber vergleichen Sie auch die Wirkung der '
+        + 'Zahlungszeitpunkte auf den Barwert.',
+      'Der größere Betrag kommt nun früher an und wird weniger stark abgezinst; dadurch steigen der '
+        + 'Barwert und die daraus verteilte Annuität.',
+      'Prüfen Sie, ob der größere Betrag nach dem Tausch früher oder später eingeht und wie stark er '
+        + 'deshalb abgezinst wird.',
+    ],
+  });
+
+  FUI.auswahlAuftrag(auftraege, {
+    nr: 3,
+    frage: 'Stellen Sie in jedem der drei Jahre 1.000,00\u00a0EUR ein. Vergleichen Sie anschließend '
+      + '5,00\u00a0% mit 15,00\u00a0% Zins. Beobachten Sie beide Faktoren und die Annuität. Welche '
+      + 'Beschreibung passt zum Wechsel von 5,00\u00a0% auf 15,00\u00a0%?',
+    optionen: [
+      'Der Rentenbarwertfaktor sinkt, der Annuitätenfaktor steigt und die Annuität bleibt gleich.',
+      'Beide Faktoren sinken und die Annuität wird kleiner.',
+      'Der Rentenbarwertfaktor sinkt, der Annuitätenfaktor steigt und die Annuität wird größer.',
+    ],
+    richtig: 0,
+    rueckmeldungen: [
+      'Die Annuität bleibt 1.000,00\u00a0EUR, weil sich das Bündeln und Verteilen bei demselben Zinssatz '
+        + 'und derselben Laufzeit gegenseitig aufheben.',
+      'Vergleichen Sie beide Faktoranzeigen: Der Kehrwert eines kleineren positiven '
+        + 'Rentenbarwertfaktors ist größer.',
+      'Der Barwert wird hier aus Ihren Zahlungen neu berechnet; er bleibt beim Zinswechsel nicht fest.',
+    ],
+  });
+})();
+
+</script>
+</body>
+</html>

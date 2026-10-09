@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Selbsttest Kapitel 1: Grundlagen des Finanz- und Investitionsmanagements, Finanz- und Investitionsmanagement (Bachelor)</title>
+<style>
+/* Selbsttest FuI, Gestaltung nach _Vorlagen/Klausur_Referenz/Stilvorlage_alt.html.
+   Kein externes Laden: keine Web-Schriften, keine Bilder, keine Verweise nach aussen. */
+:root{
+ --th-rot:#C90C0F;--th-orange:#EA5B0C;--th-violett:#B82585;
+ --th-rot-soft:#FBE7E7;--th-orange-soft:#FFF3E9;--th-violett-soft:#F7ECF3;
+ --gruen:#2D6A3F;--gruen-soft:#EAF3EC;
+ --bg:#FAFAFA;--card:#FFFFFF;--ink:#1A1A1A;--ink-soft:#404040;--ink-muted:#737373;--ink-faint:#A3A3A3;
+ --rule:#E5E5E5;--rule-soft:#F0F0F0;
+ --shadow-sm:0 1px 2px rgba(0,0,0,0.04);--shadow-md:0 1px 3px rgba(0,0,0,0.04),0 4px 12px rgba(0,0,0,0.04);
+ --serif:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+ --mono:ui-monospace, Menlo, Consolas, monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--serif);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-wrap:break-word}
+.container{max-width:1100px;margin:0 auto;padding:40px 32px 40px}
+
+/* Kopf */
+header.masthead{border-bottom:2px solid var(--th-rot);padding-bottom:28px;margin-bottom:36px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--th-rot);margin-bottom:12px}
+h1.masthead-title{font-weight:700;font-size:clamp(26px,3.5vw,38px);letter-spacing:-.02em;margin-bottom:8px}
+.masthead-kapitel{font-size:17px;font-weight:600;color:var(--ink-soft);margin-bottom:14px}
+.masthead-meta{display:flex;flex-wrap:wrap;gap:8px 26px;font-family:var(--mono);font-size:12px;color:var(--ink-muted)}
+.masthead-meta strong{color:var(--ink);font-weight:600}
+
+/* Karten und Abschnitte */
+section{margin-bottom:40px;scroll-margin-top:20px}
+.section-head{border-bottom:1px solid var(--rule);padding-bottom:12px;margin-bottom:22px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.section-num{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--th-rot);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+.section-title{font-size:20px;font-weight:600;letter-spacing:-.01em}
+.section-meta{font-family:var(--mono);font-size:12px;color:var(--ink-muted);margin-left:auto;white-space:nowrap}
+
+.hinweis{background:var(--card);border:1px solid var(--rule);border-left:3px solid var(--th-violett);border-radius:6px;padding:18px 22px;box-shadow:var(--shadow-sm)}
+.hinweis h2{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:12px}
+.hinweis dl{display:grid;grid-template-columns:auto 1fr;gap:9px 18px;font-size:14px}
+.hinweis dt{font-family:var(--mono);font-weight:600;color:var(--th-violett);white-space:nowrap}
+.hinweis dd{color:var(--ink-soft)}
+
+/* Fragen */
+.frage{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:22px 24px;box-shadow:var(--shadow-sm);margin-bottom:22px}
+.frage-top{display:flex;align-items:baseline;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.frage-nr{font-family:var(--mono);font-weight:600;font-size:14px;color:var(--ink)}
+.frage-pts{font-family:var(--mono);font-size:12px;color:var(--ink-muted);white-space:nowrap}
+.frage-score{font-family:var(--mono);font-size:12px;font-weight:600;margin-left:auto;white-space:nowrap}
+.frage-body p{font-size:14.5px;color:var(--ink-soft);line-height:1.55;margin-bottom:8px}
+.frage-body p:last-child{margin-bottom:0;color:var(--ink);font-weight:500}
+
+/* KPRIM-Aussagen */
+.stmt{border-top:1px solid var(--rule-soft);padding:14px 0;display:grid;grid-template-columns:1fr auto;gap:10px 18px;align-items:start}
+.stmt:first-of-type{border-top:1px solid var(--rule);margin-top:14px}
+.stmt-text{font-size:14px;color:var(--ink);line-height:1.5}
+.lbl{font-family:var(--mono);color:var(--ink-faint);font-size:12px;margin-right:8px}
+.choice-wrap{display:flex;gap:8px;flex-shrink:0}
+.choice{font-family:inherit;font-size:13px;font-weight:500;color:var(--ink-soft);background:transparent;border:1px solid var(--rule);border-radius:6px;padding:7px 16px;cursor:pointer;transition:all .12s;min-width:78px}
+.choice:hover{border-color:var(--ink);color:var(--ink);background:var(--bg)}
+.choice.sel{border-color:var(--ink);border-width:1.5px;background:var(--bg);color:var(--ink);font-weight:600}
+
+/* Single-Choice-Optionen */
+.optionen{display:flex;flex-direction:column;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--rule)}
+.option{display:flex;align-items:flex-start;gap:4px;width:100%;text-align:left;font-family:inherit;font-size:14px;line-height:1.5;color:var(--ink);background:transparent;border:1px solid var(--rule);border-radius:6px;padding:11px 14px;cursor:pointer;transition:all .12s}
+.option:hover{border-color:var(--ink);background:var(--bg)}
+.option.sel{border-color:var(--ink);border-width:1.5px;background:var(--bg);font-weight:600}
+.option .lbl{flex-shrink:0}
+
+/* Auswertung, erst nach Abgabe sichtbar */
+.stmt-result{grid-column:1/-1;font-size:13px;border-left:3px solid var(--rule);padding:10px 14px;border-radius:4px;background:var(--bg);margin-top:2px;display:none}
+.frage-result{font-size:13px;border-left:3px solid var(--rule);padding:10px 14px;border-radius:4px;background:var(--bg);margin-top:14px;display:none}
+body.submitted .stmt-result,body.submitted .frage-result{display:block}
+.stmt-result .verdict,.frage-result .verdict{font-weight:600;font-family:var(--mono);font-size:12px;letter-spacing:.03em;text-transform:uppercase}
+.stmt-result .meta,.frage-result .meta{color:var(--ink-muted);font-size:12px}
+.stmt-result .expl,.frage-result .expl{color:var(--ink-soft);margin-top:5px;line-height:1.45}
+.stmt-result.ok,.frage-result.ok{border-left-color:var(--gruen);background:var(--gruen-soft)}
+.stmt-result.ok .verdict,.frage-result.ok .verdict{color:var(--gruen)}
+.stmt-result.bad,.frage-result.bad{border-left-color:var(--th-rot);background:var(--th-rot-soft)}
+.stmt-result.bad .verdict,.frage-result.bad .verdict{color:var(--th-rot)}
+.frage-loesung{font-size:13px;color:var(--ink-soft);background:var(--bg);border:1px solid var(--rule);border-radius:6px;padding:12px 14px;margin-top:12px;white-space:pre-wrap;display:none}
+body.submitted .frage-loesung[data-has="1"]{display:block}
+
+/* Markierung der Schaltflaechen nach Abgabe */
+.choice.key-correct,.option.key-correct{border-color:var(--gruen);color:var(--gruen);background:var(--gruen-soft);font-weight:600}
+.choice.key-wrongpick,.option.key-wrongpick{border-color:var(--th-rot);color:var(--th-rot);background:var(--th-rot-soft);font-weight:600}
+body.submitted .choice,body.submitted .option{pointer-events:none;cursor:default}
+
+/* Ergebniskarten */
+#ergebnis{display:none}
+body.submitted #ergebnis{display:block}
+.score-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:16px}
+.score-card{background:var(--card);border:1px solid var(--rule);border-left:3px solid var(--th-violett);border-radius:6px;padding:18px 20px;box-shadow:var(--shadow-sm)}
+.score-card.main{border-left-color:var(--th-rot)}
+.score-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:10px}
+.score-value{font-family:var(--mono);font-size:26px;font-weight:600;color:var(--ink)}
+.score-value .unit{font-size:14px;color:var(--ink-muted);font-weight:500}
+.score-sub{font-size:12px;color:var(--ink-muted);margin-top:6px}
+.legend-line{font-size:13px;color:var(--ink-muted);margin-top:8px}
+#ergebnisPlatzhalter{font-size:14px;color:var(--ink-muted)}
+body.submitted #ergebnisPlatzhalter{display:none}
+
+/* Abgabeleiste */
+.submitbar{position:sticky;bottom:0;z-index:20;margin-top:30px;background:var(--card);border:1px solid var(--rule);border-top:2px solid var(--th-rot);border-radius:8px 8px 0 0;box-shadow:0 -2px 12px rgba(0,0,0,.05);padding:16px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.counter{font-family:var(--mono);font-size:13px;color:var(--ink-muted)}
+.counter strong{color:var(--ink)}
+.btn{padding:11px 20px;border:1px solid var(--rule);border-radius:6px;background:transparent;font-family:inherit;font-size:14px;font-weight:600;color:var(--ink-soft);cursor:pointer;transition:all .15s}
+.btn:hover{border-color:var(--ink);color:var(--ink);background:var(--bg)}
+.btn-primary{border-color:var(--th-rot);color:var(--th-rot)}
+.btn-primary:hover{background:var(--th-rot-soft);border-color:var(--th-rot);color:var(--th-rot)}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+.btn-reset{margin-left:auto}
+
+footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--rule);font-size:12px;color:var(--ink-muted)}
+
+/* Schmale Bildschirme: einspaltig, Schaltflaechen nebeneinander ueber die volle Breite */
+@media(max-width:600px){
+ .container{padding:26px 16px 26px}
+ .section-meta{margin-left:0;white-space:normal}
+ .frage{padding:18px 16px}
+ .frage-score{margin-left:0}
+ .stmt{grid-template-columns:1fr}
+ .choice-wrap{width:100%}
+ .choice{flex:1 1 0;min-width:0;padding:9px 8px}
+ .score-grid{grid-template-columns:1fr}
+ .submitbar{padding:14px 16px;gap:10px}
+ .submitbar .btn{flex:1 1 140px}
+ .btn-reset{margin-left:0}
+ .counter{flex:1 1 100%}
+ .hinweis{padding:16px}
+ .hinweis dl{grid-template-columns:1fr;gap:2px 0}
+ .hinweis dd{margin-bottom:8px}
+}
+
+/* Rueckweg zur Kapitelseite (nur auf der Website) */
+.zurueck{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--th-rot);text-decoration:none;margin-bottom:20px;padding:4px 0}
+.zurueck:hover{text-decoration:underline}
+
+</style>
+</head>
+<body>
+<div class="container">
+ <nav aria-label="Rückweg"><a class="zurueck" href="index.html">Zur Kapitelseite</a></nav>
+ <header class="masthead">
+  <div class="eyebrow">Selbsttest zur Vorlesung</div>
+  <h1 class="masthead-title">Finanz- und Investitionsmanagement (Bachelor)</h1>
+  <p class="masthead-kapitel">Kapitel 1: Grundlagen des Finanz- und Investitionsmanagements</p>
+  <div class="masthead-meta">
+   <span>Punkte gesamt: <strong>60</strong></span>
+  </div>
+ </header>
+
+ <section id="hinweise">
+  <div class="hinweis">
+   <h2>So wird gewertet</h2>
+   <dl>
+    <dt>KPRIM</dt>
+    <dd>Vier Aussagen, jede unabhängig als richtig oder falsch. Alle vier korrekt beurteilt gibt die vollen Punkte, drei korrekt die halben Punkte, darunter null Punkte.</dd>
+    <dt>Single Choice</dt>
+    <dd>Genau eine der vier Antworten ist richtig. Die richtige Antwort gibt die vollen Punkte, jede andere null Punkte.</dd>
+    <dt>Offen gelassen</dt>
+    <dd>Nicht beantwortete Aussagen und Fragen zählen als falsch. Vor der Abgabe werden sie gezählt und genannt.</dd>
+    <dt>Ablauf</dt>
+    <dd>Sie arbeiten in Ihrem eigenen Tempo, ohne Zeitbegrenzung, und können den Test beliebig oft wiederholen. Die Auflösung mit Begründungen erscheint erst nach der Abgabe.</dd>
+   </dl>
+  </div>
+ </section>
+
+ <section id="auswertung">
+  <div class="section-head">
+   <div class="section-num">Auswertung</div>
+   <div class="section-title">Ihr Ergebnis</div>
+  </div>
+  <div id="ergebnis"></div>
+  <p id="ergebnisPlatzhalter">Das Ergebnis erscheint hier nach der Abgabe.</p>
+ </section>
+
+ <main id="test"></main>
+
+ <div class="submitbar">
+  <div class="counter"><strong id="answered">0</strong> von <strong id="answeredTotal">0</strong> beantwortet</div>
+  <button type="button" class="btn btn-primary" id="submitBtn" onclick="submitTest()">Abgeben</button>
+  <button type="button" class="btn btn-reset" id="resetBtn" onclick="resetTest()" style="display:none">Zurücksetzen</button>
+ </div>
+
+ <footer>Finanz- und Investitionsmanagement (Bachelor), TH Köln, Prof. Dr. Marc Mehlhorn. Selbsttest zur Vorlesung.</footer>
+
+</div>
+<script>
+const DATA = {"aufgaben": [{"nummer": 1, "titel": "Bilanz, Finanzierung und Zeitwert", "fragen": [{"nummer": 1, "typ": "Kprim", "punkte": 3, "text": "Ordnen Sie die getrennten Entscheidungssituationen in die Bilanz als Landkarte des Kurses ein. Beurteilen Sie jede Aussage unabhängig als richtig oder falsch.", "optionen": [{"text": "Wenn ein Unternehmen für dieselbe Investition mehr Eigenkapital und weniger Fremdkapital einsetzen möchte, dann gehört die Beurteilung dieser Entscheidung zu Kapitel 5.", "isCorrect": true, "erklaerung": "Die Investition bleibt dieselbe, aber die Mischung aus Eigenkapital und Fremdkapital ändert sich. Dies ist die Fragestellung von Kapitel 5."}, {"text": "Wenn ein Unternehmen eine Maschine mit einem Bankkredit kauft, dann gehört die Maschine wegen ihrer Finanzierung auf die Passivseite.", "isCorrect": false, "erklaerung": "Die Maschine gehört als Vermögen auf die Aktivseite; der Bankkredit gehört zum Fremdkapital auf der Passivseite. Denkfehler: Kapitalverwendung und Kapitalherkunft werden verwechselt."}, {"text": "Wenn Eigentümer dem Unternehmen zusätzliches Eigenkapital bereitstellen, dann beantwortet dieser Vorgang unmittelbar die Grundfrage, in welches Vermögen das Kapital investiert werden soll.", "isCorrect": false, "erklaerung": "Die Einlage beantwortet zunächst die Frage der Kapitalbeschaffung. Über die Verwendung des bereitgestellten Kapitals ist noch nicht entschieden. Denkfehler: Finanzierung wird mit Investition gleichgesetzt."}, {"text": "Wenn ein Unternehmen zwischen dem Kauf zweier unterschiedlicher Maschinen entscheidet, dann untersucht es die Kapitalverwendung auf der Aktivseite, die Kapitel 4 behandelt.", "isCorrect": true, "erklaerung": "Der Vergleich der Maschinen betrifft die Investition in Vermögen. Die Aktivseite ist die Station der Investitionsrechnung in Kapitel 4."}]}, {"nummer": 2, "typ": "Kprim", "punkte": 3, "text": "Die vier Fälle betreffen verschiedene Unternehmen. Ordnen Sie jeweils Kapitalart und Mittelherkunft ein. Beurteilen Sie jede Aussage unabhängig als richtig oder falsch.", "optionen": [{"text": "Wenn ein Unternehmen einen zahlungswirksam erwirtschafteten Gewinn für weitere Investitionen einbehält, dann liegt wegen der späteren Verwendung Außenfinanzierung vor.", "isCorrect": false, "erklaerung": "Einbehaltener, zahlungswirksam erwirtschafteter Gewinn ist Selbstfinanzierung und gehört zur Eigenfinanzierung sowie Innenfinanzierung. Denkfehler: Der spätere Verwendungszweck wird mit der Mittelherkunft verwechselt."}, {"text": "Wenn erwirtschaftete Mittel wegen einer erst später fälligen Pensionszahlung im Unternehmen verbleiben, dann liegt Eigenfinanzierung vor, weil die Mittel im Unternehmen erwirtschaftet wurden.", "isCorrect": false, "erklaerung": "Die erwirtschafteten Mittel verbleiben vorübergehend im Unternehmen: Innenfinanzierung. Wegen der Verpflichtung zur späteren Pensionszahlung liegt jedoch Fremdfinanzierung vor; die Rückstellungsbildung selbst erzeugt keine Einzahlung. Denkfehler: Mittelherkunft und Kapitalart werden gleichgesetzt."}, {"text": "Wenn ein Unternehmen neue Aktien ausgibt und den Emissionserlös von bisher unbeteiligten Anlegern erhält, dann liegt Eigenfinanzierung und Außenfinanzierung vor.", "isCorrect": true, "erklaerung": "Die Anleger werden Eigentümer und führen dem Unternehmen Eigenkapital von außen zu. Ihre bisher fehlende Beteiligung ändert die Einordnung als Eigenfinanzierung und Außenfinanzierung nicht."}, {"text": "Wenn ein Unternehmen eine Anleihe ausgibt und den Emissionserlös von vielen Anlegern erhält, dann liegt wegen der vielen Kapitalgeber Eigenfinanzierung und Außenfinanzierung vor.", "isCorrect": false, "erklaerung": "Das Unternehmen zahlt Kupons und den Nennwert an die Anleger. Das rückzahlbare Kapital ist Fremdkapital und kommt von außen: Fremdfinanzierung und Außenfinanzierung. Denkfehler: Die Anzahl der Kapitalgeber wird mit der Kapitalart gleichgesetzt."}]}, {"nummer": 3, "typ": "Kprim", "punkte": 3, "text": "Betrachten Sie jeden Zahlungsstrom aus Sicht des jeweiligen Unternehmens. t = 0 ist heute; t wird in Jahren gemessen. Im jeweils genannten Zeitpunkt gibt es außer den beschriebenen Zahlungen keine weiteren Zahlungen. Beurteilen Sie jede Aussage unabhängig als richtig oder falsch.", "optionen": [{"text": "Wenn ein Unternehmen heute einen Kreditbetrag von 72.000,00 EUR erhält, dann trägt es z_0 = -72.000,00 EUR ein.", "isCorrect": false, "erklaerung": "Die Kreditauszahlung ist für das Unternehmen eine Einzahlung: z_0 = +72.000,00 EUR. Denkfehler: Die Sicht des Unternehmens wird mit der Sicht der Bank vertauscht."}, {"text": "Wenn ein Unternehmen in t = 4 den Nennwert einer Anleihe von 18.000,00 EUR und den letzten Kupon von 630,00 EUR auszahlt, dann lautet sein Zahlungssaldo z_4 = -18.630,00 EUR.", "isCorrect": true, "erklaerung": "Beide Beträge sind Auszahlungen des Unternehmens: z_4 = -(18.000,00 + 630,00) = -18.630,00 EUR."}, {"text": "Wenn ein Unternehmen in t = 2 eine Dividende von 960,00 EUR an seine Eigentümer auszahlt, dann lautet sein Zahlungssaldo z_2 = +960,00 EUR.", "isCorrect": false, "erklaerung": "Die Dividende verlässt das Unternehmen: z_2 = -960,00 EUR. Denkfehler: Die Sicht der Eigentümer, für die die Dividende eine Einzahlung ist, wird mit der Sicht des Unternehmens verwechselt."}, {"text": "Wenn ein Unternehmen die Investitionsauszahlung von 8.700,00 EUR heute leistet, dann wird diese Zahlung wegen des ersten Nutzungsjahres bei t = 1 eingetragen.", "isCorrect": false, "erklaerung": "Die Zahlung erfolgt heute und gehört mit z_0 = -8.700,00 EUR nach t = 0. Denkfehler: Zahlungszeitpunkt und erstes Nutzungsjahr werden verwechselt."}]}, {"nummer": 4, "typ": "Kprim", "punkte": 3, "text": "Alle Fälle verwenden jährliche Verzinsung mit konstantem Zinssatz und ausschließlich die genannten Zahlungen. Angelegte Zinsen bleiben angelegt. Beurteilen Sie jede Aussage unabhängig als richtig oder falsch.", "optionen": [{"text": "Wenn für eine Anlage von 4.700,00 EUR über vier Jahre der Zinssatz von 3 % auf 7 % je Jahr steigt, dann steigt ihr Endwert.", "isCorrect": true, "erklaerung": "Bei unverändertem Ausgangsbetrag und unveränderter Laufzeit erhöht der größere Faktor (1+i)^4 den Endwert."}, {"text": "Wenn eine Auszahlung von 2.000,00 EUR in t = 3 statt mit 7 % mit 9 % je Jahr bewertet wird, dann ist ihr Barwert bei 9 % höher, also weniger negativ, als bei 7 %.", "isCorrect": true, "erklaerung": "Bei 7 % ergibt -2.000,00/1,07^3 einen Barwert von -1.632,60 EUR, bei 9 % ergibt -2.000,00/1,09^3 einen Barwert von -1.544,37 EUR (jeweils 2 NKS). Der kleinere Diskontfaktor verkleinert den Betrag der Auszahlung; das Vorzeichen bleibt. Denkfehler wäre, die Regel für positive künftige Zahlungen ohne Blick auf das Vorzeichen auf eine Auszahlung zu übertragen."}, {"text": "Wenn eine feste Einzahlung von 3.100,00 EUR bei 6 % je Jahr erst in sechs statt in vier Jahren erfolgt, dann steigt ihr Barwert.", "isCorrect": false, "erklaerung": "Der Barwert sinkt: 3.100,00/1,06^6 ist kleiner als 3.100,00/1,06^4. Denkfehler: Längeres Warten auf denselben Betrag wird mit längerem verzinslichem Anlegen verwechselt."}, {"text": "Wenn 2.500,00 EUR zu 4 % je Jahr angelegt werden, dann betragen die Zinsen im dritten Jahr 108,16 EUR.", "isCorrect": true, "erklaerung": "Zu Beginn des dritten Jahres sind 2.500,00*1,04^2 = 2.704,00 EUR angelegt. Die Zinsen im dritten Jahr betragen 2.704,00*0,04 = 108,16 EUR. Denkfehler wäre der Exponent 3 (2.500,00*1,04^3*0,04 ergibt 112,49 EUR, 2 NKS) oder die Verzinsung nur des Anfangsbetrags (100,00 EUR)."}]}, {"nummer": 5, "typ": "Kprim", "punkte": 3, "text": "Ein Unternehmen kontrolliert unterschiedliche Tabellen mit Diskontfaktoren. Jede Tabelle verwendet jährliche Verzinsung und einen innerhalb der Tabelle konstanten positiven Zinssatz. Beurteilen Sie jede Aussage unabhängig als richtig oder falsch.", "optionen": [{"text": "Wenn eine Tabelle bei 6 % je Jahr den Diskontfaktor für t = 6 kennt, dann erhält sie den Diskontfaktor für t = 12 durch Quadrieren dieses Wertes.", "isCorrect": true, "erklaerung": "DF_12 = 1/(1,06^12) = (1/(1,06^6))^2. Die Verdopplung der Zeit verdoppelt den Exponenten."}, {"text": "Wenn eine Tabelle mit 8 % je Jahr für eine heutige Einzahlung rechnet, dann ist der anzuwendende Diskontfaktor 1,08.", "isCorrect": false, "erklaerung": "Für heute gilt DF_0 = 1/(1,08^0) = 1. Denkfehler: Ein Aufzinsungsfaktor für ein Jahr wird auf eine heutige Zahlung angewendet."}, {"text": "Wenn eine Tabelle bei 9 % je Jahr vom Diskontfaktor für t = 8 zu dem für t = 9 übergeht, dann teilt sie den bisherigen Wert durch 1,09.", "isCorrect": true, "erklaerung": "Ein zusätzliches Jahr ergänzt einen Faktor 1,09 im Nenner: DF_9 = DF_8/1,09. Der Rückgang entsteht durch Multiplikation mit einem festen Faktor, nicht durch Abzug eines festen Betrags."}, {"text": "Wenn für eine Einzahlung in t = 7 alternativ mit 3 % oder 7 % je Jahr gerechnet wird, dann gehört der größere Diskontfaktor zu 7 %.", "isCorrect": false, "erklaerung": "Bei 7 % ist der Nenner 1,07^7 größer und der Diskontfaktor kleiner als bei 3 %. Denkfehler: Aufzinsungsfaktor und Diskontfaktor werden verwechselt."}]}]}, {"nummer": 2, "titel": "Zeitwert berechnen und Zahlungen vergleichen", "fragen": [{"nummer": 1, "typ": "Single-Choice", "punkte": 3, "text": "Ein Unternehmen legt heute 2.700,00 EUR für zwei Jahre zu 8 % je Jahr an. Die Verzinsung erfolgt jährlich; alle Zinsen bleiben angelegt. Weitere Einzahlungen oder Entnahmen erfolgen nicht.\n\nWelchen Endwert erhält es nach zwei Jahren? Runden Sie erst das Endergebnis auf zwei Nachkommastellen. Genau eine Antwort ist richtig.", "optionen": [{"text": "3.132,00 EUR", "isCorrect": false, "erklaerung": "2.700,00+2*2.700,00*0,08 = 3.132,00 EUR berechnet die Zinsen in beiden Jahren nur auf den Anfangsbetrag. Denkfehler: Die Zinsen des ersten Jahres werden im zweiten Jahr nicht mitverzinst. Richtig sind 2.700,00*1,08^2 = 3.149,28 EUR."}, {"text": "2.916,00 EUR", "isCorrect": false, "erklaerung": "2.700,00*1,08 = 2.916,00 EUR ist der Wert nach einem Jahr. Denkfehler: Das zweite Anlagejahr fehlt. Nach zwei Jahren sind es 3.149,28 EUR."}, {"text": "3.149,28 EUR", "isCorrect": true, "erklaerung": "EW_2 = 2.700,00*1,08^2 = 3.149,28 EUR. Der Endwert enthält auch die Verzinsung der Zinsen aus dem ersten Jahr."}, {"text": "2.314,81 EUR", "isCorrect": false, "erklaerung": "2.700,00/1,08^2 ergibt 2.314,81 EUR (2 NKS). Denkfehler: Abzinsen statt Aufzinsen. Gesucht ist der Endwert von 3.149,28 EUR."}]}, {"nummer": 2, "typ": "Single-Choice", "punkte": 4, "text": "Ein Unternehmen kann entweder 7.600,00 EUR heute oder einmalig 8.748,00 EUR in zwei Jahren erhalten. Weitere Zahlungen gibt es nicht. Beide Alternativen werden mit 8 % je Jahr bei jährlicher Verzinsung bewertet.\n\nWelche Aussage zum Vergleich in t = 0 ist richtig? Rechnen Sie mit ungerundeten Zwischenwerten; runden Sie erst das Ergebnis auf zwei Nachkommastellen. Genau eine Antwort ist richtig.", "optionen": [{"text": "Die heutige Zahlung hat einen um 100,00 EUR höheren Barwert.", "isCorrect": true, "erklaerung": "Der Barwert der späteren Zahlung beträgt 8.748,00/1,08^2 = 7.500,00 EUR. Die heutige Zahlung ist um 7.600,00-7.500,00 = 100,00 EUR mehr wert."}, {"text": "Die spätere Zahlung hat einen um 1.148,00 EUR höheren Barwert.", "isCorrect": false, "erklaerung": "8.748,00-7.600,00 = 1.148,00 EUR vergleicht nominale Beträge zu verschiedenen Zeitpunkten. Denkfehler: Abzinsung fehlt. Richtig ist ein Barwertvorteil der heutigen Zahlung von 100,00 EUR."}, {"text": "Die spätere Zahlung hat einen um 500,00 EUR höheren Barwert.", "isCorrect": false, "erklaerung": "8.748,00/1,08-7.600,00 = 500,00 EUR berücksichtigt nur ein Jahr. Denkfehler: Der Exponent ist zu klein. Bei zwei Jahren hat die heutige Zahlung einen Barwertvorteil von 100,00 EUR."}, {"text": "Die heutige Zahlung hat einen um 116,64 EUR höheren Barwert.", "isCorrect": false, "erklaerung": "7.600,00*1,08^2-8.748,00 = 116,64 EUR vergleicht beide Zahlungen in t = 2. Denkfehler: Der Vergleich erfolgt zum Zeitpunkt der späteren Zahlung statt in t = 0; die Rangfolge bleibt, aber der Betrag ist kein Barwertunterschied. Richtig ist ein Barwertvorteil der heutigen Zahlung von 100,00 EUR."}]}, {"nummer": 3, "typ": "Single-Choice", "punkte": 4, "text": "Ein Unternehmen erhält 1.944,00 EUR in t = 1 und 3.499,20 EUR in t = 2. Heute und zu anderen Zeitpunkten gibt es keine Zahlungen. Der konstante Zinssatz beträgt 8 % je Jahr bei jährlicher Verzinsung.\n\nWie hoch ist der Barwert dieses Zahlungsstroms in t = 0? Rechnen Sie mit ungerundeten Zwischenwerten; runden Sie erst das Ergebnis auf zwei Nachkommastellen. Genau eine Antwort ist richtig.", "optionen": [{"text": "5.443,20 EUR", "isCorrect": false, "erklaerung": "1.944,00+3.499,20 = 5.443,20 EUR ist die nominale Zahlungssumme. Denkfehler: Zahlungen werden ohne Abzinsung addiert. Der richtige Barwert beträgt 4.800,00 EUR."}, {"text": "4.666,67 EUR", "isCorrect": false, "erklaerung": "(1.944,00+3.499,20)/1,08^2 ergibt 4.666,67 EUR (2 NKS). Denkfehler: Auch die frühere Zahlung wird um zwei Jahre abgezinst. Richtig sind 4.800,00 EUR."}, {"text": "4.800,00 EUR", "isCorrect": true, "erklaerung": "BW_0 = 1.944,00/1,08 + 3.499,20/1,08^2 = 1.800,00+3.000,00 = 4.800,00 EUR. Jede Zahlung erhält ihren eigenen Exponenten."}, {"text": "5.040,00 EUR", "isCorrect": false, "erklaerung": "(1.944,00+3.499,20)/1,08 = 5.040,00 EUR behandelt beide Zahlungen wie Einzahlungen nach einem Jahr. Denkfehler: Das zweite Jahr der späteren Zahlung fehlt. Richtig sind 4.800,00 EUR."}]}, {"nummer": 4, "typ": "Single-Choice", "punkte": 4, "text": "Ein Unternehmen legt heute 4.200,00 EUR für zwei Jahre zu einem konstanten Zinssatz von 6 % je Jahr an. Die Verzinsung erfolgt jährlich; alle Zinsen bleiben angelegt. Weitere Einzahlungen oder Entnahmen erfolgen nicht.\n\nUm wie viel EUR übersteigen die Zinsen des zweiten Jahres die Zinsen des ersten Jahres? Rechnen Sie mit ungerundeten Zwischenwerten; runden Sie erst das Ergebnis auf zwei Nachkommastellen. Genau eine Antwort ist richtig.", "optionen": [{"text": "519,12 EUR", "isCorrect": false, "erklaerung": "4.200,00*(1,06^2-1) = 519,12 EUR sind die gesamten Zinsen beider Jahre. Denkfehler: Die Jahreszinsen werden addiert statt voneinander abgezogen. Gesucht sind 267,12-252,00 = 15,12 EUR."}, {"text": "15,12 EUR", "isCorrect": true, "erklaerung": "Im ersten Jahr entstehen 4.200,00*0,06 = 252,00 EUR Zinsen. Im zweiten Jahr entstehen 4.200,00*1,06*0,06 = 267,12 EUR Zinsen. Die Differenz beträgt 267,12-252,00 = 15,12 EUR. Das sind die Zinsen auf die 252,00 EUR Zinsen des ersten Jahres."}, {"text": "0,00 EUR", "isCorrect": false, "erklaerung": "252,00-252,00 = 0,00 EUR setzt in beiden Jahren denselben Zinsbetrag an. Denkfehler: Ein konstanter Zinssatz wird mit konstanten Jahreszinsen gleichgesetzt. Da die Zinsen angelegt bleiben, wächst die Verzinsungsbasis im zweiten Jahr auf 4.452,00 EUR. Die Jahreszinsen steigen um 15,12 EUR."}, {"text": "267,12 EUR", "isCorrect": false, "erklaerung": "4.200,00*1,06*0,06 = 267,12 EUR sind die Zinsen des zweiten Jahres. Denkfehler: Der Zinsbetrag eines Jahres wird mit dem Unterschied zwischen den Jahreszinsen verwechselt. Nach Abzug der 252,00 EUR Zinsen des ersten Jahres bleiben 15,12 EUR."}]}]}, {"nummer": 3, "titel": "Renten, Annuitäten und ewige Zahlungen", "fragen": [{"nummer": 1, "typ": "Kprim", "punkte": 3, "text": "Die Fälle betreffen nachschüssige Renten mit endlicher oder unbegrenzter Laufzeit und Annuitätenkredite mit gleichen positiven jährlichen Zahlungsbeträgen ab t = 1. Je Fall ist der jährliche Zinssatz positiv und konstant. Beurteilen Sie jede Aussage unabhängig als richtig oder falsch.", "optionen": [{"text": "Wenn ein Annuitätenkredit mit sieben gleichen Jahreszahlungen statt mit 6 % mit 8 % je Jahr verzinst wird, dann sinkt der Annuitätenfaktor ANF(7;i).", "isCorrect": false, "erklaerung": "Bei höherem Zinssatz sinkt der Rentenbarwertfaktor. Sein Kehrwert ANF(7;i) steigt. Denkfehler: Die Richtung des Rentenbarwertfaktors wird auf seinen Kehrwert übertragen."}, {"text": "Wenn eine Rente bei 7 % je Jahr um eine weitere gleich hohe Zahlung am Ende des zusätzlichen Jahres verlängert wird, dann steigt ihr Rentenbarwertfaktor um weniger als 1.", "isCorrect": true, "erklaerung": "Der Zuwachs ist der Diskontfaktor des zusätzlichen Jahres: 1/1,07^(T+1). Er ist positiv und kleiner als 1. Denkfehler wäre, die zusätzliche Zahlung nominal als 1 zu zählen, statt sie abzuzinsen."}, {"text": "Wenn ein Unternehmen heute 7.500,00 EUR zu 6 % je Jahr anlegt und ab t = 1 unbegrenzt jedes Jahr 450,00 EUR entnimmt, dann ist der Barwert dieser Entnahmen bei 6 % gleich dem Anlagebetrag von 7.500,00 EUR.", "isCorrect": true, "erklaerung": "Die jährliche Entnahme entspricht genau den Zinsen 7.500,00*0,06 = 450,00 EUR; das Kapital bleibt angelegt. Der Barwert der ewigen Rente beträgt deshalb 450,00/0,06 = 7.500,00 EUR. Denkfehler wäre, unbegrenzt vielen Entnahmen einen unbegrenzt hohen Barwert zuzuschreiben."}, {"text": "Wenn die Jahreszahlung einer Rente bei unveränderten Zahlungszeitpunkten und unverändertem Zinssatz verdoppelt wird, dann verdoppelt sich ihr Rentenbarwertfaktor.", "isCorrect": false, "erklaerung": "Der Rentenbarwertfaktor bleibt unverändert; er hängt von T und i ab. Nur BW_0 = C*RBF(T;i) verdoppelt sich. Denkfehler: Zahlungsbetrag und Bewertungsfaktor werden verwechselt."}]}, {"nummer": 2, "typ": "Kprim", "punkte": 3, "text": "Es gelten jährliche Zahlungen und konstante positive Zinssätze. Renten beginnen in t = 1. Kreditbeträge, Annuitäten A und Barwerte der Rückzahlungen werden als positive Beträge angegeben; Zahlungssalden z_t tragen das Vorzeichen aus Sicht des Unternehmens als Kreditnehmer. Außer Auszahlung und vereinbarten Rückzahlungen fallen keine weiteren Zahlungen an. Beurteilen Sie jede Aussage unabhängig als richtig oder falsch.", "optionen": [{"text": "Wenn ein Kredit von 16.800,00 EUR bei 7 % durch vier gleiche Zahlungen in t = 1 bis t = 4 vollständig zurückgezahlt wird, dann ist der Barwert dieser vier Zahlungen bei 7 % gleich 16.800,00 EUR.", "isCorrect": true, "erklaerung": "Die Annuität ist so bemessen, dass der Barwert der vier Rückzahlungen als positiver Betrag den Kreditbetrag von 16.800,00 EUR ergibt. Denkfehler wäre, den Barwert für größer als den Kreditbetrag zu halten, weil die nominale Summe der Rückzahlungen größer ist."}, {"text": "Wenn eine Rente sechs jährliche Einzahlungen von 930,00 EUR bei 8 % umfasst, dann berechnet sich ihr Barwert als 930,00*ANF(6;0,08).", "isCorrect": false, "erklaerung": "Richtig ist BW_0 = 930,00*RBF(6;0,08). Denkfehler: Der Annuitätenfaktor verteilt einen heutigen Betrag, während hier künftige Zahlungen zu einem Barwert gebündelt werden sollen."}, {"text": "Wenn bei einem Kredit in t = 1 eine Annuität von 2.300,00 EUR fällig ist, dann trägt der Kreditnehmer z_1 = +2.300,00 EUR ein.", "isCorrect": false, "erklaerung": "A ist ein positiver Zahlungsbetrag, aber die Rückzahlung ist für den Kreditnehmer eine Auszahlung: z_1 = -2.300,00 EUR. Denkfehler: Betrag und vorzeichenbehafteter Zahlungssaldo werden gleichgesetzt."}, {"text": "Wenn ein Kredit von 56.000,00 EUR bei 9 % durch sieben gleiche Jahreszahlungen ab t = 1 vollständig zurückgezahlt wird, dann muss jede Annuität größer als 8.000,00 EUR sein.", "isCorrect": true, "erklaerung": "56.000,00/7 = 8.000,00 EUR würde insgesamt nur den Kreditbetrag zurückzahlen. Wegen des positiven Zinssatzes müssen die sieben Annuitäten zusätzlich Zinsen abdecken."}]}, {"nummer": 3, "typ": "Kprim", "punkte": 3, "text": "Betrachten Sie vier getrennte Annuitätenkredite mit konstantem positivem Jahreszinssatz. Die gleichbleibende Annuität enthält nur Zins und Tilgung; die Zahlung erfolgt jeweils am Jahresende. Zinsen werden auf die Restschuld zu Jahresbeginn berechnet. Beurteilen Sie jede Aussage unabhängig als richtig oder falsch.", "optionen": [{"text": "Wenn die Restschuld zu Jahresbeginn 19.200,00 EUR, der Zinssatz 8 % und die Annuität 2.400,00 EUR betragen, dann werden mit dieser Annuität 1.536,00 EUR getilgt.", "isCorrect": false, "erklaerung": "19.200,00*0,08 = 1.536,00 EUR sind Zinsen. Die Tilgung beträgt 2.400,00-1.536,00 = 864,00 EUR. Denkfehler: Zinsanteil und Tilgungsanteil werden vertauscht."}, {"text": "Wenn ein Kredit von 20.000,00 EUR bei 9 % je Jahr durch Annuitäten zurückgezahlt wird, dann muss die Annuität größer als 1.800,00 EUR sein, sonst sinkt die Restschuld nicht.", "isCorrect": true, "erklaerung": "Die Zinsen des ersten Jahres betragen 20.000,00*0,09 = 1.800,00 EUR. Nur der darüber hinausgehende Teil der Annuität tilgt den Kredit; bei genau 1.800,00 EUR bleibt die Restschuld unverändert. Denkfehler wäre, die Annuität als reine Tilgung zu lesen."}, {"text": "Wenn ein vollständig ausgezahlter Kredit von 14.300,00 EUR durch Annuitäten von insgesamt 16.940,00 EUR vollständig zurückgezahlt wird, dann entfallen insgesamt 2.640,00 EUR auf Zinsen.", "isCorrect": true, "erklaerung": "Die Rückzahlungen decken den vollständigen Kreditbetrag und die Zinsen: 16.940,00-14.300,00 = 2.640,00 EUR."}, {"text": "Wenn vor dem letzten Kreditjahr noch 3.700,00 EUR Restschuld bestehen und der Zinssatz 6 % beträgt, dann reichen am Ende dieses Jahres 3.700,00 EUR zur vollständigen Bezahlung von Zins und Tilgung.", "isCorrect": false, "erklaerung": "Die letzte Zahlung muss 3.700,00*1,06 = 3.922,00 EUR betragen: 3.700,00 EUR Tilgung und 222,00 EUR Zinsen. Denkfehler: Die Zinsen des letzten Jahres werden weggelassen."}]}, {"nummer": 4, "typ": "Kprim", "punkte": 3, "text": "Betrachten Sie vier getrennte ewige Renten aus Sicht der Zahlungsempfänger. Die nächste Zahlung C_1 erfolgt in einem Jahr; danach wachsen die Zahlungen jedes Jahr mit konstantem g. Bewertet wird in t = 0 mit konstantem Jahreszinssatz i. Heute gibt es keine Zahlung. Beurteilen Sie jede Aussage unabhängig als richtig oder falsch.", "optionen": [{"text": "Wenn C_1 = 1.560,00 EUR und i = 9 % unverändert bleiben, aber g von 3 % auf 4,2 % steigt, dann steigt der Barwert.", "isCorrect": true, "erklaerung": "Der positive Nenner i-g sinkt von 0,06 auf 0,048. Bei unverändertem C_1 steigt deshalb C_1/(i-g)."}, {"text": "Wenn C_1 = 2.240,00 EUR und g = 1 % unverändert bleiben, aber i von 8 % auf 11 % steigt, dann steigt der Barwert.", "isCorrect": false, "erklaerung": "Der Nenner steigt von 0,07 auf 0,10. Der Barwert sinkt von 2.240,00/0,07 = 32.000,00 EUR auf 2.240,00/0,10 = 22.400,00 EUR. Denkfehler: Höhere Abzinsung wird mit höherem Barwert verwechselt."}, {"text": "Wenn C_1 = 2.000,00 EUR und g = 5 % gelten, dann ist die Zahlung in t = 3 gleich 2.205,00 EUR.", "isCorrect": true, "erklaerung": "C_3 = C_1*(1+g)^(3-1) = 2.000,00*1,05^2 = 2.205,00 EUR. Von der ersten Zahlung in t = 1 bis t = 3 liegen zwei Wachstumsschritte. Denkfehler wäre der Exponent t statt t-1: 2.000,00*1,05^3 ergibt 2.315,25 EUR."}, {"text": "Wenn C_1 = 1.740,00 EUR sowie i = g = 7 % gelten, dann lässt sich ein endlicher Barwert durch 1.740,00/0,07 berechnen.", "isCorrect": false, "erklaerung": "Bei i = g schrumpfen die positiven Einzelbarwerte nicht. Es gibt keinen endlichen Barwert. Denkfehler: Trotz Wachstum wird die Formel C/i für gleichbleibende Zahlungen verwendet; C_1/(i-g) ist bei einem Nenner von null nicht anwendbar."}]}, {"nummer": 5, "typ": "Kprim", "punkte": 3, "text": "Die getrennten Fälle betreffen jährliche Zahlungsströme mit jeweils konstantem positivem Zinssatz. t = 0 ist heute. Nur die ausdrücklich genannten Zahlungen sind zu bewerten. Beurteilen Sie jede Aussage unabhängig als richtig oder falsch.", "optionen": [{"text": "Wenn in t = 1 und t = 2 jeweils 980,00 EUR sowie in t = 3 einmalig 1.960,00 EUR eingehen, dann ist der gesamte Barwert bei 7 % gleich 980,00*RBF(3;0,07).", "isCorrect": false, "erklaerung": "Richtig ist 980,00*RBF(3;0,07) + 980,00/1,07^3. Denkfehler: Der zusätzliche Betrag von 1.960,00-980,00 = 980,00 EUR in t = 3 wird übergangen; die Zahlungen werden fälschlich als gleich hoch behandelt."}, {"text": "Wenn vier gleiche Jahreszahlungen in t = 1 bis t = 4 bei 6 % einen Barwert von 15.000,00 EUR haben, dann haben dieselben vier Zahlungen vorschüssig, also jeweils ein Jahr früher in t = 0 bis t = 3, bei 6 % einen Barwert von 15.900,00 EUR.", "isCorrect": true, "erklaerung": "Jede Zahlung liegt ein Jahr näher an heute und wird deshalb um den Faktor 1,06 weniger abgezinst: BW_0_vor = 1,06*BW_0_nach = 1,06*15.000,00 = 15.900,00 EUR. Denkfehler wäre, das Vorziehen als zusätzliche Abzinsung zu lesen (15.000,00/1,06 ergibt 14.150,94 EUR, 2 NKS)."}, {"text": "Wenn heute 1.260,00 EUR und in t = 1 bis t = 4 jeweils 630,00 EUR eingehen, dann ist der Barwert bei 6 % gleich (1.260,00+630,00)*RBF(4;0,06).", "isCorrect": false, "erklaerung": "Richtig ist 1.260,00 + 630,00*RBF(4;0,06). Die heutige Zahlung bleibt unverändert. Denkfehler: Eine einmalige heutige Zahlung wird als Bestandteil jeder künftigen Jahreszahlung behandelt."}, {"text": "Wenn ein Zahlungsstrom ausschließlich eine Auszahlung von 540,00 EUR in t = 3 enthält und i = 9 % beträgt, dann ist sein Barwert -540,00/1,09^3.", "isCorrect": true, "erklaerung": "Die Auszahlung hat ein negatives Vorzeichen. Das Abzinsen über drei Jahre verändert ihren Betrag, nicht ihr Vorzeichen."}]}]}, {"nummer": 4, "titel": "Renten bewerten und Annuitäten berechnen", "fragen": [{"nummer": 1, "typ": "Single-Choice", "punkte": 3, "text": "Ein Unternehmen erhält eine endliche nachschüssige Rente: je 1.458,00 EUR in t = 1 und t = 2, sonst keine Zahlungen. Es gilt ein konstanter Zinssatz von 8 % je Jahr bei jährlicher Verzinsung.\n\nWie hoch ist der Barwert in t = 0? Rechnen Sie mit ungerundeten Zwischenwerten; runden Sie erst das Ergebnis auf zwei Nachkommastellen. Genau eine Antwort ist richtig.", "optionen": [{"text": "2.916,00 EUR", "isCorrect": false, "erklaerung": "2*1.458,00 = 2.916,00 EUR ist die nominale Zahlungssumme. Denkfehler: Abzinsung fehlt. Der richtige Barwert beträgt 2.600,00 EUR."}, {"text": "817,60 EUR", "isCorrect": false, "erklaerung": "1.458,00/RBF(2;0,08) ergibt 817,60 EUR (2 NKS). Denkfehler: Der Annuitätenfaktor wird zum Bündeln einer Rente verwendet. Richtig ist Multiplikation mit dem Rentenbarwertfaktor; der Barwert beträgt 2.600,00 EUR."}, {"text": "2.808,00 EUR", "isCorrect": false, "erklaerung": "1.458,00+1.458,00/1,08 = 2.808,00 EUR bewertet Zahlungen in t = 0 und t = 1. Denkfehler: Die Rente wird vorschüssig statt nachschüssig bewertet; das ergibt das 1,08-Fache des richtigen Barwerts. Bei Zahlungen in t = 1 und t = 2 sind es 2.600,00 EUR."}, {"text": "2.600,00 EUR", "isCorrect": true, "erklaerung": "BW_0 = 1.458,00*RBF(2;0,08) = 1.458,00/1,08 + 1.458,00/1,08^2 = 1.350,00+1.250,00 = 2.600,00 EUR."}]}, {"nummer": 2, "typ": "Single-Choice", "punkte": 4, "text": "Ein Unternehmen erhält heute einen Kredit von 10.400,00 EUR. Der Zinssatz beträgt konstant 8 % je Jahr. Der Kredit wird durch zwei gleich hohe Zahlungen am Ende des ersten und zweiten Jahres vollständig zurückgezahlt. Die Zahlungen enthalten nur Zins und Tilgung; weitere Zahlungen gibt es nicht. Zinsen fallen auf die jeweilige Restschuld an.\n\nWie hoch ist die jährliche Annuität A als positiver Betrag? Rechnen Sie mit ungerundeten Zwischenwerten; runden Sie erst das Ergebnis auf zwei Nachkommastellen. Genau eine Antwort ist richtig.", "optionen": [{"text": "5.200,00 EUR", "isCorrect": false, "erklaerung": "10.400,00/2 = 5.200,00 EUR verteilt nur den Kreditbetrag. Denkfehler: Zinsen werden weggelassen. Die erforderliche Annuität beträgt 5.832,00 EUR."}, {"text": "5.832,00 EUR", "isCorrect": true, "erklaerung": "A = 10.400,00*ANF(2;0,08) = 10.400,00/RBF(2;0,08) = 5.832,00 EUR. Der Barwert dieser beiden gleichen Rückzahlungen beträgt 10.400,00 EUR."}, {"text": "6.032,00 EUR", "isCorrect": false, "erklaerung": "10.400,00/2 + 10.400,00*0,08 = 6.032,00 EUR kombiniert eine hälftige Tilgung mit Zinsen auf den ursprünglichen Kreditbetrag. Denkfehler: Sinkende Restschuld und gleichbleibende Annuität werden nicht gemeinsam berücksichtigt. Richtig sind 5.832,00 EUR jährlich."}, {"text": "18.545,95 EUR", "isCorrect": false, "erklaerung": "10.400,00*RBF(2;0,08) ergibt 18.545,95 EUR (2 NKS). Denkfehler: Rentenbarwertfaktor und Annuitätenfaktor werden verwechselt. Richtig sind 10.400,00/RBF(2;0,08) = 5.832,00 EUR."}]}, {"nummer": 3, "typ": "Single-Choice", "punkte": 4, "text": "Eine ewige Rente wird aus einem Ausgangsbetrag von 1.800,00 EUR entwickelt. Die erste Zahlung erfolgt in t = 1 und liegt bereits 3 % über diesem Ausgangsbetrag. Danach steigen die Zahlungen unbegrenzt jedes Jahr um 3 %. Heute wird nichts gezahlt. Der konstante Zinssatz beträgt 9 % je Jahr.\n\nWie hoch ist der Barwert in t = 0? Rechnen Sie mit ungerundeten Zwischenwerten; runden Sie erst das Ergebnis auf zwei Nachkommastellen. Genau eine Antwort ist richtig.", "optionen": [{"text": "30.900,00 EUR", "isCorrect": true, "erklaerung": "C_1 = 1.800,00*1,03 = 1.854,00 EUR. Wegen i > g gilt BW_0 = 1.854,00/(0,09-0,03) = 30.900,00 EUR."}, {"text": "30.000,00 EUR", "isCorrect": false, "erklaerung": "1.800,00/(0,09-0,03) = 30.000,00 EUR verwendet den Ausgangsbetrag. Denkfehler: Im Zähler fehlt das Wachstum bis zur ersten Zahlung. Richtig sind C_1 = 1.854,00 EUR und BW_0 = 30.900,00 EUR."}, {"text": "20.600,00 EUR", "isCorrect": false, "erklaerung": "1.854,00/0,09 = 20.600,00 EUR ignoriert das Wachstum nach der ersten Zahlung. Denkfehler: Die Formel für eine ewige Rente ohne Wachstum wird verwendet. Richtig sind 30.900,00 EUR."}, {"text": "15.450,00 EUR", "isCorrect": false, "erklaerung": "1.854,00/(0,09+0,03) = 15.450,00 EUR addiert Wachstum zum Zinssatz. Denkfehler: Falsches Vorzeichen im Nenner. Richtig sind 1.854,00/(0,09-0,03) = 30.900,00 EUR."}]}, {"nummer": 4, "typ": "Single-Choice", "punkte": 4, "text": "Ein Unternehmen vergleicht drei alternative Zahlungsangebote bei konstant 8 % je Jahr und jährlicher Verzinsung. Angebot I zahlt einmalig 5.832,00 EUR in t = 2. Angebot II zahlt je 2.916,00 EUR in t = 1 und t = 2. Angebot III zahlt ewig jährlich 432,00 EUR ohne Wachstum, erstmals in t = 1. Heute und außerhalb dieser Zahlungsfolgen gibt es keine Zahlungen.\n\nWelche Kombination nennt die Barwerte in t = 0 in der Reihenfolge I, II, III korrekt? Rechnen Sie mit ungerundeten Zwischenwerten; runden Sie erst die Ergebnisse auf zwei Nachkommastellen. Genau eine Antwort ist richtig.", "optionen": [{"text": "I: 5.832,00 EUR; II: 5.832,00 EUR; III: 5.400,00 EUR.", "isCorrect": false, "erklaerung": "Bei I und II werden die nominalen Beträge ohne Abzinsung verwendet: 5.832,00 und 2*2.916,00 = 5.832,00 EUR. Denkfehler: Der Zeitwert wird nur bei III berücksichtigt. Richtig sind I: 5.000,00 EUR; II: 5.200,00 EUR; III: 5.400,00 EUR."}, {"text": "I: 5.000,00 EUR; II: 5.000,00 EUR; III: 5.400,00 EUR.", "isCorrect": false, "erklaerung": "Bei II wird (2*2.916,00)/1,08^2 = 5.000,00 EUR gerechnet. Denkfehler: Die erste Rentenzahlung wird um ein Jahr zu spät angesetzt. II besitzt einen Barwert von 5.200,00 EUR; I: 5.000,00 EUR und III: 5.400,00 EUR sind korrekt."}, {"text": "I: 5.000,00 EUR; II: 5.200,00 EUR; III: 34,56 EUR.", "isCorrect": false, "erklaerung": "Bei III wird 432,00*0,08 = 34,56 EUR gerechnet. Denkfehler: Der Jahresbetrag wird mit dem Zinssatz multipliziert statt durch ihn geteilt. III besitzt einen Barwert von 5.400,00 EUR; I: 5.000,00 EUR und II: 5.200,00 EUR sind korrekt."}, {"text": "I: 5.000,00 EUR; II: 5.200,00 EUR; III: 5.400,00 EUR.", "isCorrect": true, "erklaerung": "I: 5.832,00/1,08^2 = 5.000,00 EUR. II: 2.916,00/1,08 + 2.916,00/1,08^2 = 2.700,00+2.500,00 = 5.200,00 EUR. III: 432,00/0,08 = 5.400,00 EUR."}]}]}]};
+// Bewertungslogik des Selbsttests. Keine DOM-Zugriffe. Läuft im Browser und in Node.
+// Zustand: state[key] mit key = aufgabenIndex + '-' + frageIndex.
+//   Kprim: Array aus 4 Werten 'WAHR' | 'FALSCH' | null.   Single-Choice: Optionsindex 0..3 oder null.
+function gradeKprim(frage, antworten) {
+  const a = Array.isArray(antworten) ? antworten : [null, null, null, null];
+  const perOption = frage.optionen.map((o, i) => (o.isCorrect ? 'WAHR' : 'FALSCH') === a[i]);
+  const correctCount = perOption.filter(Boolean).length;
+  const points = correctCount === 4 ? frage.punkte : correctCount === 3 ? frage.punkte / 2 : 0;
+  return { correctCount, points, perOption };
+}
+function gradeSC(frage, index) {
+  const isCorrect = index !== null && index !== undefined && frage.optionen[index] && frage.optionen[index].isCorrect === true;
+  return { isCorrect, points: isCorrect ? frage.punkte : 0 };
+}
+function gradeAll(data, state) {
+  let total = 0, max = 0; const perAufgabe = [], perQuestion = [];
+  data.aufgaben.forEach((auf, ai) => {
+    let ap = 0, am = 0;
+    auf.fragen.forEach((f, fi) => {
+      const key = ai + '-' + fi;
+      const r = f.typ === 'Kprim' ? gradeKprim(f, state[key]) : gradeSC(f, state[key]);
+      ap += r.points; am += f.punkte; perQuestion.push({ key, ...r, max: f.punkte });
+    });
+    total += ap; max += am; perAufgabe.push({ nummer: auf.nummer, titel: auf.titel, points: ap, max: am });
+  });
+  return { total, max, perAufgabe, perQuestion };
+}
+function countUnanswered(data, state) {
+  let n = 0;
+  data.aufgaben.forEach((auf, ai) => auf.fragen.forEach((f, fi) => {
+    const v = state[ai + '-' + fi];
+    if (f.typ === 'Kprim') { const a = Array.isArray(v) ? v : []; for (let i = 0; i < 4; i++) if (!a[i]) n++; }
+    else if (v === null || v === undefined) n++;
+  }));
+  return n;
+}
+if (typeof module !== 'undefined' && module.exports) module.exports = { gradeKprim, gradeSC, gradeAll, countUnanswered };
+
+// Oberflaeche des Selbsttests. Rechnet nichts selbst: jede Bewertung kommt aus scoring.js
+// (gradeKprim, gradeSC, gradeAll, countUnanswered). Die Daten stehen in DATA.
+// Zustand: state[aufgabenIndex + '-' + frageIndex], siehe scoring.js.
+
+let state = {};
+let submitted = false;
+
+const GESAMT_OFFEN = countUnanswered(DATA, {});
+
+/* Alle Daten werden ueber esc() eingefuegt. */
+function esc(s) {
+  return String(s === null || s === undefined ? '' : s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/* Zahl mit Dezimalkomma, hoechstens zwei Nachkommastellen. */
+function fmt(x) {
+  return (Math.round(x * 100) / 100).toString().replace('.', ',');
+}
+
+/* Text vor einem angehaengten ', richtig ist: ...': ein Schlusspunkt entfaellt, damit Punkt
+   und Komma nicht aufeinanderfolgen. Abkuerzungen (p. a., z. B., usw.) und
+   Auslassungspunkte behalten ihren Punkt. */
+const ABKUERZUNG_AM_ENDE = /(?:^|[\s(])(?:\p{L}\.\s?\p{L}|usw|bzw|etc|ca|ggf|vgl|inkl|zzgl|bspw|Mio|Mrd|Tsd|Nr)\.$/u;
+function ohneSchlusspunkt(text) {
+  const t = String(text === null || text === undefined ? '' : text);
+  const k = t.replace(/\s+$/, '');
+  if (!k.endsWith('.') || k.endsWith('..') || ABKUERZUNG_AM_ENDE.test(k)) return t;
+  return k.slice(0, -1);
+}
+
+/* Buchstabe a) bis d) zu einem Optionsindex. */
+function marke(oi) {
+  return String.fromCharCode(97 + oi) + ')';
+}
+
+/* Zeilenumbrueche im Fragetext werden zu Absaetzen. */
+function absaetze(text) {
+  const teile = String(text === null || text === undefined ? '' : text)
+    .split(/\n+/).filter(function (t) { return t.trim() !== ''; });
+  if (teile.length === 0) return '';
+  return teile.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join('');
+}
+
+/* Loesungstext fuer die Anzeige: Zeilen, die mit "Quelle:" beginnen, entfallen (Vorgabe des
+   Dozenten: kein Folienbezug auf der Seite; die Quelle steht nur im Dozentenexemplar).
+   build_selbsttest.py entfernt sie schon beim Einbetten. Kein Datum in diesem Kommentar,
+   weil er im Quelltext der Seite steht. */
+const QUELLENZEILE = /^\s*quelle\s*:/i;
+function ohneQuellenzeilen(text) {
+  return String(text === null || text === undefined ? '' : text)
+    .split('\n')
+    .filter(function (z) { return !QUELLENZEILE.test(z); })
+    .join('\n')
+    .replace(/\s+$/, '');
+}
+
+function alleErklaerungen(frage) {
+  return frage.optionen.every(function (o) {
+    return o.erklaerung && String(o.erklaerung).trim() !== '';
+  });
+}
+
+function typName(typ) {
+  return typ === 'Kprim'
+    ? 'KPRIM, vier Aussagen je Frage'
+    : 'Single Choice, eine richtige Antwort je Frage';
+}
+
+function render() {
+  let html = '';
+  DATA.aufgaben.forEach(function (auf, ai) {
+    const fragen = auf.fragen || [];
+    const typ = fragen.length ? fragen[0].typ : '';
+    const punkte = fragen.reduce(function (s, f) { return s + f.punkte; }, 0);
+    html += '<section class="aufgabe" id="aufgabe-' + ai + '">'
+      + '<div class="section-head">'
+      + '<div class="section-num">Aufgabe ' + esc(auf.nummer) + '</div>'
+      + '<div class="section-title">' + esc(auf.titel) + '</div>'
+      + '<div class="section-meta">' + esc(typName(typ)) + ', ' + fmt(punkte) + ' Punkte</div>'
+      + '</div>';
+    fragen.forEach(function (f, fi) { html += frageHtml(auf, ai, f, fi); });
+    html += '</section>';
+  });
+  document.getElementById('test').innerHTML = html;
+}
+
+function frageHtml(auf, ai, f, fi) {
+  let h = '<article class="frage" id="frage-' + ai + '-' + fi + '">'
+    + '<div class="frage-top">'
+    + '<span class="frage-nr">Frage ' + esc(auf.nummer) + '.' + esc(f.nummer) + '</span>'
+    + '<span class="frage-pts">' + fmt(f.punkte) + ' Punkte</span>'
+    + '<span class="frage-score" id="fs-' + ai + '-' + fi + '"></span>'
+    + '</div>'
+    + '<div class="frage-body">' + absaetze(f.text) + '</div>';
+
+  if (f.typ === 'Kprim') {
+    f.optionen.forEach(function (o, oi) {
+      h += '<div class="stmt" id="stmt-' + ai + '-' + fi + '-' + oi + '">'
+        + '<div class="stmt-text"><span class="lbl">' + marke(oi) + '</span>' + esc(o.text) + '</div>'
+        + '<div class="choice-wrap">'
+        + '<button type="button" class="choice" data-val="WAHR" onclick="pickKprim(' + ai + ',' + fi + ',' + oi + ',&quot;WAHR&quot;,this)">Richtig</button>'
+        + '<button type="button" class="choice" data-val="FALSCH" onclick="pickKprim(' + ai + ',' + fi + ',' + oi + ',&quot;FALSCH&quot;,this)">Falsch</button>'
+        + '</div>'
+        + '<div class="stmt-result" id="res-' + ai + '-' + fi + '-' + oi + '"></div>'
+        + '</div>';
+    });
+  } else {
+    h += '<div class="optionen">';
+    f.optionen.forEach(function (o, oi) {
+      h += '<button type="button" class="option" id="opt-' + ai + '-' + fi + '-' + oi + '"'
+        + ' onclick="pickSC(' + ai + ',' + fi + ',' + oi + ',this)">'
+        + '<span class="lbl">' + marke(oi) + '</span>'
+        + '<span class="option-text">' + esc(o.text) + '</span></button>';
+    });
+    h += '</div><div class="frage-result" id="res-' + ai + '-' + fi + '"></div>';
+  }
+
+  h += '<div class="frage-loesung" id="loes-' + ai + '-' + fi + '" data-has="0"></div>'
+    + '</article>';
+  return h;
+}
+
+function pickKprim(ai, fi, oi, val, btn) {
+  if (submitted) return;
+  const key = ai + '-' + fi;
+  if (!Array.isArray(state[key])) state[key] = [null, null, null, null];
+  state[key][oi] = val;
+  const wrap = btn.parentElement;
+  wrap.querySelectorAll('.choice').forEach(function (c) { c.classList.remove('sel'); });
+  btn.classList.add('sel');
+  updateCounter();
+}
+
+function pickSC(ai, fi, oi, btn) {
+  if (submitted) return;
+  state[ai + '-' + fi] = oi;
+  const wrap = btn.parentElement;
+  wrap.querySelectorAll('.option').forEach(function (c) { c.classList.remove('sel'); });
+  btn.classList.add('sel');
+  updateCounter();
+}
+
+function updateCounter() {
+  const offen = countUnanswered(DATA, state);
+  document.getElementById('answered').textContent = GESAMT_OFFEN - offen;
+  document.getElementById('answeredTotal').textContent = GESAMT_OFFEN;
+}
+
+function submitTest() {
+  if (submitted) return;
+  const offen = countUnanswered(DATA, state);
+  if (offen > 0) {
+    const frage = 'Es sind noch ' + offen + ' Aussagen und Fragen unbeantwortet. '
+      + 'Sie zählen als falsch. Jetzt trotzdem abgeben?';
+    if (!window.confirm(frage)) return;
+  } else if (!window.confirm('Jetzt abgeben? Danach sind keine Änderungen mehr möglich.')) {
+    return;
+  }
+  submitted = true;
+  document.body.classList.add('submitted');
+  showResults(gradeAll(DATA, state));
+  const abgeben = document.getElementById('submitBtn');
+  abgeben.disabled = true;
+  abgeben.textContent = 'Abgegeben';
+  document.getElementById('resetBtn').style.display = '';
+  document.getElementById('ergebnis').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function showResults(result) {
+  DATA.aufgaben.forEach(function (auf, ai) {
+    (auf.fragen || []).forEach(function (f, fi) {
+      const key = ai + '-' + fi;
+      const r = f.typ === 'Kprim' ? gradeKprim(f, state[key]) : gradeSC(f, state[key]);
+      if (f.typ === 'Kprim') zeigeKprim(f, ai, fi, r);
+      else zeigeSC(f, ai, fi, r, state[key]);
+
+      const score = document.getElementById('fs-' + ai + '-' + fi);
+      if (f.typ === 'Kprim') {
+        score.textContent = r.correctCount + ' von 4 korrekt, ' + fmt(r.points) + ' von ' + fmt(f.punkte) + ' Punkten';
+        score.style.color = r.correctCount === 4 ? 'var(--gruen)' : (r.correctCount === 3 ? 'var(--th-orange)' : 'var(--th-rot)');
+      } else {
+        score.textContent = fmt(r.points) + ' von ' + fmt(f.punkte) + ' Punkten';
+        score.style.color = r.isCorrect ? 'var(--gruen)' : 'var(--th-rot)';
+      }
+
+      const loesung = alleErklaerungen(f) ? '' : ohneQuellenzeilen(f.loesung);
+      if (loesung) {
+        const box = document.getElementById('loes-' + ai + '-' + fi);
+        box.textContent = loesung;
+        box.setAttribute('data-has', '1');
+      }
+    });
+  });
+  zeigeUebersicht(result);
+}
+
+function zeigeKprim(f, ai, fi, r) {
+  const gegeben = Array.isArray(state[ai + '-' + fi]) ? state[ai + '-' + fi] : [];
+  f.optionen.forEach(function (o, oi) {
+    const richtigText = o.isCorrect ? 'Richtig' : 'Falsch';
+    const wahl = gegeben[oi] || null;
+    const wahlText = wahl === 'WAHR' ? 'Richtig' : (wahl === 'FALSCH' ? 'Falsch' : 'nicht beantwortet');
+    const ok = r.perOption[oi];
+    const box = document.getElementById('res-' + ai + '-' + fi + '-' + oi);
+    box.className = 'stmt-result ' + (ok ? 'ok' : 'bad');
+    box.innerHTML = '<span class="verdict">' + (ok ? 'Korrekt' : 'Falsch') + '</span> '
+      + '<span class="meta">Ihre Antwort: ' + esc(wahlText)
+      + (ok ? '' : ', richtig ist: ' + esc(richtigText)) + '</span>'
+      + (o.erklaerung ? '<div class="expl">' + esc(o.erklaerung) + '</div>' : '');
+    const wrap = document.getElementById('stmt-' + ai + '-' + fi + '-' + oi).querySelector('.choice-wrap');
+    wrap.querySelectorAll('.choice').forEach(function (c) {
+      if (c.dataset.val === (o.isCorrect ? 'WAHR' : 'FALSCH')) c.classList.add('key-correct');
+      if (!ok && wahl && c.dataset.val === wahl) c.classList.add('key-wrongpick');
+    });
+  });
+}
+
+function zeigeSC(f, ai, fi, r, gewaehlt) {
+  const richtigIdx = f.optionen.findIndex(function (o) { return o.isCorrect === true; });
+  const hatWahl = gewaehlt !== null && gewaehlt !== undefined && f.optionen[gewaehlt];
+  const wahlText = hatWahl
+    ? marke(gewaehlt) + ' ' + f.optionen[gewaehlt].text
+    : 'nicht beantwortet';
+  let expl = '';
+  if (hatWahl && !r.isCorrect && f.optionen[gewaehlt].erklaerung) {
+    expl += '<div class="expl">Ihre Wahl ' + marke(gewaehlt) + ' ' + esc(f.optionen[gewaehlt].erklaerung) + '</div>';
+  }
+  if (richtigIdx >= 0 && f.optionen[richtigIdx].erklaerung) {
+    expl += '<div class="expl">Richtig ' + marke(richtigIdx) + ' ' + esc(f.optionen[richtigIdx].erklaerung) + '</div>';
+  }
+  const box = document.getElementById('res-' + ai + '-' + fi);
+  box.className = 'frage-result ' + (r.isCorrect ? 'ok' : 'bad');
+  box.innerHTML = '<span class="verdict">' + (r.isCorrect ? 'Korrekt' : 'Falsch') + '</span> '
+    + '<span class="meta">Ihre Antwort: ' + esc(r.isCorrect ? wahlText : ohneSchlusspunkt(wahlText))
+    + (r.isCorrect ? '' : ', richtig ist: ' + esc(marke(richtigIdx) + ' ' + (richtigIdx >= 0 ? f.optionen[richtigIdx].text : ''))) + '</span>'
+    + expl;
+  f.optionen.forEach(function (o, oi) {
+    const btn = document.getElementById('opt-' + ai + '-' + fi + '-' + oi);
+    if (o.isCorrect) btn.classList.add('key-correct');
+    if (!r.isCorrect && hatWahl && oi === gewaehlt) btn.classList.add('key-wrongpick');
+  });
+}
+
+function zeigeUebersicht(result) {
+  const prozent = result.max > 0 ? Math.round(result.total / result.max * 1000) / 10 : 0;
+  let html = '<div class="score-grid">'
+    + '<div class="score-card main"><div class="score-title">Erreichte Punkte</div>'
+    + '<div class="score-value">' + fmt(result.total) + ' <span class="unit">von ' + fmt(result.max) + '</span></div>'
+    + '<div class="score-sub">' + fmt(prozent) + ' Prozent der Maximalpunktzahl</div></div>';
+  result.perAufgabe.forEach(function (a) {
+    html += '<div class="score-card"><div class="score-title">Aufgabe ' + esc(a.nummer) + '</div>'
+      + '<div class="score-value">' + fmt(a.points) + ' <span class="unit">von ' + fmt(a.max) + '</span></div>'
+      + '<div class="score-sub">' + esc(a.titel) + '</div></div>';
+  });
+  html += '</div><p class="legend-line">Die Auswertung je Aussage und je Frage steht unten bei den Aufgaben.</p>';
+  document.getElementById('ergebnis').innerHTML = html;
+}
+
+function resetTest() {
+  if (!window.confirm('Selbsttest zurücksetzen und neu beginnen? Ihre Antworten gehen verloren.')) return;
+  state = {};
+  submitted = false;
+  document.body.classList.remove('submitted');
+  document.getElementById('ergebnis').innerHTML = '';
+  const abgeben = document.getElementById('submitBtn');
+  abgeben.disabled = false;
+  abgeben.textContent = 'Abgeben';
+  document.getElementById('resetBtn').style.display = 'none';
+  render();
+  updateCounter();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+render();
+updateCounter();
+
+</script>
+</body>
+</html>
